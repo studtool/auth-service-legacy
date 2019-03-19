@@ -2,39 +2,50 @@ package consul
 
 import (
 	"auth-service/config"
+	"fmt"
 	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/go-uuid"
 	"os"
 	"strconv"
+	"time"
 )
 
 type Client struct {
-	srvId string
-	agent *api.Agent
+	srvId   string
+	srvName string
+	srvTTL  time.Duration
+	agent   *api.Agent
 }
 
 func NewClient() *Client {
 	cfg := api.DefaultConfig()
+	cfg.Address = config.ConsulAddress
 
 	client, err := api.NewClient(cfg)
 	if err != nil {
 		panic(err)
 	}
 
-	agent := client.Agent()
-
-	id, _ := uuid.GenerateUUID()
+	srvName := "auth"
+	srvId := fmt.Sprintf("%s:%s",
+		srvName, func() string {
+			v, _ := uuid.GenerateUUID()
+			return v
+		}(),
+	)
 
 	return &Client{
-		srvId: id,
-		agent: agent,
+		srvId:   srvId,
+		srvName: srvName,
+		srvTTL:  config.HealthCheckTimeout,
+		agent:   client.Agent(),
 	}
 }
 
 func (c *Client) Register() {
 	err := c.agent.ServiceRegister(&api.AgentServiceRegistration{
-		Name: "auth",
 		ID:   c.srvId,
+		Name: c.srvName,
 		Address: func() string {
 			v, _ := os.Hostname()
 			return v
@@ -46,14 +57,31 @@ func (c *Client) Register() {
 			}
 			return v
 		}(),
+		Check: &api.AgentServiceCheck{
+			CheckID: "StateCheck",
+			TTL:     config.HealthCheckTimeout.String(),
+		},
 	})
 	if err != nil {
 		panic(err)
 	}
+
+	config.Logger.Infof("ServiceID: %s", c.srvId)
+	config.Logger.Infof("Consul connection: %s", config.ConsulAddress)
+
+	go c.UpdateTTL()
 }
 
 func (c *Client) Unregister() {
 	if err := c.agent.ServiceDeregister(c.srvId); err != nil {
 		panic(err)
+	}
+	config.Logger.Infof("Consul connection closed")
+}
+
+func (c *Client) UpdateTTL() {
+	ticker := time.NewTicker(c.srvTTL / 2)
+	for range ticker.C {
+		_ = c.agent.PassTTL("StateCheck", "UP")
 	}
 }
