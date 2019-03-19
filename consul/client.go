@@ -1,30 +1,59 @@
 package consul
 
 import (
+	"auth-service/config"
 	"github.com/hashicorp/consul/api"
+	"github.com/hashicorp/go-uuid"
+	"os"
+	"strconv"
 )
 
 type Client struct {
-	client *api.Client
+	srvId string
+	agent *api.Agent
 }
 
 func NewClient() *Client {
-	config := api.DefaultConfig()
+	cfg := api.DefaultConfig()
 
-	client, err := api.NewClient(config)
+	client, err := api.NewClient(cfg)
 	if err != nil {
 		panic(err)
 	}
 
+	agent := client.Agent()
+
+	id, _ := uuid.GenerateUUID()
+
 	return &Client{
-		client: client,
+		srvId: id,
+		agent: agent,
 	}
 }
 
 func (c *Client) Register() {
-	//TODO
+	err := c.agent.ServiceRegister(&api.AgentServiceRegistration{
+		Name: "auth",
+		ID:   c.srvId,
+		Address: func() string {
+			v, _ := os.Hostname()
+			return v
+		}(),
+		Port: func() int {
+			v, err := strconv.Atoi(config.ServerPort)
+			if err != nil {
+				panic(err)
+			}
+			return v
+		}(),
+	})
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (c *Client) Unregister() {
-	//TODO
+	if err := c.agent.ServiceDeregister(c.srvId); err != nil {
+		panic(err)
+	}
 }
