@@ -10,21 +10,17 @@ import (
 )
 
 var (
-	ServerPort = func() string {
-		v := os.Getenv("STUDTOOL_AUTH_SERVICE_PORT")
-		if v == "" {
-			return "80"
-		}
-		return v
-	}()
+	ServerPort = getEnvVar("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
-	ConsulClientEnabled = func() bool {
-		v := os.Getenv("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED")
-		if v == "true" {
-			return true
-		}
-		return false
-	}()
+	StorageHost       = getEnvVar("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
+	StoragePort       = getEnvVar("STUDTOOL_AUTH_STORAGE_PORT", "5432")
+	StorageDB         = getEnvVar("STUDTOOL_AUTH_STORAGE_NAME", "auth")
+	StorageUser       = getEnvVar("STUDTOOL_AUTH_STORAGE_USER", "user")
+	StoragePassword   = getEnvVar("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
+	StorageSSL        = getEnvVar("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
+	ShouldInitStorage = getEnvFlag("STUDTOOL_AUTH_STORAGE_SHOULD_INIT", false)
+
+	ConsulClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 
 	ConsulAddress = func() string {
 		v := os.Getenv("STUDTOOL_SERVICE_DISCOVERY_ADDRESS")
@@ -58,3 +54,21 @@ var (
 
 	Logger = logrus.StandardLogger()
 )
+
+func getEnvVar(name string, defaultValue string) string {
+	v := os.Getenv(name)
+	if v == "" {
+		return defaultValue
+	}
+	return v
+}
+
+func getEnvFlag(name string, defaultValue bool) bool {
+	v := os.Getenv(name)
+	if v == "true" {
+		return true
+	} else if v == "false" {
+		return false
+	}
+	return defaultValue
+}

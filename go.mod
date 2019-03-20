@@ -9,6 +9,7 @@ require (
 	github.com/hashicorp/go-rootcerts v1.0.0 // indirect
 	github.com/hashicorp/go-uuid v1.0.1
 	github.com/hashicorp/serf v0.8.2 // indirect
+	github.com/lib/pq v1.0.0
 	github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/sirupsen/logrus v1.4.0

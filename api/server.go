@@ -3,6 +3,7 @@ package api
 import (
 	"auth-service/config"
 	"auth-service/models"
+	"auth-service/postgres"
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
@@ -12,6 +13,7 @@ import (
 type Server struct {
 	server           *http.Server
 	profileValidator *models.ProfileValidator
+	authRepo         *postgres.Repository
 }
 
 func NewServer() *Server {
@@ -39,6 +41,11 @@ func NewServer() *Server {
 }
 
 func (srv *Server) Run() {
+	srv.authRepo = postgres.NewRepository()
+
+	srv.authRepo.Open()
+	srv.authRepo.Init()
+
 	config.Logger.Infof("starting server on %s", srv.server.Addr)
 	if err := srv.server.ListenAndServe(); err != nil {
 		panic(err)
@@ -50,4 +57,6 @@ func (srv *Server) Shutdown() {
 	if err := srv.server.Shutdown(context.TODO()); err != nil {
 		panic(err)
 	}
+
+	srv.authRepo.Close()
 }
