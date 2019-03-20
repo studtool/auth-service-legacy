@@ -25,6 +25,11 @@ func NewServer() *Server {
 		http.MethodPatch:  http.HandlerFunc(srv.updateProfile),
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
 	})
+	mx.Handle("/api/auth/sessions", handlers.MethodHandler{
+		http.MethodPost:   http.HandlerFunc(srv.createSession),
+		http.MethodPatch:  http.HandlerFunc(srv.updateSession),
+		http.MethodDelete: http.HandlerFunc(srv.deleteSession),
+	})
 
 	srv.server.Handler = mx
 	return srv

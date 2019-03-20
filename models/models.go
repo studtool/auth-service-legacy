@@ -1,5 +1,9 @@
 package models
 
+import (
+	"time"
+)
+
 //go:generate easyjson
 
 //easyjson:json
@@ -19,4 +23,12 @@ type Credentials struct {
 type SecretQuestion struct {
 	Question string `json:"question"`
 	Answer   string `json:"answer"`
+}
+
+//easyjson:json
+type Session struct {
+	UserId       string    `json:"userId"`
+	AuthToken    string    `json:"authToken"`
+	RefreshToken string    `json:"refreshToken"`
+	ExpireTime   time.Time `json:"expireTime"`
 }
