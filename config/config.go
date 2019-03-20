@@ -19,7 +19,7 @@ var (
 	}()
 
 	ConsulClientEnabled = func() bool {
-		v := os.Getenv("STUDTOOL_AUTH_SERVICE_ENABLE_DISCOVERY_CLIENT")
+		v := os.Getenv("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED")
 		if v == "true" {
 			return true
 		}
