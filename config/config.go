@@ -18,6 +18,14 @@ var (
 		return v
 	}()
 
+	ConsulClientEnabled = func() bool {
+		v := os.Getenv("STUDTOOL_AUTH_SERVICE_ENABLE_DISCOVERY_CLIENT")
+		if v == "true" {
+			return true
+		}
+		return false
+	}()
+
 	ConsulAddress = func() string {
 		v := os.Getenv("STUDTOOL_SERVICE_DISCOVERY_ADDRESS")
 		if v == "" {

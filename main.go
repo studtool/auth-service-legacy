@@ -1,12 +1,16 @@
 package main
 
 import (
+	"auth-service/config"
 	"auth-service/consul"
 )
 
 func main() {
 	c := consul.NewClient()
 
-	c.Register()
-	defer c.Unregister()
+	if config.ConsulClientEnabled {
+		c.Register()
+		defer c.Unregister()
+	}
+
 }

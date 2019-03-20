@@ -2,28 +2,42 @@ package api
 
 import (
 	"auth-service/config"
+	"context"
 	"fmt"
+	"github.com/gorilla/handlers"
 	"net/http"
 )
 
 type Server struct {
-	server http.Server
+	server *http.Server
 }
 
 func NewServer() *Server {
-	srv := http.Server{
-		Addr: fmt.Sprintf(":%s", config.ServerPort),
+	srv := &Server{
+		server: &http.Server{
+			Addr: fmt.Sprintf(":%s", config.ServerPort),
+		},
 	}
 
-	return &Server{
-		server: srv,
-	}
+	mx := http.NewServeMux()
+	mx.Handle("/api/auth/profiles", handlers.MethodHandler{
+		http.MethodPost:   http.HandlerFunc(srv.createProfile),
+		http.MethodPatch:  http.HandlerFunc(srv.updateProfile),
+		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
+	})
+
+	srv.server.Handler = mx
+	return srv
 }
 
 func (srv *Server) Run() {
-	//TODO
+	if err := srv.server.ListenAndServe(); err != nil {
+		panic(err)
+	}
 }
 
 func (srv *Server) Shutdown() {
-	//TODO
+	if err := srv.server.Shutdown(context.TODO()); err != nil {
+		panic(err)
+	}
 }
