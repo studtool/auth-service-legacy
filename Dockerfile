@@ -3,7 +3,7 @@ WORKDIR /tmp/auth-service
 COPY . .
 RUN go build -o /tmp/service .
 
-FROM alpine:3.9
+FROM ubuntu:18.04
 WORKDIR /tmp
 COPY --from=base /tmp/service ./service
 ENTRYPOINT ./service
