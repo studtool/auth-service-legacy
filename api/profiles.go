@@ -12,6 +12,11 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := srv.profileValidator.ValidateOnCreate(&profile); err != nil {
+		srv.writeErrJSON(w, err)
+		return
+	}
+
 	srv.writeOk(w)
 }
 

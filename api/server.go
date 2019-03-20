@@ -2,6 +2,7 @@ package api
 
 import (
 	"auth-service/config"
+	"auth-service/models"
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
@@ -9,7 +10,8 @@ import (
 )
 
 type Server struct {
-	server *http.Server
+	server           *http.Server
+	profileValidator *models.ProfileValidator
 }
 
 func NewServer() *Server {
@@ -17,6 +19,7 @@ func NewServer() *Server {
 		server: &http.Server{
 			Addr: fmt.Sprintf(":%s", config.ServerPort),
 		},
+		profileValidator: models.NewProfileValidator(),
 	}
 
 	mx := http.NewServeMux()
