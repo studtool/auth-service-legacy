@@ -1,7 +1,7 @@
 FROM golang:1.12 as base
 WORKDIR /tmp/auth-service
 COPY . .
-RUN go build -o /tmp/service .
+RUN go build -mod vendor -o /tmp/service .
 
 FROM ubuntu:18.04
 WORKDIR /tmp

@@ -9,6 +9,11 @@ import (
 	"github.com/hashicorp/go-uuid"
 	_ "github.com/lib/pq"
 	"strings"
+	"time"
+)
+
+const (
+	InitRetryPeriod = 2 * time.Second
 )
 
 type Repository struct {
@@ -53,6 +58,13 @@ func (r *Repository) Init() {
 		return
 	}
 
+	xRet := 1
+	for r.db.Ping() != nil {
+		config.Logger.Infof("waiting for database initialization: retry #%d", xRet)
+		time.Sleep(InitRetryPeriod)
+		xRet++
+	}
+
 	const query = `
         CREATE TABLE IF NOT EXISTS profile (
             user_id  TEXT
@@ -78,6 +90,8 @@ func (r *Repository) CreateProfile(p *models.Profile) *errs.Error {
         INSERT INTO profile(user_id,email,password,question,answer) VALUES($1,$2,$3,$4,$5);
     `
 
+	xRet := 3
+
 start:
 	p.UserId, _ = uuid.GenerateUUID()
 
@@ -87,6 +101,10 @@ start:
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "profile_user_id_pk") {
+			if xRet == 0 {
+				return errs.NewInternalError(err.Error())
+			}
+			xRet--
 			goto start
 		}
 		if strings.Contains(err.Error(), "profile_email_unique") {
@@ -96,4 +114,8 @@ start:
 	}
 
 	return nil
+}
+
+func (r *Repository) CreateSession(p *models.Session) *errs.Error {
+	return nil //TODO
 }
