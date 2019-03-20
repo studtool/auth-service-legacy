@@ -31,12 +31,14 @@ func NewServer() *Server {
 }
 
 func (srv *Server) Run() {
+	config.Logger.Infof("starting server on %s", srv.server.Addr)
 	if err := srv.server.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }
 
 func (srv *Server) Shutdown() {
+	config.Logger.Info("server shutdown initialized")
 	if err := srv.server.Shutdown(context.TODO()); err != nil {
 		panic(err)
 	}
