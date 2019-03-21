@@ -7,7 +7,7 @@ if [[ "$command" = "build" ]]; then
   docker build -t "$image" .
 elif [[ "$command" = "push" ]]; then
   echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin \
-    && docker push "$1"
+    && docker push "$image"
 elif [[ "$command" = "remove" ]]; then
   docker rmi "$image"
 else
