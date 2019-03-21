@@ -25,6 +25,6 @@ jobs:
       script:
         - ./image.sh build
       after_success:
-        - if [[ ${TRAVIS_BRANCH} == "master" ]] && [[ ${TRAVIS_PULL_REQUEST} == "false" ]]; then
-            ./image.sh push
+        - if [[ "${TRAVIS_BRANCH}" = "master" ]] && [[ "${TRAVIS_PULL_REQUEST}" = "false" ]]; then
+            ./image.sh push;
           fi
