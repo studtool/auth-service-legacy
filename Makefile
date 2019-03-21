@@ -14,4 +14,4 @@ test:
 	go test -mod vendor ./...
 
 clean:
-	go clean .
+	go clean -mod vendor .
