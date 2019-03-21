@@ -20,6 +20,7 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sirupsen/logrus v1.4.0
+	github.com/streadway/amqp v0.0.0-20190312223743-14f78b41ce6d
 	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a // indirect
 	golang.org/x/net v0.0.0-20190320064053-1272bf9dcd53 // indirect
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
