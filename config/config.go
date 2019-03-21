@@ -20,6 +20,11 @@ var (
 	StorageSSL        = getEnvVar("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
 	ShouldInitStorage = getEnvFlag("STUDTOOL_AUTH_STORAGE_SHOULD_INIT", false)
 
+	MessageQueueHost     = getEnvVar("STUDTOOL_MQ_HOST", "127.0.0.1")
+	MessageQueuePort     = getEnvVar("STUDTOOL_MQ_PORT", "5672")
+	MessageQueueUser     = getEnvVar("STUDTOOL_MQ_USER", "user")
+	MessageQueuePassword = getEnvVar("STUDTOOL_MQ_PASSWORD", "password")
+
 	ConsulClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 
 	ConsulAddress = func() string {
