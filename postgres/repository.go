@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/errs"
 	"auth-service/models"
@@ -40,7 +41,7 @@ func (r *Repository) Open() {
 		panic(err)
 	}
 
-	config.Logger.Infof(
+	beans.Logger.Infof(
 		"postgres repository on %s:%s",
 		config.StorageHost, config.StoragePort,
 	)
@@ -50,7 +51,7 @@ func (r *Repository) Close() {
 	if err := r.db.Close(); err != nil {
 		panic(err)
 	}
-	config.Logger.Infof("postgres repository connection closed")
+	beans.Logger.Infof("postgres repository connection closed")
 }
 
 func (r *Repository) Init() {
@@ -60,9 +61,10 @@ func (r *Repository) Init() {
 
 	xRet := 1
 	for r.db.Ping() != nil {
-		config.Logger.Infof("waiting for database initialization: retry #%d", xRet)
-		time.Sleep(InitRetryPeriod)
+		beans.Logger.Infof("waiting for database initialization: retry #%d", xRet)
 		xRet++
+
+		time.Sleep(InitRetryPeriod)
 	}
 
 	const query = `
@@ -82,7 +84,7 @@ func (r *Repository) Init() {
 		panic(err)
 	}
 
-	config.Logger.Debugf("db initialized: \n%s", query)
+	beans.Logger.Debugf("db initialized: \n%s", query)
 }
 
 func (r *Repository) CreateProfile(p *models.Profile) *errs.Error {

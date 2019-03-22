@@ -2,6 +2,7 @@ package main
 
 import (
 	"auth-service/api"
+	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/consul"
 	"os"
@@ -13,13 +14,13 @@ func main() {
 		c := consul.NewClient()
 
 		if err := c.Register(); err != nil {
-			config.Logger.Fatal(err)
+			beans.Logger.Fatal(err)
 			return
 		}
 		defer func() {
 			err := c.Unregister()
 			if err != nil {
-				config.Logger.Fatal(err)
+				beans.Logger.Fatal(err)
 			}
 		}()
 	}

@@ -35,7 +35,7 @@ func (mq *MQ) OpenConnection() error {
 	}
 
 	q, err := ch.QueueDeclare(
-		"created_users",
+		config.CreatedUsersQueueName,
 		false,
 		false,
 		false,

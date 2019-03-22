@@ -1,7 +1,7 @@
 package api
 
 import (
-	"auth-service/config"
+	"auth-service/beans"
 	"auth-service/errs"
 	"github.com/mailru/easyjson"
 	"io/ioutil"
@@ -27,7 +27,7 @@ func (srv *Server) writeOk(w http.ResponseWriter) {
 
 func (srv *Server) writeErrJSON(w http.ResponseWriter, err *errs.Error) {
 	if err.Type == errs.Internal {
-		config.Logger.Error(err.Message)
+		beans.Logger.Error(err.Message)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

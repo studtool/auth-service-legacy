@@ -1,6 +1,7 @@
 package api
 
 import (
+	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/models"
 	"auth-service/postgres"
@@ -46,14 +47,14 @@ func (srv *Server) Run() {
 	srv.authRepo.Open()
 	srv.authRepo.Init()
 
-	config.Logger.Infof("starting server on %s", srv.server.Addr)
+	beans.Logger.Infof("starting server on %s", srv.server.Addr)
 	if err := srv.server.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }
 
 func (srv *Server) Shutdown() {
-	config.Logger.Info("server shutdown initialized")
+	beans.Logger.Info("server shutdown initialized")
 	if err := srv.server.Shutdown(context.TODO()); err != nil {
 		panic(err)
 	}

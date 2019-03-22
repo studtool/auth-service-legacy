@@ -1,6 +1,7 @@
 package consul
 
 import (
+	"auth-service/beans"
 	"auth-service/config"
 	"fmt"
 	"github.com/hashicorp/consul/api"
@@ -66,8 +67,8 @@ func (c *Client) Register() error {
 		return err
 	}
 
-	config.Logger.Infof("ServiceID: %s", c.srvId)
-	config.Logger.Infof("Consul connection: %s", config.ConsulAddress)
+	beans.Logger.Infof("ServiceID: %s", c.srvId)
+	beans.Logger.Infof("Consul connection: %s", config.ConsulAddress)
 
 	go c.UpdateTTL()
 
@@ -79,7 +80,7 @@ func (c *Client) Unregister() error {
 		return err
 	}
 
-	config.Logger.Infof("Consul connection closed")
+	beans.Logger.Infof("Consul connection closed")
 
 	return nil
 }

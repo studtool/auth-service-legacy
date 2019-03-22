@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
 	"strconv"
 	"strings"
@@ -24,6 +23,8 @@ var (
 	MessageQueuePort     = getEnvVar("STUDTOOL_MQ_PORT", "5672")
 	MessageQueueUser     = getEnvVar("STUDTOOL_MQ_USER", "user")
 	MessageQueuePassword = getEnvVar("STUDTOOL_MQ_PASSWORD", "password")
+
+	CreatedUsersQueueName = getEnvVar("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users")
 
 	ConsulClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 
@@ -56,8 +57,6 @@ var (
 
 		panic(fmt.Sprintf("invalid %s", ev))
 	}()
-
-	Logger = logrus.StandardLogger()
 )
 
 func getEnvVar(name string, defaultValue string) string {
