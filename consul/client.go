@@ -42,7 +42,7 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) Register() {
+func (c *Client) Register() error {
 	err := c.agent.ServiceRegister(&api.AgentServiceRegistration{
 		ID:   c.srvId,
 		Name: c.srvName,
@@ -63,20 +63,25 @@ func (c *Client) Register() {
 		},
 	})
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	config.Logger.Infof("ServiceID: %s", c.srvId)
 	config.Logger.Infof("Consul connection: %s", config.ConsulAddress)
 
 	go c.UpdateTTL()
+
+	return nil
 }
 
-func (c *Client) Unregister() {
+func (c *Client) Unregister() error {
 	if err := c.agent.ServiceDeregister(c.srvId); err != nil {
-		panic(err)
+		return err
 	}
+
 	config.Logger.Infof("Consul connection closed")
+
+	return nil
 }
 
 func (c *Client) UpdateTTL() {

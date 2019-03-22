@@ -12,8 +12,16 @@ func main() {
 	if config.ConsulClientEnabled {
 		c := consul.NewClient()
 
-		c.Register()
-		defer c.Unregister()
+		if err := c.Register(); err != nil {
+			config.Logger.Fatal(err)
+			return
+		}
+		defer func() {
+			err := c.Unregister()
+			if err != nil {
+				config.Logger.Fatal(err)
+			}
+		}()
 	}
 
 	srv := api.NewServer()
