@@ -48,7 +48,7 @@ func (mq *MQ) OpenConnection() error {
 	}
 
 	mq.dq, err = ch.QueueDeclare(
-		config.CreatedUsersQueueName,
+		config.DeletedUsersQueueName,
 		false,
 		false,
 		false,
