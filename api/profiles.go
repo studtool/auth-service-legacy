@@ -17,7 +17,7 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := srv.authRepo.CreateProfile(&profile); err != nil {
+	if err := srv.profilesRepository.AddProfile(&profile); err != nil {
 		srv.writeErrJSON(w, err)
 		return
 	}

@@ -1,10 +1,9 @@
 package api
 
 import (
-	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/models"
-	"auth-service/postgres"
+	"auth-service/repositories"
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
@@ -12,17 +11,18 @@ import (
 )
 
 type Server struct {
-	server           *http.Server
-	profileValidator *models.ProfileValidator
-	authRepo         *postgres.Repository
+	server             *http.Server
+	profileValidator   *models.ProfileValidator
+	profilesRepository repositories.ProfilesRepository
 }
 
-func NewServer() *Server {
+func NewServer(pRepo repositories.ProfilesRepository) *Server {
 	srv := &Server{
 		server: &http.Server{
 			Addr: fmt.Sprintf(":%s", config.ServerPort),
 		},
-		profileValidator: models.NewProfileValidator(),
+		profileValidator:   models.NewProfileValidator(),
+		profilesRepository: pRepo,
 	}
 
 	mx := http.NewServeMux()
@@ -41,23 +41,10 @@ func NewServer() *Server {
 	return srv
 }
 
-func (srv *Server) Run() {
-	srv.authRepo = postgres.NewRepository()
-
-	srv.authRepo.Open()
-	srv.authRepo.Init()
-
-	beans.Logger.Infof("starting server on %s", srv.server.Addr)
-	if err := srv.server.ListenAndServe(); err != nil {
-		panic(err)
-	}
+func (srv *Server) Run() error {
+	return srv.server.ListenAndServe()
 }
 
-func (srv *Server) Shutdown() {
-	beans.Logger.Info("server shutdown initialized")
-	if err := srv.server.Shutdown(context.TODO()); err != nil {
-		panic(err)
-	}
-
-	srv.authRepo.Close()
+func (srv *Server) Shutdown() error {
+	return srv.server.Shutdown(context.TODO())
 }

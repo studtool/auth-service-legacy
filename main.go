@@ -5,30 +5,71 @@ import (
 	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/consul"
+	"auth-service/repositories"
+	"auth-service/repositories/postgres"
+	"go.uber.org/dig"
 	"os"
 	"os/signal"
 )
 
 func main() {
-	if config.ConsulClientEnabled {
-		c := consul.NewClient()
+	c := dig.New()
 
-		if err := c.Register(); err != nil {
+	_ = c.Provide(postgres.NewConnection)
+	_ = c.Provide(func(conn *postgres.Connection) repositories.ProfilesRepository {
+		return postgres.NewProfilesRepository(conn)
+	})
+	_ = c.Provide(api.NewServer)
+	_ = c.Provide(consul.NewClient)
+
+	_ = c.Invoke(func(conn *postgres.Connection) {
+		if err := conn.Open(); err != nil {
 			beans.Logger.Fatal(err)
-			return
 		}
-		defer func() {
-			err := c.Unregister()
-			if err != nil {
+	})
+	defer func() {
+		_ = c.Invoke(func(conn *postgres.Connection) {
+			if err := conn.Close(); err != nil {
 				beans.Logger.Fatal(err)
 			}
-		}()
+		})
+	}()
+
+	if config.ShouldInitStorage {
+		_ = c.Invoke(func(r *postgres.ProfilesRepository) {
+			if err := r.Init(); err != nil {
+				beans.Logger.Fatal(err)
+			}
+		})
 	}
 
-	srv := api.NewServer()
+	_ = c.Invoke(func(srv *api.Server) {
+		if err := srv.Run(); err != nil {
+			beans.Logger.Fatal(err)
+		}
+	})
+	defer func() {
+		_ = c.Invoke(func(srv *api.Server) {
+			if err := srv.Shutdown(); err != nil {
+				beans.Logger.Fatal(err)
+			}
+		})
+	}()
 
-	go srv.Run()
-	defer srv.Shutdown()
+	if config.ConsulClientEnabled {
+		_ = c.Invoke(func(cl *consul.Client) {
+			if err := cl.Register(); err != nil {
+				beans.Logger.Fatal(err)
+			}
+		})
+		defer func() {
+			_ = c.Invoke(func(cl *consul.Client) {
+				if err := cl.Unregister(); err != nil {
+					beans.Logger.Fatal(err)
+				}
+			})
+		}()
+	}
 
 	ch := make(chan os.Signal)
 	signal.Notify(ch, os.Interrupt)

@@ -5,66 +5,32 @@ import (
 	"auth-service/config"
 	"auth-service/errs"
 	"auth-service/models"
-	"database/sql"
-	"fmt"
 	"github.com/hashicorp/go-uuid"
-	_ "github.com/lib/pq"
 	"strings"
 	"time"
 )
 
-const (
-	InitRetryPeriod = 2 * time.Second
-)
-
-type Repository struct {
-	connStr string
-	db      *sql.DB
+type ProfilesRepository struct {
+	conn *Connection
 }
 
-func NewRepository() *Repository {
-	return &Repository{
-		connStr: fmt.Sprintf(
-			"postgres://%s:%s@%s:%s/%s?sslmode=%s",
-			config.StorageUser, config.StoragePassword,
-			config.StorageHost, config.StoragePort,
-			config.StorageDB, config.StorageSSL,
-		),
+func NewProfilesRepository(conn *Connection) *ProfilesRepository {
+	return &ProfilesRepository{
+		conn: conn,
 	}
 }
 
-func (r *Repository) Open() {
-	var err error
-
-	r.db, err = sql.Open("postgres", r.connStr)
-	if err != nil {
-		panic(err)
-	}
-
-	beans.Logger.Infof(
-		"postgres repository on %s:%s",
-		config.StorageHost, config.StoragePort,
-	)
-}
-
-func (r *Repository) Close() {
-	if err := r.db.Close(); err != nil {
-		panic(err)
-	}
-	beans.Logger.Infof("postgres repository connection closed")
-}
-
-func (r *Repository) Init() {
+func (r *ProfilesRepository) Init() error {
 	if !config.ShouldInitStorage {
-		return
+		return nil
 	}
 
 	xRet := 1
-	for r.db.Ping() != nil {
+	for r.conn.db.Ping() != nil {
 		beans.Logger.Infof("waiting for database initialization: retry #%d", xRet)
 		xRet++
 
-		time.Sleep(InitRetryPeriod)
+		time.Sleep(ConnRetryPeriod)
 	}
 
 	const query = `
@@ -79,15 +45,11 @@ func (r *Repository) Init() {
         );
 	`
 
-	_, err := r.db.Exec(query)
-	if err != nil {
-		panic(err)
-	}
-
-	beans.Logger.Debugf("db initialized: \n%s", query)
+	_, err := r.conn.db.Exec(query)
+	return err
 }
 
-func (r *Repository) CreateProfile(p *models.Profile) *errs.Error {
+func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	const query = `
         INSERT INTO profile(user_id,email,password,question,answer) VALUES($1,$2,$3,$4,$5);
     `
@@ -97,7 +59,7 @@ func (r *Repository) CreateProfile(p *models.Profile) *errs.Error {
 start:
 	p.UserId, _ = uuid.GenerateUUID()
 
-	_, err := r.db.Exec(query,
+	_, err := r.conn.db.Exec(query,
 		p.UserId, p.Credentials.Email, p.Credentials.Password,
 		p.SecretQuestion.Question, p.SecretQuestion.Answer,
 	)
@@ -118,6 +80,10 @@ start:
 	return nil
 }
 
-func (r *Repository) CreateSession(p *models.Session) *errs.Error {
-	return nil //TODO
+func (r *ProfilesRepository) GetProfileById(p *models.Profile) *errs.Error {
+	panic("implement me")
+}
+
+func (r *ProfilesRepository) DeleteProfileById(p *models.Profile) *errs.Error {
+	panic("implement me")
 }

@@ -34,6 +34,10 @@ github.com/mitchellh/mapstructure
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190312223743-14f78b41ce6d
 github.com/streadway/amqp
+# go.uber.org/dig v1.7.0
+go.uber.org/dig
+go.uber.org/dig/internal/digreflect
+go.uber.org/dig/internal/dot
 # golang.org/x/crypto v0.0.0-20190320223903-b7391e95e576
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc
