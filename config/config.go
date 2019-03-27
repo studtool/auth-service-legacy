@@ -25,6 +25,7 @@ var (
 	MessageQueuePassword = getEnvVar("STUDTOOL_MQ_PASSWORD", "password")
 
 	CreatedUsersQueueName = getEnvVar("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users")
+	DeletedUsersQueueName = getEnvVar("STUDTOOL_DELETED_USERS_QUEUE_NAME", "deleted_users")
 
 	ConsulClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 

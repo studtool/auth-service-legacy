@@ -9,6 +9,7 @@ import (
 
 type MQ struct {
 	cq      amqp.Queue
+	dq      amqp.Queue
 	ch      *amqp.Channel
 	conn    *amqp.Connection
 	connStr string
@@ -34,7 +35,7 @@ func (mq *MQ) OpenConnection() error {
 		return err
 	}
 
-	q, err := ch.QueueDeclare(
+	mq.cq, err = ch.QueueDeclare(
 		config.CreatedUsersQueueName,
 		false,
 		false,
@@ -46,7 +47,18 @@ func (mq *MQ) OpenConnection() error {
 		return err
 	}
 
-	mq.cq = q
+	mq.dq, err = ch.QueueDeclare(
+		config.CreatedUsersQueueName,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	mq.ch = ch
 	mq.conn = conn
 
@@ -59,9 +71,17 @@ func (mq *MQ) CloseConnection() {
 }
 
 func (mq *MQ) SendUserCreated(userId string) *errs.Error {
+	return mq.sendUserId(mq.cq, userId)
+}
+
+func (mq *MQ) SendUserDeleted(userId string) *errs.Error {
+	return mq.sendUserId(mq.dq, userId)
+}
+
+func (mq *MQ) sendUserId(q amqp.Queue, userId string) *errs.Error {
 	err := mq.ch.Publish(
 		"",
-		mq.cq.Name,
+		q.Name,
 		false,
 		false,
 		amqp.Publishing{
