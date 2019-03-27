@@ -52,7 +52,9 @@ func main() {
 	})
 	defer func() {
 		_ = c.Invoke(func(q *mq.MQ) {
-			q.CloseConnection()
+			if err := q.CloseConnection(); err != nil {
+				beans.Logger.Fatal(err)
+			}
 		})
 	}()
 

@@ -65,9 +65,11 @@ func (mq *MQ) OpenConnection() error {
 	return nil
 }
 
-func (mq *MQ) CloseConnection() {
-	_ = mq.ch.Close()
-	_ = mq.conn.Close()
+func (mq *MQ) CloseConnection() error {
+	if err := mq.ch.Close(); err != nil {
+		return err
+	}
+	return mq.conn.Close()
 }
 
 func (mq *MQ) SendUserCreated(userId string) *errs.Error {
