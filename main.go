@@ -5,6 +5,7 @@ import (
 	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/consul"
+	"auth-service/mq"
 	"auth-service/repositories"
 	"auth-service/repositories/postgres"
 	"go.uber.org/dig"
@@ -19,8 +20,9 @@ func main() {
 	_ = c.Provide(func(conn *postgres.Connection) repositories.ProfilesRepository {
 		return postgres.NewProfilesRepository(conn)
 	})
-	_ = c.Provide(api.NewServer)
+	_ = c.Provide(mq.NewQueue)
 	_ = c.Provide(consul.NewClient)
+	_ = c.Provide(api.NewServer)
 
 	_ = c.Invoke(func(conn *postgres.Connection) {
 		if err := conn.Open(); err != nil {
@@ -42,6 +44,17 @@ func main() {
 			}
 		})
 	}
+
+	_ = c.Invoke(func(q *mq.MQ) {
+		if err := q.OpenConnection(); err != nil {
+			beans.Logger.Fatal(err)
+		}
+	})
+	defer func() {
+		_ = c.Invoke(func(q *mq.MQ) {
+			q.CloseConnection()
+		})
+	}()
 
 	_ = c.Invoke(func(srv *api.Server) {
 		if err := srv.Run(); err != nil {
