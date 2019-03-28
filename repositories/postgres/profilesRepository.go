@@ -52,9 +52,6 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
         INSERT INTO profile(user_id,email,password,question,answer) VALUES($1,$2,$3,$4,$5);
     `
 
-	xRet := 3
-
-start:
 	p.UserId, _ = uuid.GenerateUUID()
 
 	_, err := r.conn.db.Exec(query,
@@ -63,11 +60,7 @@ start:
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "profile_user_id_pk") {
-			if xRet == 0 {
-				return errs.NewInternalError(err.Error())
-			}
-			xRet--
-			goto start
+			return errs.NewInternalError(err.Error())
 		}
 		if strings.Contains(err.Error(), "profile_email_unique") {
 			return errs.NewConflictError("email duplicate")
