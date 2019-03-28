@@ -9,41 +9,43 @@ import (
 )
 
 var (
-	ServerPort = getEnvStr("STUDTOOL_AUTH_SERVICE_PORT", "80", true)
+	ShouldLogEnvVars = getEnvFlag("STUDTOOL_SHOULD_LOG_ENV_VARS", false)
 
-	StorageHost       = getEnvStr("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1", true)
-	StoragePort       = getEnvStr("STUDTOOL_AUTH_STORAGE_PORT", "5432", true)
-	StorageDB         = getEnvStr("STUDTOOL_AUTH_STORAGE_NAME", "auth", true)
-	StorageUser       = getEnvStr("STUDTOOL_AUTH_STORAGE_USER", "user", false)
-	StoragePassword   = getEnvStr("STUDTOOL_AUTH_STORAGE_PASSWORD", "password", false)
-	StorageSSL        = getEnvStr("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable", true)
+	ServerPort = getEnvStr("STUDTOOL_AUTH_SERVICE_PORT", "80")
+
+	StorageHost       = getEnvStr("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
+	StoragePort       = getEnvStr("STUDTOOL_AUTH_STORAGE_PORT", "5432")
+	StorageDB         = getEnvStr("STUDTOOL_AUTH_STORAGE_NAME", "auth")
+	StorageUser       = getEnvStr("STUDTOOL_AUTH_STORAGE_USER", "user")
+	StoragePassword   = getEnvStr("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
+	StorageSSL        = getEnvStr("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
 	ShouldInitStorage = getEnvFlag("STUDTOOL_AUTH_STORAGE_SHOULD_INIT", false)
 
 	StorageConnNumRet = getEnvInt("STUDTOOL_AUTH_STORAGE_CONNECTION_NUM_RETRIES", 10)
 	StorageConnRetItv = getEnvTimeSec("STUDTOOL_AUTH_STORAGE_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 
-	UsersMqHost     = getEnvStr("STUDTOOL_USERS_MQ_HOST", "127.0.0.1", true)
-	UsersMqPort     = getEnvStr("STUDTOOL_USERS_MQ_PORT", "5672", true)
-	UsersMqUser     = getEnvStr("STUDTOOL_USERS_MQ_USER", "user", false)
-	UsersMqPassword = getEnvStr("STUDTOOL_USERS_MQ_PASSWORD", "password", false)
+	UsersMqHost     = getEnvStr("STUDTOOL_USERS_MQ_HOST", "127.0.0.1")
+	UsersMqPort     = getEnvStr("STUDTOOL_USERS_MQ_PORT", "5672")
+	UsersMqUser     = getEnvStr("STUDTOOL_USERS_MQ_USER", "user")
+	UsersMqPassword = getEnvStr("STUDTOOL_USERS_MQ_PASSWORD", "password")
 
 	UsersMqConnNumRet = getEnvInt("STUDTOOL_USERS_MQ_CONNECTION_NUM_RETRIES", 10)
 	UsersMqConnRetItv = getEnvTimeSec("STUDTOOL_USERS_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 
-	CreatedUsersQueueName = getEnvStr("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users", true)
-	DeletedUsersQueueName = getEnvStr("STUDTOOL_DELETED_USERS_QUEUE_NAME", "deleted_users", true)
+	CreatedUsersQueueName = getEnvStr("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users")
+	DeletedUsersQueueName = getEnvStr("STUDTOOL_DELETED_USERS_QUEUE_NAME", "deleted_users")
 
-	DiscoveryServiceAddress = getEnvStr("STUDTOOL_DISCOVERY_SERVICE_ADDRESS", "127.0.0.1:8500", true)
+	DiscoveryServiceAddress = getEnvStr("STUDTOOL_DISCOVERY_SERVICE_ADDRESS", "127.0.0.1:8500")
 	DiscoveryClientEnabled  = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 	HealthCheckTimeout      = getEnvTimeSec("STUDTOOL_AUTH_SERVICE_HEALTH_CHECK_TIMEOUT", 10*time.Second)
 )
 
-func getEnvStr(name string, defVal string, withLog bool) string {
+func getEnvStr(name string, defVal string) string {
 	v := os.Getenv(name)
 	if v == "" {
 		v = defVal
 	}
-	if withLog {
+	if ShouldLogEnvVars {
 		beans.Logger.Infof("%s=%s", name, v)
 	}
 	return v
