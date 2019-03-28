@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/google/btree v1.0.0 // indirect
 	github.com/gorilla/handlers v1.4.0
+	github.com/gorilla/mux v1.7.0 // indirect
 	github.com/hashicorp/consul v1.4.4
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.0 // indirect

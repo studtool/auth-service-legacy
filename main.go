@@ -24,44 +24,56 @@ func main() {
 	_ = c.Provide(discovery.NewClient)
 	_ = c.Provide(api.NewServer)
 
-	_ = c.Invoke(func(conn *postgres.Connection) {
-		if err := conn.Open(); err != nil {
-			beans.Logger.Fatal(err)
-		}
-	})
-	defer func() {
+	if config.RepositoriesEnabled {
 		_ = c.Invoke(func(conn *postgres.Connection) {
-			if err := conn.Close(); err != nil {
+			if err := conn.Open(); err != nil {
 				beans.Logger.Fatal(err)
 			}
 		})
-	}()
+		defer func() {
+			_ = c.Invoke(func(conn *postgres.Connection) {
+				if err := conn.Close(); err != nil {
+					beans.Logger.Fatal(err)
+				}
+			})
+		}()
 
-	if config.ShouldInitStorage {
-		_ = c.Invoke(func(r *postgres.ProfilesRepository) {
-			if err := r.Init(); err != nil {
-				beans.Logger.Fatal(err)
-			}
-		})
+		if config.ShouldInitStorage {
+			_ = c.Invoke(func(r *postgres.ProfilesRepository) {
+				if err := r.Init(); err != nil {
+					beans.Logger.Fatal(err)
+				}
+			})
+		}
 	}
 
-	_ = c.Invoke(func(q *mq.MQ) {
-		if err := q.OpenConnection(); err != nil {
-			beans.Logger.Fatal(err)
-		}
-	})
-	defer func() {
+	if config.QueuesEnabled {
 		_ = c.Invoke(func(q *mq.MQ) {
-			if err := q.CloseConnection(); err != nil {
+			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
 			}
 		})
-	}()
+		defer func() {
+			_ = c.Invoke(func(q *mq.MQ) {
+				if err := q.CloseConnection(); err != nil {
+					beans.Logger.Fatal(err)
+				}
+			})
+		}()
+	}
+
+	ch := make(chan os.Signal)
+	signal.Notify(ch, os.Interrupt)
 
 	_ = c.Invoke(func(srv *api.Server) {
-		if err := srv.Run(); err != nil {
-			beans.Logger.Fatal(err)
-		}
+		go func() {
+			if err := srv.Run(); err != nil {
+				beans.Logger.Fatal(err)
+				ch <- os.Interrupt
+			}
+		}()
+
+		beans.Logger.Infof("server started on :%s", config.ServerPort)
 	})
 	defer func() {
 		_ = c.Invoke(func(srv *api.Server) {
@@ -85,9 +97,6 @@ func main() {
 			})
 		}()
 	}
-
-	ch := make(chan os.Signal)
-	signal.Notify(ch, os.Interrupt)
 
 	<-ch
 }

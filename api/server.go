@@ -10,6 +10,10 @@ import (
 	"net/http"
 )
 
+const (
+	idPattern = `\w{8}-\w{4}-\w{4}-\w{4}-\w{12}`
+)
+
 type Server struct {
 	server             *http.Server
 	profileValidator   *models.ProfileValidator
@@ -26,9 +30,11 @@ func NewServer(pRepo repositories.ProfilesRepository) *Server {
 	}
 
 	mx := http.NewServeMux()
-	mx.Handle("/api/auth/profiles", handlers.MethodHandler{
-		http.MethodPost:   http.HandlerFunc(srv.createProfile),
-		http.MethodPatch:  http.HandlerFunc(srv.updateProfile),
+	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
+		http.MethodPost:  http.HandlerFunc(srv.createProfile),
+		http.MethodPatch: http.HandlerFunc(srv.updateProfile),
+	})
+	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}`, handlers.MethodHandler{
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
 	})
 	mx.Handle("/api/auth/sessions", handlers.MethodHandler{
