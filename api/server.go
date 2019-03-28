@@ -33,11 +33,11 @@ func NewServer(pRepo repositories.ProfilesRepository) *Server {
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/credentials`, handlers.MethodHandler{
-		http.MethodPatch: http.HandlerFunc(srv.updateCredentials),
-	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/question`, handlers.MethodHandler{
 		http.MethodPatch: http.HandlerFunc(srv.updateSecretQuestion),
+	})
+	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/credentials`, handlers.MethodHandler{
+		http.MethodPatch: http.HandlerFunc(srv.updateCredentials),
 	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}`, handlers.MethodHandler{
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
