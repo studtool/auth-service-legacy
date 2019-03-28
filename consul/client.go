@@ -20,7 +20,7 @@ type Client struct {
 
 func NewClient() *Client {
 	cfg := api.DefaultConfig()
-	cfg.Address = config.ConsulAddress
+	cfg.Address = config.DiscoveryServiceAddress
 
 	client, err := api.NewClient(cfg)
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *Client) Register() error {
 	}
 
 	beans.Logger.Infof("ServiceID: %s", c.srvId)
-	beans.Logger.Infof("Consul connection: %s", config.ConsulAddress)
+	beans.Logger.Infof("Consul connection: %s", config.DiscoveryServiceAddress)
 
 	go c.UpdateTTL()
 

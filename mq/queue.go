@@ -20,8 +20,8 @@ type MQ struct {
 func NewQueue() *MQ {
 	return &MQ{
 		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
-			config.MessageQueueUser, config.MessageQueuePassword,
-			config.MessageQueueHost, config.MessageQueuePort,
+			config.UsersMqUser, config.UsersMqPassword,
+			config.UsersMqHost, config.UsersMqPort,
 		),
 	}
 }

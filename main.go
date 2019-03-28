@@ -71,7 +71,7 @@ func main() {
 		})
 	}()
 
-	if config.ConsulClientEnabled {
+	if config.DiscoveryClientEnabled {
 		_ = c.Invoke(func(cl *consul.Client) {
 			if err := cl.Register(); err != nil {
 				beans.Logger.Fatal(err)
