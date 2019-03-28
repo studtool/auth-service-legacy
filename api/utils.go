@@ -35,16 +35,16 @@ func (srv *Server) writeErrJSON(w http.ResponseWriter, err *errs.Error) {
 
 	switch err.Type {
 	case errs.BadFormat:
-		srv.writeBodyJSON(w, http.StatusBadRequest, err)
+		srv.writeErrBodyJSON(w, http.StatusBadRequest, err)
 
 	case errs.InvalidFormat:
-		srv.writeBodyJSON(w, http.StatusUnprocessableEntity, err)
+		srv.writeErrBodyJSON(w, http.StatusUnprocessableEntity, err)
 
 	case errs.Conflict:
-		srv.writeBodyJSON(w, http.StatusConflict, err)
+		srv.writeErrBodyJSON(w, http.StatusConflict, err)
 
 	case errs.NotFound:
-		srv.writeBodyJSON(w, http.StatusNotFound, err)
+		srv.writeErrBodyJSON(w, http.StatusNotFound, err)
 
 	default:
 		panic(fmt.Sprintf("no status code for error. Type: %d, Message: %s", err.Type, err.Message))
@@ -56,4 +56,10 @@ func (srv *Server) writeBodyJSON(w http.ResponseWriter, status int, v easyjson.M
 	w.Header().Set("Content-Type", "application/json")
 	data, _ := easyjson.Marshal(v)
 	_, _ = w.Write(data)
+}
+
+func (srv *Server) writeErrBodyJSON(w http.ResponseWriter, status int, err *errs.Error) {
+	w.WriteHeader(status)
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(err.JSON())
 }

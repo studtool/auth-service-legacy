@@ -2,6 +2,10 @@ package errs
 
 //go:generate easyjson
 
+import (
+	"github.com/mailru/easyjson"
+)
+
 const (
 	Internal      = 0
 	BadFormat     = 1
@@ -14,13 +18,16 @@ const (
 type Error struct {
 	Type    int    `json:"-"`
 	Message string `json:"message"`
+	json    []byte `json:"-"`
 }
 
 func NewError(t int, message string) *Error {
-	return &Error{
+	err := &Error{
 		Type:    t,
 		Message: message,
 	}
+	err.json, _ = easyjson.Marshal(err)
+	return err
 }
 
 func NewInternalError(message string) *Error {
@@ -41,4 +48,8 @@ func NewConflictError(message string) *Error {
 
 func NewNotFoundError(message string) *Error {
 	return NewError(NotFound, message)
+}
+
+func (v *Error) JSON() []byte {
+	return v.json
 }
