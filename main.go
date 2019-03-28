@@ -4,7 +4,7 @@ import (
 	"auth-service/api"
 	"auth-service/beans"
 	"auth-service/config"
-	"auth-service/consul"
+	"auth-service/discovery"
 	"auth-service/mq"
 	"auth-service/repositories"
 	"auth-service/repositories/postgres"
@@ -21,7 +21,7 @@ func main() {
 		return postgres.NewProfilesRepository(conn)
 	})
 	_ = c.Provide(mq.NewQueue)
-	_ = c.Provide(consul.NewClient)
+	_ = c.Provide(discovery.NewClient)
 	_ = c.Provide(api.NewServer)
 
 	_ = c.Invoke(func(conn *postgres.Connection) {
@@ -72,13 +72,13 @@ func main() {
 	}()
 
 	if config.DiscoveryClientEnabled {
-		_ = c.Invoke(func(cl *consul.Client) {
+		_ = c.Invoke(func(cl *discovery.Client) {
 			if err := cl.Register(); err != nil {
 				beans.Logger.Fatal(err)
 			}
 		})
 		defer func() {
-			_ = c.Invoke(func(cl *consul.Client) {
+			_ = c.Invoke(func(cl *discovery.Client) {
 				if err := cl.Unregister(); err != nil {
 					beans.Logger.Fatal(err)
 				}

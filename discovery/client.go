@@ -1,4 +1,4 @@
-package consul
+package discovery
 
 import (
 	"auth-service/beans"
@@ -27,7 +27,7 @@ func NewClient() *Client {
 		panic(err)
 	}
 
-	srvName := "auth"
+	srvName := "auth-service"
 	srvId := fmt.Sprintf("%s:%s",
 		srvName, func() string {
 			v, _ := uuid.GenerateUUID()
