@@ -1,6 +1,7 @@
 package mq
 
 import (
+	"auth-service/beans"
 	"auth-service/config"
 	"auth-service/errs"
 	"auth-service/utils"
@@ -27,7 +28,10 @@ func NewQueue() *MQ {
 
 func (mq *MQ) OpenConnection() error {
 	var conn *amqp.Connection
-	err := utils.Retry(func() (err error) {
+	err := utils.Retry(func(n int) (err error) {
+		if n > 0 {
+			beans.Logger.Infof("opening message queue connection. retry #%d", n)
+		}
 		conn, err = amqp.Dial(mq.connStr)
 		return err
 	}, config.UsersMqConnNumRet, config.UsersMqConnRetItv)
