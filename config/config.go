@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	ShouldLogEnvVars = getEnvFlag("STUDTOOL_SHOULD_LOG_ENV_VARS", false)
+	ShouldLogEnvVars = getEnvFlag("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_ENV_VARS", false)
 
 	ServerPort = getEnvStr("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
