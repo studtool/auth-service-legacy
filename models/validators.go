@@ -94,7 +94,7 @@ func (v *CredentialsValidator) validatePassword(value string) *errs.Error {
 }
 
 const (
-	questionPattern = `^(\w| |?)+$`
+	questionPattern = `^(\w| |\?)+$`
 	answerPattern   = `^(\w| )+$`
 )
 
