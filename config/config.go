@@ -18,13 +18,16 @@ var (
 	StorageSSL        = getEnvStr("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
 	ShouldInitStorage = getEnvFlag("STUDTOOL_AUTH_STORAGE_SHOULD_INIT", false)
 
+	StorageConnNumRet = getEnvInt("STUDTOOL_AUTH_STORAGE_CONNECTION_NUM_RETRIES", 10)
+	StorageConnRetItv = getEnvTimeSec("STUDTOOL_AUTH_STORAGE_CONNECTION_RETRY_INTERVAL", 2*time.Second)
+
 	MessageQueueHost     = getEnvStr("STUDTOOL_MQ_HOST", "127.0.0.1")
 	MessageQueuePort     = getEnvStr("STUDTOOL_MQ_PORT", "5672")
 	MessageQueueUser     = getEnvStr("STUDTOOL_MQ_USER", "user")
 	MessageQueuePassword = getEnvStr("STUDTOOL_MQ_PASSWORD", "password")
 
 	UsersMqConnNumRet = getEnvInt("STUDTOOL_USERS_MQ_CONNECTION_NUM_RETRIES", 10)
-	UsersMqConnRetItv = getEnvTimeSec("STUDTOOL_USERS_MQ_CONNECTION_RETRIES_INTERVAL", 2*time.Second)
+	UsersMqConnRetItv = getEnvTimeSec("STUDTOOL_USERS_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 
 	CreatedUsersQueueName = getEnvStr("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users")
 	DeletedUsersQueueName = getEnvStr("STUDTOOL_DELETED_USERS_QUEUE_NAME", "deleted_users")

@@ -5,9 +5,9 @@ import (
 	"auth-service/config"
 	"auth-service/errs"
 	"auth-service/models"
+	"auth-service/utils"
 	"github.com/hashicorp/go-uuid"
 	"strings"
-	"time"
 )
 
 type ProfilesRepository struct {
@@ -21,16 +21,14 @@ func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 }
 
 func (r *ProfilesRepository) Init() error {
-	if !config.ShouldInitStorage {
-		return nil
-	}
-
-	xRet := 1
-	for r.conn.db.Ping() != nil {
-		beans.Logger.Infof("waiting for database initialization: retry #%d", xRet)
-		xRet++
-
-		time.Sleep(ConnRetryPeriod)
+	err := utils.Retry(func(n int) error {
+		if n > 0 {
+			beans.Logger.Infof("opening storage: retry #%d", n)
+		}
+		return r.conn.db.Ping()
+	}, config.StorageConnNumRet, config.StorageConnRetItv)
+	if err != nil {
+		return err
 	}
 
 	const query = `
@@ -45,7 +43,7 @@ func (r *ProfilesRepository) Init() error {
         );
 	`
 
-	_, err := r.conn.db.Exec(query)
+	_, err = r.conn.db.Exec(query)
 	return err
 }
 
