@@ -34,16 +34,16 @@ func NewServer(pRepo repositories.ProfilesRepository) *Server {
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/question`, handlers.MethodHandler{
-		http.MethodPatch: http.HandlerFunc(srv.updateSecretQuestion),
+		http.MethodPatch: srv.withAuth(http.HandlerFunc(srv.updateSecretQuestion)),
 	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/credentials`, handlers.MethodHandler{
-		http.MethodPatch: http.HandlerFunc(srv.updateCredentials),
+		http.MethodPatch: srv.withAuth(http.HandlerFunc(srv.updateCredentials)),
 	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}`, handlers.MethodHandler{
-		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
+		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 
-	srv.server.Handler = mx
+	srv.server.Handler = srv.withRecover(mx)
 	return srv
 }
 
