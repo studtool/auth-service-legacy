@@ -17,9 +17,10 @@ func main() {
 	c := dig.New()
 
 	_ = c.Provide(postgres.NewConnection)
-	_ = c.Provide(func(conn *postgres.Connection) repositories.ProfilesRepository {
-		return postgres.NewProfilesRepository(conn)
-	})
+	_ = c.Provide(
+		postgres.NewProfilesRepository,
+		dig.As(new(repositories.ProfilesRepository)),
+	)
 	_ = c.Provide(mq.NewQueue)
 	_ = c.Provide(discovery.NewClient)
 	_ = c.Provide(api.NewServer)

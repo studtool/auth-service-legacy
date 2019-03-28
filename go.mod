@@ -5,7 +5,6 @@ go 1.12
 require (
 	github.com/google/btree v1.0.0 // indirect
 	github.com/gorilla/handlers v1.4.0
-	github.com/gorilla/mux v1.7.0 // indirect
 	github.com/hashicorp/consul v1.4.4
 	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-rootcerts v1.0.0 // indirect
@@ -24,7 +23,7 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sirupsen/logrus v1.4.0
 	github.com/streadway/amqp v0.0.0-20190312223743-14f78b41ce6d
-	go.uber.org/dig v1.7.0
+	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c // indirect
 	golang.org/x/net v0.0.0-20190327214358-63eda1eb0650 // indirect
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
