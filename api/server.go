@@ -31,16 +31,16 @@ func NewServer(pRepo repositories.ProfilesRepository) *Server {
 
 	mx := http.NewServeMux()
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
-		http.MethodPost:  http.HandlerFunc(srv.createProfile),
-		http.MethodPatch: http.HandlerFunc(srv.updateProfile),
+		http.MethodPost: http.HandlerFunc(srv.createProfile),
+	})
+	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/credentials`, handlers.MethodHandler{
+		http.MethodPatch: http.HandlerFunc(srv.updateCredentials),
+	})
+	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/question`, handlers.MethodHandler{
+		http.MethodPatch: http.HandlerFunc(srv.updateSecretQuestion),
 	})
 	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}`, handlers.MethodHandler{
 		http.MethodDelete: http.HandlerFunc(srv.deleteProfile),
-	})
-	mx.Handle("/api/auth/sessions", handlers.MethodHandler{
-		http.MethodPost:   http.HandlerFunc(srv.createSession),
-		http.MethodPatch:  http.HandlerFunc(srv.updateSession),
-		http.MethodDelete: http.HandlerFunc(srv.deleteSession),
 	})
 
 	srv.server.Handler = mx

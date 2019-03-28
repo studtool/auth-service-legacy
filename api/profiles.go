@@ -25,7 +25,11 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 	srv.writeOk(w)
 }
 
-func (srv *Server) updateProfile(w http.ResponseWriter, r *http.Request) {
+func (srv *Server) updateCredentials(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}
+
+func (srv *Server) updateSecretQuestion(w http.ResponseWriter, r *http.Request) {
 	//TODO
 }
 
