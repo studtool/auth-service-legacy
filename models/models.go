@@ -1,10 +1,10 @@
 package models
 
+//go:generate easyjson
+
 import (
 	"time"
 )
-
-//go:generate easyjson
 
 //easyjson:json
 type Profile struct {
