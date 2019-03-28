@@ -7,6 +7,7 @@ const (
 	BadFormat     = 1
 	InvalidFormat = 2
 	Conflict      = 3
+	NotFound      = 4
 )
 
 //easyjson:json
@@ -36,4 +37,8 @@ func NewInvalidFormatError(message string) *Error {
 
 func NewConflictError(message string) *Error {
 	return NewError(Conflict, message)
+}
+
+func NewNotFoundError(message string) *Error {
+	return NewError(NotFound, message)
 }

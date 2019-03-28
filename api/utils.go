@@ -3,6 +3,7 @@ package api
 import (
 	"auth-service/beans"
 	"auth-service/errs"
+	"fmt"
 	"github.com/mailru/easyjson"
 	"io/ioutil"
 	"net/http"
@@ -41,6 +42,12 @@ func (srv *Server) writeErrJSON(w http.ResponseWriter, err *errs.Error) {
 
 	case errs.Conflict:
 		srv.writeBodyJSON(w, http.StatusConflict, err)
+
+	case errs.NotFound:
+		srv.writeBodyJSON(w, http.StatusNotFound, err)
+
+	default:
+		panic(fmt.Sprintf("no status code for error. Type: %d, Message: %s", err.Type, err.Message))
 	}
 }
 

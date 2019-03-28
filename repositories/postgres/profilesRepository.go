@@ -11,12 +11,14 @@ import (
 )
 
 type ProfilesRepository struct {
-	conn *Connection
+	conn        *Connection
+	notFoundErr *errs.Error
 }
 
 func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 	return &ProfilesRepository{
-		conn: conn,
+		conn:        conn,
+		notFoundErr: errs.NewNotFoundError("profile not found"),
 	}
 }
 
@@ -71,8 +73,29 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	return nil
 }
 
-func (r *ProfilesRepository) GetProfileByCredentials(c *models.Credentials) *errs.Error {
-	panic("implement me") //TODO
+func (r *ProfilesRepository) GetProfileByCredentials(p *models.Profile) *errs.Error {
+	const query = `
+        SELECT user_id FROM profile WHERE email=$1 AND password=$2;
+    `
+
+	row, err := r.conn.db.Query(query, &p.Credentials.Email, &p.Credentials.Password)
+	if err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+	defer func() {
+		if err := row.Close(); err != nil {
+			panic(err)
+		}
+	}()
+
+	if !row.Next() {
+		return r.notFoundErr
+	}
+	if err := row.Scan(&p.UserId); err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+
+	return nil
 }
 
 func (r *ProfilesRepository) UpdateCredentials(c *models.Credentials) *errs.Error {
