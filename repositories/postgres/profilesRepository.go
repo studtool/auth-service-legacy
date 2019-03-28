@@ -71,10 +71,18 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	return nil
 }
 
-func (r *ProfilesRepository) GetProfileById(p *models.Profile) *errs.Error {
-	panic("implement me")
+func (r *ProfilesRepository) GetProfileByCredentials(c *models.Credentials) *errs.Error {
+	panic("implement me") //TODO
+}
+
+func (r *ProfilesRepository) UpdateCredentials(c *models.Credentials) *errs.Error {
+	panic("implement me") //TODO
+}
+
+func (r *ProfilesRepository) UpdateSecretQuestion(q *models.SecretQuestion) *errs.Error {
+	panic("implement me") //TODO
 }
 
 func (r *ProfilesRepository) DeleteProfileById(p *models.Profile) *errs.Error {
-	panic("implement me")
+	panic("implement me") //TODO
 }

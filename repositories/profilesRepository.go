@@ -7,6 +7,8 @@ import (
 
 type ProfilesRepository interface {
 	AddProfile(p *models.Profile) *errs.Error
-	GetProfileById(p *models.Profile) *errs.Error
+	GetProfileByCredentials(c *models.Credentials) *errs.Error
+	UpdateCredentials(c *models.Credentials) *errs.Error
+	UpdateSecretQuestion(q *models.SecretQuestion) *errs.Error
 	DeleteProfileById(p *models.Profile) *errs.Error
 }
