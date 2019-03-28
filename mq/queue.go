@@ -3,6 +3,7 @@ package mq
 import (
 	"auth-service/config"
 	"auth-service/errs"
+	"auth-service/utils"
 	"fmt"
 	"github.com/streadway/amqp"
 )
@@ -25,7 +26,11 @@ func NewQueue() *MQ {
 }
 
 func (mq *MQ) OpenConnection() error {
-	conn, err := amqp.Dial(mq.connStr)
+	var conn *amqp.Connection
+	err := utils.Retry(func() (err error) {
+		conn, err = amqp.Dial(mq.connStr)
+		return err
+	}, config.UsersMqConnNumRet, config.UsersMqConnRetItv)
 	if err != nil {
 		return err
 	}
