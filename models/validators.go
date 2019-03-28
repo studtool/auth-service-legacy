@@ -155,7 +155,7 @@ func (v *SecretQuestionValidator) validateQuestion(value string) *errs.Error {
 
 func (v *SecretQuestionValidator) validateAnswer(value string) *errs.Error {
 	if !v.answerRegexp.MatchString(value) {
-		return v.questionErr
+		return v.answerErr
 	}
 	return nil
 }
