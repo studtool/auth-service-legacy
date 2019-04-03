@@ -6,7 +6,7 @@ import (
 )
 
 type SessionsRepository interface {
-	AddSession(session *models.Session) *errs.Error
+	AddSession(credentials *models.Credentials, session *models.Session) *errs.Error
 	UpdateSessionByRefreshToken(session *models.Session) *errs.Error
 	DeleteSessionByRefreshToken(token string) *errs.Error
 }

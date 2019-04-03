@@ -22,7 +22,7 @@ func NewSessionsRepository(conn *Connection) *SessionsRepository {
 	}
 }
 
-func (r *SessionsRepository) AddSession(session *models.Session) (res *errs.Error) {
+func (r *SessionsRepository) AddSession(credentials *models.Credentials, session *models.Session) (res *errs.Error) {
 	tx, err := r.conn.db.BeginTx(context.TODO(), &sql.TxOptions{})
 	if err != nil {
 		return errs.NewInternalError(err.Error())
@@ -33,11 +33,13 @@ func (r *SessionsRepository) AddSession(session *models.Session) (res *errs.Erro
 		}
 	}()
 
-	const selectQuery = `
-        SELECT EXISTS (SELECT * FROM session WHERE user_id=$1);
+	const idQuery = `
+        SELECT user_id FROM profile WHERE email=$1 AND password=$2;
     `
 
-	rows, err := tx.Query(selectQuery, &session.UserId)
+	rows, err := tx.Query(idQuery,
+		&credentials.Email, &credentials.Password,
+	)
 	if err != nil {
 		return errs.NewInternalError(err.Error())
 	}
@@ -48,7 +50,29 @@ func (r *SessionsRepository) AddSession(session *models.Session) (res *errs.Erro
 	}()
 
 	if !rows.Next() {
-		errs.NewInternalError(fmt.Sprintf(`!rows.Next() in "%s"`, selectQuery))
+		return r.notAuthorizedErr
+	}
+
+	if err := rows.Scan(&session.UserId); err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+
+	const sessionQuery = `
+        SELECT EXISTS (SELECT * FROM session WHERE user_id=$1);
+    `
+
+	rows, err = tx.Query(sessionQuery, &session.UserId)
+	if err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+	defer func() {
+		if err := rows.Close(); err != nil {
+			res = errs.NewInternalError(err.Error())
+		}
+	}()
+
+	if !rows.Next() {
+		errs.NewInternalError(fmt.Sprintf(`!rows.Next() in "%s"`, sessionQuery))
 	}
 
 	var exists bool
