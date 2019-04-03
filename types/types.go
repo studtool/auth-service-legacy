@@ -4,8 +4,8 @@ import (
 	"time"
 )
 
-type Time time.Time
+type DateTime time.Time
 
-func (t *Time) MarshalJSON() ([]byte, error) {
+func (t *DateTime) MarshalJSON() ([]byte, error) {
 	return []byte(time.Time(*t).Format(time.RFC3339)), nil
 }

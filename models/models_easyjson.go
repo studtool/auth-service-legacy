@@ -125,7 +125,7 @@ func (v *Session) UnmarshalJSON(data []byte) error {
 func (v *Session) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeAuthServiceModels(l, v)
 }
-func easyjsonD2b7633eDecodeAuthServiceTypes(in *jlexer.Lexer, out *types.Time) {
+func easyjsonD2b7633eDecodeAuthServiceTypes(in *jlexer.Lexer, out *types.DateTime) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -154,7 +154,7 @@ func easyjsonD2b7633eDecodeAuthServiceTypes(in *jlexer.Lexer, out *types.Time) {
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeAuthServiceTypes(out *jwriter.Writer, in types.Time) {
+func easyjsonD2b7633eEncodeAuthServiceTypes(out *jwriter.Writer, in types.DateTime) {
 	out.RawByte('{')
 	first := true
 	_ = first

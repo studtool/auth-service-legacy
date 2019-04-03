@@ -27,8 +27,8 @@ type SecretQuestion struct {
 
 //easyjson:json
 type Session struct {
-	UserId       string     `json:"userId"`
-	AuthToken    string     `json:"authToken"`
-	RefreshToken string     `json:"refreshToken"`
-	ExpireTime   types.Time `json:"expireTime"`
+	UserId       string         `json:"userId"`
+	AuthToken    string         `json:"authToken"`
+	RefreshToken string         `json:"refreshToken"`
+	ExpireTime   types.DateTime `json:"expireTime"`
 }
