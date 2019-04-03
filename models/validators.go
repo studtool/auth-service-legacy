@@ -8,21 +8,16 @@ import (
 
 type ProfileValidator struct {
 	CredentialsValidator
-	SecretQuestionValidator
 }
 
 func NewProfileValidator() *ProfileValidator {
 	return &ProfileValidator{
-		CredentialsValidator:    *NewCredentialsValidator(),
-		SecretQuestionValidator: *NewSecretQuestionValidator(),
+		CredentialsValidator: *NewCredentialsValidator(),
 	}
 }
 
 func (v *ProfileValidator) ValidateOnCreate(p *Profile) *errs.Error {
 	if err := v.CredentialsValidator.ValidateOnCreate(&p.Credentials); err != nil {
-		return err
-	}
-	if err := v.SecretQuestionValidator.ValidateOnCreate(&p.SecretQuestion); err != nil {
 		return err
 	}
 	return nil
@@ -89,73 +84,6 @@ func (v *CredentialsValidator) validateEmail(value string) *errs.Error {
 func (v *CredentialsValidator) validatePassword(value string) *errs.Error {
 	if len(value) < minPasswordLength {
 		return v.passwordErr
-	}
-	return nil
-}
-
-const (
-	questionPattern = `^(\w| |\?)+$`
-	answerPattern   = `^(\w| )+$`
-)
-
-type SecretQuestionValidator struct {
-	questionRegexp *regexp.Regexp
-	answerRegexp   *regexp.Regexp
-
-	questionErr *errs.Error
-	answerErr   *errs.Error
-}
-
-func NewSecretQuestionValidator() *SecretQuestionValidator {
-	return &SecretQuestionValidator{
-		questionRegexp: regexp.MustCompile(questionPattern),
-		answerRegexp:   regexp.MustCompile(answerPattern),
-
-		questionErr: errs.NewInvalidFormatError(
-			fmt.Sprintf("invalid secret question. pattern: %s", questionPattern),
-		),
-		answerErr: errs.NewInvalidFormatError(
-			fmt.Sprintf("invalid secret question answer: pattern: %s", answerPattern),
-		),
-	}
-}
-
-func (v *SecretQuestionValidator) ValidateOnCreate(obj *SecretQuestion) *errs.Error {
-	if err := v.validateQuestion(obj.Question); err != nil {
-		return err
-	}
-	if err := v.validateAnswer(obj.Answer); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (v *SecretQuestionValidator) ValidateOnUpdate(obj *SecretQuestion) *errs.Error {
-	if obj.Question != "" {
-		if err := v.validateQuestion(obj.Question); err != nil {
-			return err
-		}
-	}
-
-	if obj.Answer != "" {
-		if err := v.validateAnswer(obj.Answer); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (v *SecretQuestionValidator) validateQuestion(value string) *errs.Error {
-	if !v.questionRegexp.MatchString(value) {
-		return v.questionErr
-	}
-	return nil
-}
-
-func (v *SecretQuestionValidator) validateAnswer(value string) *errs.Error {
-	if !v.answerRegexp.MatchString(value) {
-		return v.answerErr
 	}
 	return nil
 }

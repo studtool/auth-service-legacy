@@ -160,90 +160,7 @@ func easyjsonD2b7633eEncodeAuthServiceTypes(out *jwriter.Writer, in types.DateTi
 	_ = first
 	out.RawByte('}')
 }
-func easyjsonD2b7633eDecodeAuthServiceModels1(in *jlexer.Lexer, out *SecretQuestion) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		case "question":
-			out.Question = string(in.String())
-		case "answer":
-			out.Answer = string(in.String())
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonD2b7633eEncodeAuthServiceModels1(out *jwriter.Writer, in SecretQuestion) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	{
-		const prefix string = ",\"question\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.Question))
-	}
-	{
-		const prefix string = ",\"answer\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.Answer))
-	}
-	out.RawByte('}')
-}
-
-// MarshalJSON supports json.Marshaler interface
-func (v SecretQuestion) MarshalJSON() ([]byte, error) {
-	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeAuthServiceModels1(&w, v)
-	return w.Buffer.BuildBytes(), w.Error
-}
-
-// MarshalEasyJSON supports easyjson.Marshaler interface
-func (v SecretQuestion) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeAuthServiceModels1(w, v)
-}
-
-// UnmarshalJSON supports json.Unmarshaler interface
-func (v *SecretQuestion) UnmarshalJSON(data []byte) error {
-	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeAuthServiceModels1(&r, v)
-	return r.Error()
-}
-
-// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *SecretQuestion) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeAuthServiceModels1(l, v)
-}
-func easyjsonD2b7633eDecodeAuthServiceModels2(in *jlexer.Lexer, out *Profile) {
+func easyjsonD2b7633eDecodeAuthServiceModels1(in *jlexer.Lexer, out *Profile) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -266,8 +183,6 @@ func easyjsonD2b7633eDecodeAuthServiceModels2(in *jlexer.Lexer, out *Profile) {
 			out.UserId = string(in.String())
 		case "credentials":
 			(out.Credentials).UnmarshalEasyJSON(in)
-		case "secretQuestion":
-			(out.SecretQuestion).UnmarshalEasyJSON(in)
 		default:
 			in.SkipRecursive()
 		}
@@ -278,7 +193,7 @@ func easyjsonD2b7633eDecodeAuthServiceModels2(in *jlexer.Lexer, out *Profile) {
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeAuthServiceModels2(out *jwriter.Writer, in Profile) {
+func easyjsonD2b7633eEncodeAuthServiceModels1(out *jwriter.Writer, in Profile) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -302,43 +217,33 @@ func easyjsonD2b7633eEncodeAuthServiceModels2(out *jwriter.Writer, in Profile) {
 		}
 		(in.Credentials).MarshalEasyJSON(out)
 	}
-	{
-		const prefix string = ",\"secretQuestion\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		(in.SecretQuestion).MarshalEasyJSON(out)
-	}
 	out.RawByte('}')
 }
 
 // MarshalJSON supports json.Marshaler interface
 func (v Profile) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeAuthServiceModels2(&w, v)
+	easyjsonD2b7633eEncodeAuthServiceModels1(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Profile) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeAuthServiceModels2(w, v)
+	easyjsonD2b7633eEncodeAuthServiceModels1(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Profile) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeAuthServiceModels2(&r, v)
+	easyjsonD2b7633eDecodeAuthServiceModels1(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Profile) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeAuthServiceModels2(l, v)
+	easyjsonD2b7633eDecodeAuthServiceModels1(l, v)
 }
-func easyjsonD2b7633eDecodeAuthServiceModels3(in *jlexer.Lexer, out *Credentials) {
+func easyjsonD2b7633eDecodeAuthServiceModels2(in *jlexer.Lexer, out *Credentials) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -371,7 +276,7 @@ func easyjsonD2b7633eDecodeAuthServiceModels3(in *jlexer.Lexer, out *Credentials
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeAuthServiceModels3(out *jwriter.Writer, in Credentials) {
+func easyjsonD2b7633eEncodeAuthServiceModels2(out *jwriter.Writer, in Credentials) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -401,23 +306,23 @@ func easyjsonD2b7633eEncodeAuthServiceModels3(out *jwriter.Writer, in Credential
 // MarshalJSON supports json.Marshaler interface
 func (v Credentials) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeAuthServiceModels3(&w, v)
+	easyjsonD2b7633eEncodeAuthServiceModels2(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Credentials) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeAuthServiceModels3(w, v)
+	easyjsonD2b7633eEncodeAuthServiceModels2(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Credentials) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeAuthServiceModels3(&r, v)
+	easyjsonD2b7633eDecodeAuthServiceModels2(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Credentials) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeAuthServiceModels3(l, v)
+	easyjsonD2b7633eDecodeAuthServiceModels2(l, v)
 }

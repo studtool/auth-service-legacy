@@ -17,16 +17,12 @@ var (
 	DiscoveryClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 	QueuesEnabled          = getEnvFlag("STUDTOOL_AUTH_SERVICE_QUEUES_ENABLED", false)
 
-	StorageHost       = getEnvStr("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
-	StoragePort       = getEnvStr("STUDTOOL_AUTH_STORAGE_PORT", "5432")
-	StorageDB         = getEnvStr("STUDTOOL_AUTH_STORAGE_NAME", "auth")
-	StorageUser       = getEnvStr("STUDTOOL_AUTH_STORAGE_USER", "user")
-	StoragePassword   = getEnvStr("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
-	StorageSSL        = getEnvStr("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
-	ShouldInitStorage = getEnvFlag("STUDTOOL_AUTH_STORAGE_SHOULD_INIT", false)
-
-	StorageConnNumRet = getEnvInt("STUDTOOL_AUTH_STORAGE_CONNECTION_NUM_RETRIES", 10)
-	StorageConnRetItv = getEnvTimeSec("STUDTOOL_AUTH_STORAGE_CONNECTION_RETRY_INTERVAL", 2*time.Second)
+	StorageHost     = getEnvStr("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
+	StoragePort     = getEnvStr("STUDTOOL_AUTH_STORAGE_PORT", "5432")
+	StorageDB       = getEnvStr("STUDTOOL_AUTH_STORAGE_NAME", "auth")
+	StorageUser     = getEnvStr("STUDTOOL_AUTH_STORAGE_USER", "user")
+	StoragePassword = getEnvStr("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
+	StorageSSL      = getEnvStr("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
 
 	UsersMqHost     = getEnvStr("STUDTOOL_USERS_MQ_HOST", "127.0.0.1")
 	UsersMqPort     = getEnvStr("STUDTOOL_USERS_MQ_PORT", "5672")

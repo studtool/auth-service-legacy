@@ -29,10 +29,6 @@ func (srv *Server) updateCredentials(w http.ResponseWriter, r *http.Request) {
 	//TODO
 }
 
-func (srv *Server) updateSecretQuestion(w http.ResponseWriter, r *http.Request) {
-	//TODO
-}
-
 func (srv *Server) deleteProfile(w http.ResponseWriter, r *http.Request) {
 	//TODO
 }

@@ -42,16 +42,6 @@ func main() {
 				}
 			})
 		}()
-
-		if config.ShouldInitStorage {
-			_ = c.Invoke(func(r *postgres.ProfilesRepository) {
-				if err := r.Init(); err != nil {
-					beans.Logger.Fatal(err)
-				} else {
-					beans.Logger.Info("profiles repository: initialized")
-				}
-			})
-		}
 	}
 
 	if config.QueuesEnabled {
