@@ -15,17 +15,17 @@ require (
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/lib/pq v1.0.0
 	github.com/mailru/easyjson v0.0.0-20190312143242-1de009706dbe
-	github.com/miekg/dns v1.1.6 // indirect
+	github.com/miekg/dns v1.1.8 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/pascaldekloe/goe v0.1.0 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
-	github.com/sirupsen/logrus v1.4.0
-	github.com/streadway/amqp v0.0.0-20190312223743-14f78b41ce6d
+	github.com/sirupsen/logrus v1.4.1
+	github.com/streadway/amqp v0.0.0-20190402114354-16ed540749f6
 	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 	golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c // indirect
-	golang.org/x/net v0.0.0-20190327214358-63eda1eb0650 // indirect
+	golang.org/x/net v0.0.0-20190403144856-b630fd6fe46b // indirect
 	golang.org/x/sync v0.0.0-20190227155943-e225da77a7e6 // indirect
-	golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc // indirect
+	golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e // indirect
 )

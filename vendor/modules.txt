@@ -30,16 +30,14 @@ github.com/mailru/easyjson/buffer
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
-# github.com/sirupsen/logrus v1.4.0
+# github.com/sirupsen/logrus v1.4.1
 github.com/sirupsen/logrus
-# github.com/streadway/amqp v0.0.0-20190312223743-14f78b41ce6d
+# github.com/streadway/amqp v0.0.0-20190402114354-16ed540749f6
 github.com/streadway/amqp
+github.com/streadway/amqp/internal/proto
 # go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect
 go.uber.org/dig/internal/dot
-# golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c
-golang.org/x/crypto/ssh/terminal
-# golang.org/x/sys v0.0.0-20190322080309-f49334f85ddc
+# golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e
 golang.org/x/sys/unix
-golang.org/x/sys/windows
