@@ -21,6 +21,10 @@ func main() {
 		postgres.NewProfilesRepository,
 		dig.As(new(repositories.ProfilesRepository)),
 	)
+	_ = c.Provide(
+		postgres.NewSessionsRepository,
+		dig.As(new(repositories.SessionsRepository)),
+	)
 	_ = c.Provide(mq.NewQueue)
 	_ = c.Provide(discovery.NewClient)
 	_ = c.Provide(api.NewServer)

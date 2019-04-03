@@ -18,15 +18,20 @@ type Server struct {
 	server             *http.Server
 	profileValidator   *models.ProfileValidator
 	profilesRepository repositories.ProfilesRepository
+	sessionsRepository repositories.SessionsRepository
 }
 
-func NewServer(pRepo repositories.ProfilesRepository) *Server {
+func NewServer(
+	pR repositories.ProfilesRepository,
+	sR repositories.SessionsRepository,
+) *Server {
 	srv := &Server{
 		server: &http.Server{
 			Addr: fmt.Sprintf(":%s", config.ServerPort),
 		},
 		profileValidator:   models.NewProfileValidator(),
-		profilesRepository: pRepo,
+		profilesRepository: pR,
+		sessionsRepository: sR,
 	}
 
 	mx := http.NewServeMux()
