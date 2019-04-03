@@ -29,12 +29,16 @@ func main() {
 		_ = c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger.Fatal(err)
+			} else {
+				beans.Logger.Info("storage connection: open")
 			}
 		})
 		defer func() {
 			_ = c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
 					beans.Logger.Fatal(err)
+				} else {
+					beans.Logger.Info("connection to storage: closed")
 				}
 			})
 		}()
@@ -43,6 +47,8 @@ func main() {
 			_ = c.Invoke(func(r *postgres.ProfilesRepository) {
 				if err := r.Init(); err != nil {
 					beans.Logger.Fatal(err)
+				} else {
+					beans.Logger.Info("profiles repository: initialized")
 				}
 			})
 		}
@@ -52,12 +58,16 @@ func main() {
 		_ = c.Invoke(func(q *mq.MQ) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
+			} else {
+				beans.Logger.Info("message queue connection: open")
 			}
 		})
 		defer func() {
 			_ = c.Invoke(func(q *mq.MQ) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger.Fatal(err)
+				} else {
+					beans.Logger.Info("message queue connection: closed")
 				}
 			})
 		}()
@@ -74,12 +84,14 @@ func main() {
 			}
 		}()
 
-		beans.Logger.Infof("server started on :%s", config.ServerPort)
+		beans.Logger.Infof("server: started; [port: %s]", config.ServerPort)
 	})
 	defer func() {
 		_ = c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
 				beans.Logger.Fatal(err)
+			} else {
+				beans.Logger.Info("server: down")
 			}
 		})
 	}()
@@ -88,12 +100,16 @@ func main() {
 		_ = c.Invoke(func(cl *discovery.Client) {
 			if err := cl.Register(); err != nil {
 				beans.Logger.Fatal(err)
+			} else {
+				beans.Logger.Info("discovery client connection: open")
 			}
 		})
 		defer func() {
 			_ = c.Invoke(func(cl *discovery.Client) {
 				if err := cl.Unregister(); err != nil {
 					beans.Logger.Fatal(err)
+				} else {
+					beans.Logger.Info("discovery client connection: closed")
 				}
 			})
 		}()

@@ -6,6 +6,8 @@ import (
 	"auth-service/errs"
 	"auth-service/models"
 	"auth-service/utils"
+	"context"
+	"database/sql"
 	"github.com/hashicorp/go-uuid"
 	"strings"
 )
@@ -22,8 +24,8 @@ func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 	}
 }
 
-func (r *ProfilesRepository) Init() error {
-	err := utils.Retry(func(n int) error {
+func (r *ProfilesRepository) Init() (err error) {
+	err = utils.Retry(func(n int) error {
 		if n > 0 {
 			beans.Logger.Infof("opening storage: retry #%d", n)
 		}
@@ -45,7 +47,16 @@ func (r *ProfilesRepository) Init() error {
         );
 	`
 
-	_, err = r.conn.db.Exec(query)
+	var tx *sql.Tx
+	tx, err = r.conn.db.BeginTx(context.TODO(), &sql.TxOptions{})
+	if err != nil {
+		return err
+	}
+	defer func() {
+		err = tx.Commit()
+	}()
+
+	_, err = tx.Exec(query)
 	return err
 }
 
