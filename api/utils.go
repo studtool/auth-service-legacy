@@ -4,6 +4,7 @@ import (
 	"auth-service/beans"
 	"auth-service/errs"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/mailru/easyjson"
 	"io/ioutil"
 	"net/http"
@@ -20,6 +21,14 @@ func (srv *Server) parseRequestBody(v easyjson.Unmarshaler, r *http.Request) *er
 	}
 
 	return nil
+}
+
+func (srv *Server) parseUserId(r *http.Request) string {
+	return r.Header.Get("X-User-Id")
+}
+
+func (srv *Server) parseProfileId(r *http.Request) string {
+	return mux.Vars(r)["profile_id"]
 }
 
 func (srv *Server) writeOk(w http.ResponseWriter) {

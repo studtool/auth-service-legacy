@@ -20,3 +20,11 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 
 	srv.writeBodyJSON(w, http.StatusOK, &session)
 }
+
+func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}
+
+func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}

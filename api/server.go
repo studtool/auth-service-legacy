@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
@@ -34,18 +35,20 @@ func NewServer(
 		sessionsRepository: sR,
 	}
 
-	mx := http.NewServeMux()
+	mx := mux.NewRouter()
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}/credentials`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}/credentials`, handlers.MethodHandler{
 		http.MethodPatch: srv.withAuth(http.HandlerFunc(srv.updateCredentials)),
 	})
-	mx.Handle(`/api/auth/profiles/{id:`+idPattern+`}`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}`, handlers.MethodHandler{
 		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.startSession),
+		http.MethodPatch: http.HandlerFunc(srv.refreshSession),
+		http.MethodDelete: http.HandlerFunc(srv.endSession),
 	})
 
 	srv.server.Handler = srv.withRecover(mx)
