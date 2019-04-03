@@ -12,6 +12,7 @@ const (
 	InvalidFormat = 2
 	Conflict      = 3
 	NotFound      = 4
+	NotAuthorized = 5
 )
 
 //easyjson:json
@@ -48,6 +49,10 @@ func NewConflictError(message string) *Error {
 
 func NewNotFoundError(message string) *Error {
 	return NewError(NotFound, message)
+}
+
+func NewNotAuthorizedError(message string) *Error {
+	return NewError(NotAuthorized, message)
 }
 
 func (v *Error) JSON() []byte {
