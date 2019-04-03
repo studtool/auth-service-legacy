@@ -3,6 +3,7 @@
 package models
 
 import (
+	types "auth-service/types"
 	json "encoding/json"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
@@ -43,9 +44,7 @@ func easyjsonD2b7633eDecodeAuthServiceModels(in *jlexer.Lexer, out *Session) {
 		case "refreshToken":
 			out.RefreshToken = string(in.String())
 		case "expireTime":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.ExpireTime).UnmarshalJSON(data))
-			}
+			easyjsonD2b7633eDecodeAuthServiceTypes(in, &out.ExpireTime)
 		default:
 			in.SkipRecursive()
 		}
@@ -125,6 +124,41 @@ func (v *Session) UnmarshalJSON(data []byte) error {
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Session) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeAuthServiceModels(l, v)
+}
+func easyjsonD2b7633eDecodeAuthServiceTypes(in *jlexer.Lexer, out *types.Time) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeString()
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonD2b7633eEncodeAuthServiceTypes(out *jwriter.Writer, in types.Time) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	out.RawByte('}')
 }
 func easyjsonD2b7633eDecodeAuthServiceModels1(in *jlexer.Lexer, out *SecretQuestion) {
 	isTopLevel := in.IsStart()

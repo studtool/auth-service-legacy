@@ -3,7 +3,7 @@ package models
 //go:generate easyjson
 
 import (
-	"time"
+	"auth-service/types"
 )
 
 //easyjson:json
@@ -27,8 +27,8 @@ type SecretQuestion struct {
 
 //easyjson:json
 type Session struct {
-	UserId       string    `json:"userId"`
-	AuthToken    string    `json:"authToken"`
-	RefreshToken string    `json:"refreshToken"`
-	ExpireTime   time.Time `json:"expireTime"`
+	UserId       string     `json:"userId"`
+	AuthToken    string     `json:"authToken"`
+	RefreshToken string     `json:"refreshToken"`
+	ExpireTime   types.Time `json:"expireTime"`
 }
