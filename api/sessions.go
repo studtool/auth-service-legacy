@@ -28,3 +28,7 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
 	//TODO
 }
+
+func (srv *Server) endAllSessions(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}
