@@ -5,11 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
-	"time"
-)
-
-const (
-	ConnRetryPeriod = 2 * time.Second
 )
 
 type Connection struct {

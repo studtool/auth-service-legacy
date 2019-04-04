@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS session
     auth_token    TEXT
         CONSTRAINT session_auth_token_not_null NOT NULL,
     refresh_token TEXT
+        CONSTRAINT session_refresh_token_unique UNIQUE
         CONSTRAINT session_refresh_token_not_null NOT NULL,
     expire_time   TIMESTAMPTZ
         CONSTRAINT session_expire_time_not_null NOT NULL,
