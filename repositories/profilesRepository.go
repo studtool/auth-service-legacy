@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"auth-service/errs"
 	"auth-service/models"
+	"github.com/studtool/common/errs"
 )
 
 type ProfilesRepository interface {

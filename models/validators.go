@@ -1,8 +1,8 @@
 package models
 
 import (
-	"auth-service/errs"
 	"fmt"
+	"github.com/studtool/common/errs"
 	"regexp"
 )
 

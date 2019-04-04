@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"auth-service/errs"
 	"auth-service/models"
 	"github.com/hashicorp/go-uuid"
+	"github.com/studtool/common/errs"
 	"strings"
 )
 

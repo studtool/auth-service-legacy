@@ -4,9 +4,9 @@ package utils
 
 import (
 	"auth-service/config"
-	"auth-service/errs"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mailru/easyjson"
+	"github.com/studtool/common/errs"
 )
 
 //easyjson:json

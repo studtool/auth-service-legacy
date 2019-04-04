@@ -2,10 +2,10 @@ package api
 
 import (
 	"auth-service/beans"
-	"auth-service/errs"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/mailru/easyjson"
+	"github.com/studtool/common/errs"
 	"io/ioutil"
 	"net/http"
 )

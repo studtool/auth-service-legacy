@@ -3,10 +3,10 @@ package mq
 import (
 	"auth-service/beans"
 	"auth-service/config"
-	"auth-service/errs"
 	"auth-service/utils"
 	"fmt"
 	"github.com/streadway/amqp"
+	"github.com/studtool/common/errs"
 )
 
 type MQ struct {
