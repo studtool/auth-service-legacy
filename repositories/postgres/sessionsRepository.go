@@ -3,10 +3,6 @@ package postgres
 import (
 	"auth-service/errs"
 	"auth-service/models"
-	"auth-service/types"
-	"context"
-	"database/sql"
-	"fmt"
 	"time"
 )
 
@@ -23,22 +19,15 @@ func NewSessionsRepository(conn *Connection) *SessionsRepository {
 }
 
 func (r *SessionsRepository) AddSession(credentials *models.Credentials, session *models.Session) (res *errs.Error) {
-	tx, err := r.conn.db.BeginTx(context.TODO(), &sql.TxOptions{})
-	if err != nil {
-		return errs.NewInternalError(err.Error())
-	}
-	defer func() {
-		if err := tx.Commit(); err != nil {
-			res = errs.NewInternalError(err.Error())
-		}
-	}()
-
-	const idQuery = `
-        SELECT user_id FROM profile WHERE email=$1 AND password=$2;
+	const query = `
+        SELECT add_session($1,$2,$3,$4,$5);
     `
 
-	rows, err := tx.Query(idQuery,
+	t := time.Time(session.ExpireTime)
+
+	rows, err := r.conn.db.Query(query,
 		&credentials.Email, &credentials.Password,
+		&session.AuthToken, &session.RefreshToken, &t,
 	)
 	if err != nil {
 		return errs.NewInternalError(err.Error())
@@ -53,75 +42,15 @@ func (r *SessionsRepository) AddSession(credentials *models.Credentials, session
 		return r.notAuthorizedErr
 	}
 
-	if err := rows.Scan(&session.UserId); err != nil {
+	var userId *string
+	if err := rows.Scan(&userId); err != nil {
 		return errs.NewInternalError(err.Error())
 	}
-
-	const sessionQuery = `
-        SELECT EXISTS (SELECT * FROM session WHERE user_id=$1);
-    `
-
-	rows, err = tx.Query(sessionQuery, &session.UserId)
-	if err != nil {
-		return errs.NewInternalError(err.Error())
-	}
-	defer func() {
-		if err := rows.Close(); err != nil {
-			res = errs.NewInternalError(err.Error())
-		}
-	}()
-
-	if !rows.Next() {
-		errs.NewInternalError(fmt.Sprintf(`!rows.Next() in "%s"`, sessionQuery))
+	if userId == nil {
+		return r.notAuthorizedErr
 	}
 
-	var exists bool
-	if err := rows.Scan(&exists); err != nil {
-		return errs.NewInternalError(err.Error())
-	}
-
-	if exists {
-		const query = `
-            SELECT expire_time FROM session WHERE user_id=$1;
-        `
-
-		rows, err := tx.Query(query, &session.UserId)
-		if err != nil {
-			return errs.NewInternalError(err.Error())
-		}
-		defer func() {
-			if err := rows.Close(); err != nil {
-				res = errs.NewInternalError(err.Error())
-			}
-		}()
-
-		if !rows.Next() {
-			errs.NewInternalError(fmt.Sprintf(`!rows.Next() in "%s"`, query))
-		}
-
-		var expTime time.Time
-		if err := rows.Scan(&expTime); err != nil {
-			return errs.NewInternalError(err.Error())
-		}
-
-		session.ExpireTime = types.DateTime(expTime)
-	} else {
-		const query = `
-            INSERT INTO session(user_id,auth_token,refresh_token,expire_time) VALUES($1,$2,$3,$4);
-        `
-
-		expTime := time.Time(session.ExpireTime)
-		res, err := tx.Exec(query,
-			&session.UserId, &session.AuthToken, &session.RefreshToken, &expTime,
-		)
-		if err != nil {
-			return errs.NewInternalError(err.Error())
-		}
-		if n, _ := res.RowsAffected(); n != 1 {
-			return errs.NewInternalError(fmt.Sprintf(`(res.RowsAffected() != 1) in "%s"`, query))
-		}
-	}
-
+	session.UserId = *userId
 	return nil
 }
 
