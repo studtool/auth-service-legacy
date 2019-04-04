@@ -55,6 +55,10 @@ func NewNotAuthorizedError(message string) *Error {
 	return NewError(NotAuthorized, message)
 }
 
+func (v *Error) Error() string {
+	return v.Message
+}
+
 func (v *Error) JSON() []byte {
 	return v.json
 }

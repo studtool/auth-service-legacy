@@ -1,5 +1,7 @@
 # github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da
 github.com/armon/go-metrics
+# github.com/dgrijalva/jwt-go v3.2.0+incompatible
+github.com/dgrijalva/jwt-go
 # github.com/gorilla/handlers v1.4.0
 github.com/gorilla/handlers
 # github.com/gorilla/mux v1.7.0
@@ -34,9 +36,8 @@ github.com/mitchellh/go-homedir
 github.com/mitchellh/mapstructure
 # github.com/sirupsen/logrus v1.4.1
 github.com/sirupsen/logrus
-# github.com/streadway/amqp v0.0.0-20190402114354-16ed540749f6
+# github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-github.com/streadway/amqp/internal/proto
 # go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect

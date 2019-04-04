@@ -13,6 +13,8 @@ var (
 
 	ServerPort = getEnvStr("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
+	JwtKey = requireEnvStr("STUDTOOL_JWT_KEY")
+
 	RepositoriesEnabled    = getEnvFlag("STUDTOOL_AUTH_SERVICE_REPOSITORIES_ENABLED", false)
 	DiscoveryClientEnabled = getEnvFlag("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
 	QueuesEnabled          = getEnvFlag("STUDTOOL_AUTH_SERVICE_QUEUES_ENABLED", false)
@@ -49,6 +51,17 @@ func getEnvStr(name string, defVal string) string {
 		beans.Logger.Infof("%s=%s", name, v)
 	}
 
+	return v
+}
+
+func requireEnvStr(name string) string {
+	v := os.Getenv(name)
+	if v == "" {
+		panic(fmt.Sprintf("config error: %s required", name))
+	}
+	if shouldLogEnvVars {
+		beans.Logger.Infof("%s=%s", name, v)
+	}
 	return v
 }
 
