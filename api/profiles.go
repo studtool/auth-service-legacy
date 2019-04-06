@@ -8,22 +8,22 @@ import (
 
 func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 	profile := &models.Profile{}
-	if err := srv.parseRequestBody(profile, r); err != nil {
-		srv.writeErrJSON(w, err)
+	if err := srv.server.ParseBodyJSON(profile, r); err != nil {
+		srv.server.WriteErrJSON(w, err)
 		return
 	}
 
 	if err := srv.profileValidator.ValidateOnCreate(profile); err != nil {
-		srv.writeErrJSON(w, err)
+		srv.server.WriteErrJSON(w, err)
 		return
 	}
 
 	if err := srv.profilesRepository.AddProfile(profile); err != nil {
-		srv.writeErrJSON(w, err)
+		srv.server.WriteErrJSON(w, err)
 		return
 	}
 
-	srv.writeOk(w)
+	srv.server.WriteOk(w)
 }
 
 func (srv *Server) updateCredentials(w http.ResponseWriter, r *http.Request) {

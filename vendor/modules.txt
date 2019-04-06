@@ -38,9 +38,10 @@ github.com/mitchellh/mapstructure
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190406203244-9b1b22842818
+# github.com/studtool/common v0.0.0-20190406204519-a197e7fd43a3
 github.com/studtool/common/consts
 github.com/studtool/common/errs
+github.com/studtool/common/rest
 github.com/studtool/common/types
 github.com/studtool/common/logs
 github.com/studtool/common/config

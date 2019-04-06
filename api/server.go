@@ -1,13 +1,14 @@
 package api
 
 import (
-	"context"
-	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/studtool/auth-service/beans"
 	"net/http"
 
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
+	"github.com/studtool/common/rest"
 
 	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/models"
@@ -20,7 +21,7 @@ const (
 )
 
 type Server struct {
-	server *http.Server
+	server *rest.Server
 
 	profileValidator *models.ProfileValidator
 
@@ -38,9 +39,12 @@ func NewServer(
 	sR repositories.SessionsRepository,
 ) *Server {
 	srv := &Server{
-		server: &http.Server{
-			Addr: fmt.Sprintf(":%s", config.ServerPort.Value()),
-		},
+		server: rest.NewServer(
+			rest.ServerConfig{
+				Host: consts.EmptyString,
+				Port: config.ServerPort.Value(),
+			},
+		),
 
 		profileValidator: models.NewProfileValidator(),
 
@@ -58,10 +62,10 @@ func NewServer(
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
 	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}/credentials`, handlers.MethodHandler{
-		http.MethodPatch: srv.withAuth(http.HandlerFunc(srv.updateCredentials)),
+		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateCredentials)),
 	})
 	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}`, handlers.MethodHandler{
-		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.deleteProfile)),
+		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
@@ -73,14 +77,16 @@ func NewServer(
 		http.MethodDelete: http.HandlerFunc(srv.endSession),
 	})
 
-	srv.server.Handler = srv.withRecover(mx)
+	srv.server.SetLogger(beans.Logger)
+	srv.server.SetHandler(srv.server.WithRecover(mx))
+
 	return srv
 }
 
 func (srv *Server) Run() error {
-	return srv.server.ListenAndServe()
+	return srv.server.Run()
 }
 
 func (srv *Server) Shutdown() error {
-	return srv.server.Shutdown(context.TODO())
+	return srv.server.Shutdown()
 }
