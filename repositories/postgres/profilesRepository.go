@@ -42,13 +42,33 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	return nil
 }
 
-func (r *ProfilesRepository) FindProfileByCredentials(p *models.Profile) *errs.Error {
+func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs.Error) {
 	const query = `
         SELECT p.user_id FROM profile p
         WHERE p.email = $1 AND p.password = $2;
     `
 
-	panic("implement me") //TODO
+	rows, err := r.conn.db.Query(query,
+		&p.Credentials.Email, &p.Credentials.Password,
+	)
+	if err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+	defer func() {
+		if err := rows.Close(); err != nil {
+			e = errs.NewInternalError(err.Error())
+		}
+	}()
+
+	if !rows.Next() {
+		return r.notFoundErr
+	}
+
+	if err := rows.Scan(&p.UserId); err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+
+	return nil
 }
 
 func (r *ProfilesRepository) UpdateCredentials(c *models.Credentials) *errs.Error {

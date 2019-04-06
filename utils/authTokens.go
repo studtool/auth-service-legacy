@@ -15,19 +15,19 @@ type JwtClaims struct {
 	ExpTime string `json:"expTime"`
 }
 
-type JwtManager struct {
+type AuthTokenManager struct {
 	key []byte
 	err *errs.Error
 }
 
-func NewJwtManager() *JwtManager {
-	return &JwtManager{
+func NewAuthTokenManager() *AuthTokenManager {
+	return &AuthTokenManager{
 		key: []byte(config.JwtKey.Value()),
 		err: errs.NewNotAuthorizedError("invalid token"),
 	}
 }
 
-func (m *JwtManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
+func (m *AuthTokenManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
 	d, _ := easyjson.Marshal(c)
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -41,7 +41,7 @@ func (m *JwtManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
 	}
 }
 
-func (m *JwtManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
+func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
 	t, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
 		if _, ok := tk.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, m.err
