@@ -6,14 +6,15 @@ import (
 	"auth-service/config"
 	"auth-service/types"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/mailru/easyjson"
+	"github.com/mitchellh/mapstructure"
+
 	"github.com/studtool/common/errs"
 )
 
 //easyjson:json
 type JwtClaims struct {
-	UserId  string         `json:"userId"`
-	ExpTime types.DateTime `json:"expTime"`
+	UserId  string         `mapstructure:"userId"`
+	ExpTime types.DateTime `mapstructure:"expTime"`
 }
 
 type AuthTokenManager struct {
@@ -29,10 +30,9 @@ func NewAuthTokenManager() *AuthTokenManager {
 }
 
 func (m *AuthTokenManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
-	d, _ := easyjson.Marshal(c)
-
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"data": d,
+		"userId":  c.UserId,
+		"expTime": c.ExpTime,
 	})
 
 	if s, err := t.SignedString(m.key); err != nil {
@@ -59,13 +59,15 @@ func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
 		return nil, m.err
 	}
 
-	data, ok := claims["data"].([]byte)
-	if !ok {
-		return nil, m.err
+	jwtClaims := &JwtClaims{}
+	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		Result: jwtClaims, TagName: "mapstructure",
+	})
+	if err != nil {
+		panic(err)
 	}
 
-	jwtClaims := &JwtClaims{}
-	if err := easyjson.Unmarshal(data, jwtClaims); err != nil {
+	if err := decoder.Decode(claims); err != nil {
 		return nil, m.err
 	}
 

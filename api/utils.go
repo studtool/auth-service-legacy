@@ -35,14 +35,14 @@ func (srv *Server) parseUserId(r *http.Request) string {
 func (srv *Server) parseAuthToken(r *http.Request) string {
 	t := r.Header.Get("Authorization")
 
-	const bearerLen = len("Bearer:")
+	const bearerLen = len("Bearer ")
 
 	n := len(t)
 	if n <= bearerLen {
 		return consts.EmptyString
 	}
 
-	return t[n:]
+	return t[bearerLen:]
 }
 
 func (srv *Server) parseRefreshToken(r *http.Request) string {
@@ -76,6 +76,9 @@ func (srv *Server) writeErrJSON(w http.ResponseWriter, err *errs.Error) {
 
 	case errs.NotFound:
 		srv.writeErrBodyJSON(w, http.StatusNotFound, err)
+
+	case errs.NotAuthorized:
+		srv.writeErrBodyJSON(w, http.StatusUnauthorized, err)
 
 	default:
 		panic(fmt.Sprintf("no status code for error. Type: %d, Message: %s", err.Type, err.Message))
