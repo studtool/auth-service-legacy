@@ -6,7 +6,7 @@ import (
 
 type RetryFunc func(n int) error
 
-func Retry(f RetryFunc, n int, d time.Duration) (err error) {
+func WithRetry(f RetryFunc, n int, d time.Duration) (err error) {
 	for i := 0; i <= n; i++ {
 		if err = f(i); err == nil {
 			return nil

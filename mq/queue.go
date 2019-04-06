@@ -5,10 +5,10 @@ import (
 	"github.com/streadway/amqp"
 
 	"github.com/studtool/common/errs"
+	"github.com/studtool/common/utils"
 
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/utils"
 )
 
 type MQ struct {
@@ -30,7 +30,7 @@ func NewQueue() *MQ {
 
 func (mq *MQ) OpenConnection() error {
 	var conn *amqp.Connection
-	err := utils.Retry(func(n int) (err error) {
+	err := utils.WithRetry(func(n int) (err error) {
 		if n > 0 {
 			beans.Logger.Info(fmt.Sprintf("opening message queue connection. retry #%d", n))
 		}
