@@ -7,9 +7,9 @@ import (
 	"github.com/mitchellh/mapstructure"
 
 	"github.com/studtool/common/errs"
+	"github.com/studtool/common/types"
 
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/types"
 )
 
 //easyjson:json

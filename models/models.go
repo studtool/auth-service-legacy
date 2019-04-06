@@ -3,7 +3,7 @@ package models
 //go:generate easyjson
 
 import (
-	"github.com/studtool/auth-service/types"
+	"github.com/studtool/common/types"
 )
 
 //easyjson:json

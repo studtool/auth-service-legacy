@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/studtool/common/consts"
+	"github.com/studtool/common/types"
 
 	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/models"
-	"github.com/studtool/auth-service/types"
 	"github.com/studtool/auth-service/utils"
 )
 
