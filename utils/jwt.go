@@ -22,7 +22,7 @@ type JwtManager struct {
 
 func NewJwtManager() *JwtManager {
 	return &JwtManager{
-		key: []byte(config.JwtKey),
+		key: []byte(config.JwtKey.Value()),
 		err: errs.NewNotAuthorizedError("invalid token"),
 	}
 }

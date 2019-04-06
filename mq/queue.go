@@ -20,8 +20,8 @@ type MQ struct {
 func NewQueue() *MQ {
 	return &MQ{
 		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
-			config.UsersMqUser, config.UsersMqPassword,
-			config.UsersMqHost, config.UsersMqPort,
+			config.UsersMqUser.Value(), config.UsersMqPassword.Value(),
+			config.UsersMqHost.Value(), config.UsersMqPort.Value(),
 		),
 	}
 }
@@ -34,7 +34,7 @@ func (mq *MQ) OpenConnection() error {
 		}
 		conn, err = amqp.Dial(mq.connStr)
 		return err
-	}, config.UsersMqConnNumRet, config.UsersMqConnRetItv)
+	}, config.UsersMqConnNumRet.Value(), config.UsersMqConnRetItv.Value())
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (mq *MQ) OpenConnection() error {
 	}
 
 	mq.cq, err = ch.QueueDeclare(
-		config.CreatedUsersQueueName,
+		config.CreatedUsersQueueName.Value(),
 		false,
 		false,
 		false,
@@ -57,7 +57,7 @@ func (mq *MQ) OpenConnection() error {
 	}
 
 	mq.dq, err = ch.QueueDeclare(
-		config.DeletedUsersQueueName,
+		config.DeletedUsersQueueName.Value(),
 		false,
 		false,
 		false,

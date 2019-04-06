@@ -29,7 +29,7 @@ func main() {
 	_ = c.Provide(discovery.NewClient)
 	_ = c.Provide(api.NewServer)
 
-	if config.RepositoriesEnabled {
+	if config.RepositoriesEnabled.Value() {
 		_ = c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger.Fatal(err)
@@ -48,7 +48,7 @@ func main() {
 		}()
 	}
 
-	if config.QueuesEnabled {
+	if config.QueuesEnabled.Value() {
 		_ = c.Invoke(func(q *mq.MQ) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
@@ -78,7 +78,7 @@ func main() {
 			}
 		}()
 
-		beans.Logger.Infof("server: started; [port: %s]", config.ServerPort)
+		beans.Logger.Infof("server: started; [port: %s]", config.ServerPort.Value())
 	})
 	defer func() {
 		_ = c.Invoke(func(srv *api.Server) {
@@ -90,7 +90,7 @@ func main() {
 		})
 	}()
 
-	if config.DiscoveryClientEnabled {
+	if config.DiscoveryClientEnabled.Value() {
 		_ = c.Invoke(func(cl *discovery.Client) {
 			if err := cl.Register(); err != nil {
 				beans.Logger.Fatal(err)

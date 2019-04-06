@@ -30,7 +30,7 @@ func NewServer(
 ) *Server {
 	srv := &Server{
 		server: &http.Server{
-			Addr: fmt.Sprintf(":%s", config.ServerPort),
+			Addr: fmt.Sprintf(":%s", config.ServerPort.Value()),
 		},
 		profileValidator:   models.NewProfileValidator(),
 		profilesRepository: pR,

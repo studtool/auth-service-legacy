@@ -20,7 +20,7 @@ type Client struct {
 
 func NewClient() *Client {
 	cfg := api.DefaultConfig()
-	cfg.Address = config.DiscoveryServiceAddress
+	cfg.Address = config.DiscoveryServiceAddress.Value()
 
 	client, err := api.NewClient(cfg)
 	if err != nil {
@@ -38,7 +38,7 @@ func NewClient() *Client {
 	return &Client{
 		srvId:   srvId,
 		srvName: srvName,
-		srvTTL:  config.HealthCheckTimeout,
+		srvTTL:  config.HealthCheckTimeout.Value(),
 		agent:   client.Agent(),
 	}
 }
@@ -52,7 +52,7 @@ func (c *Client) Register() error {
 			return v
 		}(),
 		Port: func() int {
-			v, err := strconv.Atoi(config.ServerPort)
+			v, err := strconv.Atoi(config.ServerPort.Value())
 			if err != nil {
 				panic(err)
 			}
@@ -60,7 +60,7 @@ func (c *Client) Register() error {
 		}(),
 		Check: &api.AgentServiceCheck{
 			CheckID: "StateCheck",
-			TTL:     config.HealthCheckTimeout.String(),
+			TTL:     config.HealthCheckTimeout.Value().String(),
 		},
 	})
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *Client) Register() error {
 	}
 
 	beans.Logger.Infof("ServiceID: %s", c.srvId)
-	beans.Logger.Infof("Consul connection: %s", config.DiscoveryServiceAddress)
+	beans.Logger.Infof("Consul connection: %s", config.DiscoveryServiceAddress.Value())
 
 	go c.UpdateTTL()
 
