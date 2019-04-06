@@ -63,12 +63,12 @@ func NewServer(
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
+		http.MethodDelete: http.HandlerFunc(srv.endAllSessions),
+	})
+	mx.Handle(`/api/auth/session`, handlers.MethodHandler{
 		http.MethodGet:    http.HandlerFunc(srv.parseSession),
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
 		http.MethodDelete: http.HandlerFunc(srv.endSession),
-	})
-	mx.Handle(`/api/auth/sessions/{profile_id:`+idPattern+`}`, handlers.MethodHandler{
-		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.endAllSessions)),
 	})
 
 	srv.server.Handler = srv.withRecover(mx)
