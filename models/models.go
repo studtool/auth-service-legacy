@@ -8,8 +8,9 @@ import (
 
 //easyjson:json
 type Profile struct {
-	UserId      string      `json:"userId"`
-	Credentials Credentials `json:"credentials"`
+	UserId string `json:"userId"`
+
+	Credentials
 }
 
 //easyjson:json

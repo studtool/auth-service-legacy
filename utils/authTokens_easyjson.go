@@ -39,7 +39,9 @@ func easyjsonEc280810DecodeAuthServiceUtils(in *jlexer.Lexer, out *JwtClaims) {
 		case "userId":
 			out.UserId = string(in.String())
 		case "expTime":
-			out.ExpTime = string(in.String())
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.ExpTime).UnmarshalJSON(data))
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -72,7 +74,7 @@ func easyjsonEc280810EncodeAuthServiceUtils(out *jwriter.Writer, in JwtClaims) {
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.ExpTime))
+		out.Raw((in.ExpTime).MarshalJSON())
 	}
 	out.RawByte('}')
 }

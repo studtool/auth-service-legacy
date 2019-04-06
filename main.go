@@ -16,18 +16,18 @@ import (
 func main() {
 	c := dig.New()
 
-	_ = c.Provide(postgres.NewConnection)
-	_ = c.Provide(
+	panicOnErr(c.Provide(postgres.NewConnection))
+	panicOnErr(c.Provide(
 		postgres.NewProfilesRepository,
 		dig.As(new(repositories.ProfilesRepository)),
-	)
-	_ = c.Provide(
+	))
+	panicOnErr(c.Provide(
 		postgres.NewSessionsRepository,
 		dig.As(new(repositories.SessionsRepository)),
-	)
-	_ = c.Provide(mq.NewQueue)
-	_ = c.Provide(discovery.NewClient)
-	_ = c.Provide(api.NewServer)
+	))
+	panicOnErr(c.Provide(mq.NewQueue))
+	panicOnErr(c.Provide(discovery.NewClient))
+	panicOnErr(c.Provide(api.NewServer))
 
 	if config.RepositoriesEnabled.Value() {
 		_ = c.Invoke(func(conn *postgres.Connection) {
@@ -110,4 +110,10 @@ func main() {
 	}
 
 	<-ch
+}
+
+func panicOnErr(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

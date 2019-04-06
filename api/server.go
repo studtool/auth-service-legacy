@@ -4,11 +4,11 @@ import (
 	"auth-service/config"
 	"auth-service/models"
 	"auth-service/repositories"
+	"auth-service/utils"
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/studtool/common/jwt"
 	"net/http"
 )
 
@@ -17,9 +17,13 @@ const (
 )
 
 type Server struct {
-	server             *http.Server
-	profileValidator   *models.ProfileValidator
-	jwtManager         *jwt.Manager
+	server *http.Server
+
+	profileValidator *models.ProfileValidator
+
+	authTokenManager    *utils.AuthTokenManager
+	refreshTokenManager *utils.RefreshTokenManager
+
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 }
@@ -32,7 +36,12 @@ func NewServer(
 		server: &http.Server{
 			Addr: fmt.Sprintf(":%s", config.ServerPort.Value()),
 		},
-		profileValidator:   models.NewProfileValidator(),
+
+		profileValidator: models.NewProfileValidator(),
+
+		authTokenManager:    utils.NewAuthTokenManager(),
+		refreshTokenManager: utils.NewRefreshTokenManager(),
+
 		profilesRepository: pR,
 		sessionsRepository: sR,
 	}

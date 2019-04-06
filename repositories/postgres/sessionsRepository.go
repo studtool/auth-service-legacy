@@ -18,7 +18,7 @@ func NewSessionsRepository(conn *Connection) *SessionsRepository {
 	}
 }
 
-func (r *SessionsRepository) AddSession(session *models.Session) (res *errs.Error) {
+func (r *SessionsRepository) AddSession(session *models.Session) *errs.Error {
 	const query = `
         INSERT INTO session(session_id, user_id, refresh_token) VALUES ($1,$2,$3);
     `
@@ -62,6 +62,10 @@ func (r *SessionsRepository) FindUserIdByRefreshToken(session *models.Session) (
 	}
 
 	return nil
+}
+
+func (r *SessionsRepository) UpdateSessionByRefreshToken(session *models.Session) *errs.Error {
+	panic("implement me") //TODO
 }
 
 func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Error {

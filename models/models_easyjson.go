@@ -3,7 +3,6 @@
 package models
 
 import (
-	types "auth-service/types"
 	json "encoding/json"
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
@@ -44,7 +43,9 @@ func easyjsonD2b7633eDecodeAuthServiceModels(in *jlexer.Lexer, out *Session) {
 		case "refreshToken":
 			out.RefreshToken = string(in.String())
 		case "expireTime":
-			easyjsonD2b7633eDecodeAuthServiceTypes(in, &out.ExpireTime)
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.ExpireTime).UnmarshalJSON(data))
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -125,41 +126,6 @@ func (v *Session) UnmarshalJSON(data []byte) error {
 func (v *Session) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonD2b7633eDecodeAuthServiceModels(l, v)
 }
-func easyjsonD2b7633eDecodeAuthServiceTypes(in *jlexer.Lexer, out *types.DateTime) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeString()
-		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
-		switch key {
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjsonD2b7633eEncodeAuthServiceTypes(out *jwriter.Writer, in types.DateTime) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	out.RawByte('}')
-}
 func easyjsonD2b7633eDecodeAuthServiceModels1(in *jlexer.Lexer, out *Profile) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
@@ -181,8 +147,10 @@ func easyjsonD2b7633eDecodeAuthServiceModels1(in *jlexer.Lexer, out *Profile) {
 		switch key {
 		case "userId":
 			out.UserId = string(in.String())
-		case "credentials":
-			(out.Credentials).UnmarshalEasyJSON(in)
+		case "email":
+			out.Email = string(in.String())
+		case "password":
+			out.Password = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -208,14 +176,24 @@ func easyjsonD2b7633eEncodeAuthServiceModels1(out *jwriter.Writer, in Profile) {
 		out.String(string(in.UserId))
 	}
 	{
-		const prefix string = ",\"credentials\":"
+		const prefix string = ",\"email\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
 		} else {
 			out.RawString(prefix)
 		}
-		(in.Credentials).MarshalEasyJSON(out)
+		out.String(string(in.Email))
+	}
+	{
+		const prefix string = ",\"password\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Password))
 	}
 	out.RawByte('}')
 }

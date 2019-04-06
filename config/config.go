@@ -8,7 +8,8 @@ import (
 var (
 	ServerPort = config.NewStringDefault("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
-	JwtKey = config.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
+	JwtKey     = config.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
+	JwtExpTime = config.NewTimeSecsDefault("STUDTOOL_JWT_EXP_TIME", 5*time.Minute)
 
 	RepositoriesEnabled    = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_REPOSITORIES_ENABLED", false)
 	DiscoveryClientEnabled = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)

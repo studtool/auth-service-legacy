@@ -4,6 +4,7 @@ package utils
 
 import (
 	"auth-service/config"
+	"auth-service/types"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mailru/easyjson"
 	"github.com/studtool/common/errs"
@@ -11,8 +12,8 @@ import (
 
 //easyjson:json
 type JwtClaims struct {
-	UserId  string `json:"userId"`
-	ExpTime string `json:"expTime"`
+	UserId  string         `json:"userId"`
+	ExpTime types.DateTime `json:"expTime"`
 }
 
 type AuthTokenManager struct {
