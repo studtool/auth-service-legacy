@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/mailru/easyjson"
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
 	"io/ioutil"
 	"net/http"
@@ -23,8 +24,25 @@ func (srv *Server) parseRequestBody(v easyjson.Unmarshaler, r *http.Request) *er
 	return nil
 }
 
+func (srv *Server) setUserId(w http.ResponseWriter, userId string) {
+	w.Header().Set("X-User-Id", userId)
+}
+
 func (srv *Server) parseUserId(r *http.Request) string {
 	return r.Header.Get("X-User-Id")
+}
+
+func (srv *Server) parseAuthToken(r *http.Request) string {
+	t := r.Header.Get("Authorization")
+
+	const bearerLen = len("Bearer:")
+
+	n := len(t)
+	if n <= bearerLen {
+		return consts.EmptyString
+	}
+
+	return t[n:]
 }
 
 func (srv *Server) parseRefreshToken(r *http.Request) string {

@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/studtool/common/errs"
 	"net/http"
 )
 
@@ -23,6 +24,8 @@ type Server struct {
 
 	authTokenManager    *utils.AuthTokenManager
 	refreshTokenManager *utils.RefreshTokenManager
+
+	noAuthTokenErr *errs.Error
 
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
@@ -42,6 +45,8 @@ func NewServer(
 		authTokenManager:    utils.NewAuthTokenManager(),
 		refreshTokenManager: utils.NewRefreshTokenManager(),
 
+		noAuthTokenErr: errs.NewNotAuthorizedError("authorization token required"),
+
 		profilesRepository: pR,
 		sessionsRepository: sR,
 	}
@@ -58,8 +63,9 @@ func NewServer(
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
+		http.MethodGet:    http.HandlerFunc(srv.parseSession),
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
-		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.endSession)),
+		http.MethodDelete: http.HandlerFunc(srv.endSession),
 	})
 	mx.Handle(`/api/auth/sessions/{profile_id:`+idPattern+`}`, handlers.MethodHandler{
 		http.MethodDelete: srv.withAuth(http.HandlerFunc(srv.endAllSessions)),

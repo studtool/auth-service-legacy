@@ -5,6 +5,7 @@ import (
 	"auth-service/models"
 	"auth-service/types"
 	"auth-service/utils"
+	"github.com/studtool/common/consts"
 	"net/http"
 	"time"
 )
@@ -50,6 +51,23 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	srv.writeBodyJSON(w, http.StatusOK, session)
+}
+
+func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
+	token := srv.parseAuthToken(r)
+	if token == consts.EmptyString {
+		srv.writeErrJSON(w, srv.noAuthTokenErr)
+		return
+	}
+
+	claims, err := srv.authTokenManager.ParseToken(token)
+	if err != nil {
+		srv.writeErrJSON(w, srv.noAuthTokenErr)
+		return
+	}
+
+	srv.setUserId(w, claims.UserId)
+	srv.writeOk(w)
 }
 
 func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
