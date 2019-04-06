@@ -27,6 +27,10 @@ func (srv *Server) parseUserId(r *http.Request) string {
 	return r.Header.Get("X-User-Id")
 }
 
+func (srv *Server) parseRefreshToken(r *http.Request) string {
+	return r.Header.Get("X-Refresh-Token")
+}
+
 func (srv *Server) parseProfileId(r *http.Request) string {
 	return mux.Vars(r)["profile_id"]
 }

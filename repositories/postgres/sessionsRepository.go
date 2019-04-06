@@ -64,10 +64,30 @@ func (r *SessionsRepository) FindUserIdByRefreshToken(session *models.Session) (
 	return nil
 }
 
-func (r *SessionsRepository) UpdateSessionByRefreshToken(session *models.Session) *errs.Error {
-	panic("implement me") //TODO
+func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Error {
+	const query = `
+        DELETE FROM session WHERE refresh_token = $1;
+    `
+
+	if _, err := r.conn.db.Exec(query, &token); err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+
+	return nil
 }
 
-func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Error {
-	panic("implement me") //TODO
+func (r *SessionsRepository) DeleteAllSessionsByRefreshToken(token string) *errs.Error {
+	const query = `
+        DELETE FROM session WHERE user_id = (
+            SELECT s.user_id FROM session s
+            WHERE s.refresh_token = $1
+        );
+    `
+
+	_, err := r.conn.db.Exec(query, &token)
+	if err != nil {
+		return errs.NewInternalError(err.Error())
+	}
+
+	return nil
 }

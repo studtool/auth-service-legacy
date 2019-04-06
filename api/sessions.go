@@ -53,13 +53,46 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	session := &models.Session{
+		RefreshToken: srv.parseRefreshToken(r),
+	}
+	if err := srv.sessionsRepository.FindUserIdByRefreshToken(session); err != nil {
+		srv.writeErrJSON(w, err)
+		return
+	}
+
+	jwtClaims := &utils.JwtClaims{
+		UserId:  session.UserId,
+		ExpTime: session.ExpireTime,
+	}
+	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
+		srv.writeErrJSON(w, err)
+		return
+	} else {
+		session.AuthToken = t
+	}
+
+	srv.writeBodyJSON(w, http.StatusOK, session)
 }
 
 func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	token := srv.parseRefreshToken(r)
+
+	if err := srv.sessionsRepository.DeleteSessionByRefreshToken(token); err != nil {
+		srv.writeErrJSON(w, err)
+		return
+	}
+
+	srv.writeOk(w)
 }
 
 func (srv *Server) endAllSessions(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	token := srv.parseRefreshToken(r)
+
+	if err := srv.sessionsRepository.DeleteAllSessionsByRefreshToken(token); err != nil {
+		srv.writeErrJSON(w, err)
+		return
+	}
+
+	srv.writeOk(w)
 }
