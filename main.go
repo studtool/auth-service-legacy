@@ -8,6 +8,7 @@ import (
 	"auth-service/mq"
 	"auth-service/repositories"
 	"auth-service/repositories/postgres"
+	"fmt"
 	"go.uber.org/dig"
 	"os"
 	"os/signal"
@@ -78,7 +79,7 @@ func main() {
 			}
 		}()
 
-		beans.Logger.Infof("server: started; [port: %s]", config.ServerPort.Value())
+		beans.Logger.Info(fmt.Sprintf("server: started; [port: %s]", config.ServerPort.Value()))
 	})
 	defer func() {
 		_ = c.Invoke(func(srv *api.Server) {

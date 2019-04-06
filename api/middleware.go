@@ -2,6 +2,7 @@ package api
 
 import (
 	"auth-service/beans"
+	"fmt"
 	"net/http"
 )
 
@@ -10,7 +11,7 @@ func (srv *Server) withRecover(h http.Handler) http.Handler {
 		func(w http.ResponseWriter, r *http.Request) {
 			defer func() {
 				if r := recover(); r != nil {
-					beans.Logger.Errorf("panic: %v", r)
+					beans.Logger.Error(fmt.Sprintf("panic: %v", r))
 					w.WriteHeader(http.StatusInternalServerError)
 				}
 			}()

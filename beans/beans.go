@@ -1,9 +1,9 @@
 package beans
 
 import (
-	"github.com/sirupsen/logrus"
+	"github.com/studtool/common/logs"
 )
 
 var (
-	Logger = logrus.StandardLogger()
+	Logger = logs.NewLogger()
 )

@@ -67,8 +67,8 @@ func (c *Client) Register() error {
 		return err
 	}
 
-	beans.Logger.Infof("ServiceID: %s", c.srvId)
-	beans.Logger.Infof("Consul connection: %s", config.DiscoveryServiceAddress.Value())
+	beans.Logger.Info(fmt.Sprintf("ServiceID: %s", c.srvId))
+	beans.Logger.Info(fmt.Sprintf("Consul connection: %s", config.DiscoveryServiceAddress.Value()))
 
 	go c.UpdateTTL()
 
@@ -80,7 +80,7 @@ func (c *Client) Unregister() error {
 		return err
 	}
 
-	beans.Logger.Infof("Consul connection closed")
+	beans.Logger.Info("Consul connection closed")
 
 	return nil
 }
