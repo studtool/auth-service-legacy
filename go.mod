@@ -25,7 +25,7 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/sirupsen/logrus v1.4.1
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
-	github.com/studtool/common v0.0.0-20190406125659-3e2ac1486ac3
+	github.com/studtool/common v0.0.0-20190406141107-6ed72dbb5e2f
 	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 	golang.org/x/crypto v0.0.0-20190404164418-38d8ce5564a5 // indirect
 	golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3 // indirect

@@ -38,9 +38,8 @@ github.com/mitchellh/mapstructure
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190406125659-3e2ac1486ac3
+# github.com/studtool/common v0.0.0-20190406141107-6ed72dbb5e2f
 github.com/studtool/common/errs
-github.com/studtool/common/jwt
 github.com/studtool/common/config
 github.com/studtool/common/consts
 # go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
