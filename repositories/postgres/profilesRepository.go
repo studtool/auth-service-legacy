@@ -42,6 +42,15 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	return nil
 }
 
+func (r *ProfilesRepository) FindProfileByCredentials(p *models.Profile) *errs.Error {
+	const query = `
+        SELECT p.user_id FROM profile p
+        WHERE p.email = $1 AND p.password = $2;
+    `
+
+	panic("implement me") //TODO
+}
+
 func (r *ProfilesRepository) UpdateCredentials(c *models.Credentials) *errs.Error {
 	panic("implement me") //TODO
 }

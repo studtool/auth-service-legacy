@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/studtool/common/jwt"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ const (
 type Server struct {
 	server             *http.Server
 	profileValidator   *models.ProfileValidator
+	jwtManager         *jwt.Manager
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 }
