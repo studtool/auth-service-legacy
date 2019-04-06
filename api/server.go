@@ -1,16 +1,18 @@
 package api
 
 import (
-	"auth-service/config"
-	"auth-service/models"
-	"auth-service/repositories"
-	"auth-service/utils"
 	"context"
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/studtool/common/errs"
 	"net/http"
+
+	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/config"
+	"github.com/studtool/auth-service/models"
+	"github.com/studtool/auth-service/repositories"
+	"github.com/studtool/auth-service/utils"
 )
 
 const (

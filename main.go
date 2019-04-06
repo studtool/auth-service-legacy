@@ -1,17 +1,18 @@
 package main
 
 import (
-	"auth-service/api"
-	"auth-service/beans"
-	"auth-service/config"
-	"auth-service/discovery"
-	"auth-service/mq"
-	"auth-service/repositories"
-	"auth-service/repositories/postgres"
 	"fmt"
 	"go.uber.org/dig"
 	"os"
 	"os/signal"
+
+	"github.com/studtool/auth-service/api"
+	"github.com/studtool/auth-service/beans"
+	"github.com/studtool/auth-service/config"
+	"github.com/studtool/auth-service/discovery"
+	"github.com/studtool/auth-service/mq"
+	"github.com/studtool/auth-service/repositories"
+	"github.com/studtool/auth-service/repositories/postgres"
 )
 
 func main() {

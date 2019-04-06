@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonEc280810DecodeAuthServiceUtils(in *jlexer.Lexer, out *JwtClaims) {
+func easyjsonEc280810DecodeGithubComStudtoolAuthServiceUtils(in *jlexer.Lexer, out *JwtClaims) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -52,7 +52,7 @@ func easyjsonEc280810DecodeAuthServiceUtils(in *jlexer.Lexer, out *JwtClaims) {
 		in.Consumed()
 	}
 }
-func easyjsonEc280810EncodeAuthServiceUtils(out *jwriter.Writer, in JwtClaims) {
+func easyjsonEc280810EncodeGithubComStudtoolAuthServiceUtils(out *jwriter.Writer, in JwtClaims) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -82,23 +82,23 @@ func easyjsonEc280810EncodeAuthServiceUtils(out *jwriter.Writer, in JwtClaims) {
 // MarshalJSON supports json.Marshaler interface
 func (v JwtClaims) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonEc280810EncodeAuthServiceUtils(&w, v)
+	easyjsonEc280810EncodeGithubComStudtoolAuthServiceUtils(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v JwtClaims) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonEc280810EncodeAuthServiceUtils(w, v)
+	easyjsonEc280810EncodeGithubComStudtoolAuthServiceUtils(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *JwtClaims) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonEc280810DecodeAuthServiceUtils(&r, v)
+	easyjsonEc280810DecodeGithubComStudtoolAuthServiceUtils(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *JwtClaims) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonEc280810DecodeAuthServiceUtils(l, v)
+	easyjsonEc280810DecodeGithubComStudtoolAuthServiceUtils(l, v)
 }

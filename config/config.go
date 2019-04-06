@@ -1,8 +1,9 @@
 package config
 
 import (
-	"github.com/studtool/common/config"
 	"time"
+
+	"github.com/studtool/common/config"
 )
 
 var (

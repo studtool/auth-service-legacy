@@ -1,13 +1,15 @@
 package api
 
 import (
-	"auth-service/config"
-	"auth-service/models"
-	"auth-service/types"
-	"auth-service/utils"
-	"github.com/studtool/common/consts"
 	"net/http"
 	"time"
+
+	"github.com/studtool/common/consts"
+
+	"github.com/studtool/auth-service/config"
+	"github.com/studtool/auth-service/models"
+	"github.com/studtool/auth-service/types"
+	"github.com/studtool/auth-service/utils"
 )
 
 func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {

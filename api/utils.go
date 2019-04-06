@@ -1,14 +1,16 @@
 package api
 
 import (
-	"auth-service/beans"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/mailru/easyjson"
-	"github.com/studtool/common/consts"
-	"github.com/studtool/common/errs"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/studtool/common/consts"
+	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/beans"
 )
 
 func (srv *Server) parseRequestBody(v easyjson.Unmarshaler, r *http.Request) *errs.Error {

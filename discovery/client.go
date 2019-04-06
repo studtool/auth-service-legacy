@@ -1,14 +1,15 @@
 package discovery
 
 import (
-	"auth-service/beans"
-	"auth-service/config"
 	"fmt"
 	"github.com/hashicorp/consul/api"
 	"github.com/hashicorp/go-uuid"
 	"os"
 	"strconv"
 	"time"
+
+	"github.com/studtool/auth-service/beans"
+	"github.com/studtool/auth-service/config"
 )
 
 type Client struct {

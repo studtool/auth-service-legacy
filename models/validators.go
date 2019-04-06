@@ -2,8 +2,9 @@ package models
 
 import (
 	"fmt"
-	"github.com/studtool/common/errs"
 	"regexp"
+
+	"github.com/studtool/common/errs"
 )
 
 type ProfileValidator struct {

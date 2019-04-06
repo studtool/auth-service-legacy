@@ -1,12 +1,14 @@
 package mq
 
 import (
-	"auth-service/beans"
-	"auth-service/config"
-	"auth-service/utils"
 	"fmt"
 	"github.com/streadway/amqp"
+
 	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/beans"
+	"github.com/studtool/auth-service/config"
+	"github.com/studtool/auth-service/utils"
 )
 
 type MQ struct {

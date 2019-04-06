@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"auth-service/models"
+	"github.com/studtool/auth-service/models"
 )
 
 func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {

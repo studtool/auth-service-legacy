@@ -1,8 +1,9 @@
 package repositories
 
 import (
-	"auth-service/models"
 	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/models"
 )
 
 type SessionsRepository interface {

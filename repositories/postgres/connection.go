@@ -1,10 +1,11 @@
 package postgres
 
 import (
-	"auth-service/config"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
+
+	"github.com/studtool/auth-service/config"
 )
 
 type Connection struct {

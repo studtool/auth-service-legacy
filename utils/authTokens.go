@@ -3,12 +3,13 @@ package utils
 //go:generate easyjson
 
 import (
-	"auth-service/config"
-	"auth-service/types"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
 
 	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/config"
+	"github.com/studtool/auth-service/types"
 )
 
 //easyjson:json

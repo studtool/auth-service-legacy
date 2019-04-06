@@ -1,9 +1,11 @@
 package postgres
 
 import (
-	"auth-service/models"
 	"github.com/hashicorp/go-uuid"
+
 	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/models"
 )
 
 type SessionsRepository struct {

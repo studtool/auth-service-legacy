@@ -1,9 +1,10 @@
 package api
 
 import (
-	"auth-service/beans"
 	"fmt"
 	"net/http"
+
+	"github.com/studtool/auth-service/beans"
 )
 
 func (srv *Server) withRecover(h http.Handler) http.Handler {
