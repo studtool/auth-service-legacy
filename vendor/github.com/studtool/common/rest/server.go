@@ -35,9 +35,13 @@ func (srv *Server) SetLogger(log *logs.Logger) {
 }
 
 func (srv *Server) Run() error {
+	srv.logger.Info(fmt.Sprintf("started [%s]", srv.server.Addr))
+
 	return srv.server.ListenAndServe()
 }
 
 func (srv *Server) Shutdown() error {
+	srv.logger.Info("shutdown")
+
 	return srv.server.Shutdown(context.TODO())
 }

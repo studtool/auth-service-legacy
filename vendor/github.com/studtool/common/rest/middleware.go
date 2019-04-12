@@ -11,6 +11,7 @@ func (srv *Server) WithRecover(h http.Handler) http.Handler {
 			defer func() {
 				if r := recover(); r != nil {
 					srv.logger.Error(fmt.Sprintf("panic: %v", r))
+
 					w.WriteHeader(http.StatusInternalServerError)
 				}
 			}()

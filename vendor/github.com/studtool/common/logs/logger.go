@@ -10,7 +10,11 @@ type Logger struct {
 
 func NewLogger() *Logger {
 	return &Logger{
-		logger: logrus.StandardLogger(),
+		logger: func() *logrus.Logger {
+			log := logrus.StandardLogger()
+			log.SetFormatter(&logrus.JSONFormatter{})
+			return log
+		}(),
 	}
 }
 

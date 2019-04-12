@@ -60,6 +60,7 @@ func (srv *Server) WriteOk(w http.ResponseWriter) {
 func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 	if err.Type == errs.Internal {
 		srv.logger.Error(err.Message)
+
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -79,6 +80,9 @@ func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 
 	case errs.NotAuthorized:
 		srv.WriteErrBodyJSON(w, http.StatusUnauthorized, err)
+
+	case errs.PermissionDenied:
+		srv.WriteErrBodyJSON(w, http.StatusForbidden, err)
 
 	default:
 		panic(fmt.Sprintf("no status code for error. Type: %d, Message: %s", err.Type, err.Message))
