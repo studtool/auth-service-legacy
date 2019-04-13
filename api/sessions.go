@@ -31,7 +31,7 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 
 	jwtClaims := &utils.JwtClaims{
 		UserId:  session.UserId,
-		ExpTime: session.ExpireTime,
+		ExpTime: session.ExpireTime.String(),
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
 		srv.server.WriteErrJSON(w, err)
@@ -83,7 +83,7 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 
 	jwtClaims := &utils.JwtClaims{
 		UserId:  session.UserId,
-		ExpTime: session.ExpireTime,
+		ExpTime: session.ExpireTime.String(),
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
 		srv.server.WriteErrJSON(w, err)

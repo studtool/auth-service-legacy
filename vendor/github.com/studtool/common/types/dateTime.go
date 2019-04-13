@@ -15,7 +15,15 @@ func (t DateTime) MarshalJSON() ([]byte, error) {
 }
 
 func (t *DateTime) UnmarshalJSON(b []byte) error {
-	tm, err := time.Parse(DateTimeLayout, string(b))
+	return t.Parse(string(b))
+}
+
+func (t DateTime) String() string {
+	return time.Time(t).Format(DateTimeLayout)
+}
+
+func (t *DateTime) Parse(s string) error {
+	tm, err := time.Parse(DateTimeLayout, s)
 	if err != nil {
 		return err
 	}

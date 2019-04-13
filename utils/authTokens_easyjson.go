@@ -39,9 +39,7 @@ func easyjsonEc280810DecodeGithubComStudtoolAuthServiceUtils(in *jlexer.Lexer, o
 		case "UserId":
 			out.UserId = string(in.String())
 		case "ExpTime":
-			if data := in.Raw(); in.Ok() {
-				in.AddError((out.ExpTime).UnmarshalJSON(data))
-			}
+			out.ExpTime = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -74,7 +72,7 @@ func easyjsonEc280810EncodeGithubComStudtoolAuthServiceUtils(out *jwriter.Writer
 		} else {
 			out.RawString(prefix)
 		}
-		out.Raw((in.ExpTime).MarshalJSON())
+		out.String(string(in.ExpTime))
 	}
 	out.RawByte('}')
 }

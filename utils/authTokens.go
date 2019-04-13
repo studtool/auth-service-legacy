@@ -7,15 +7,14 @@ import (
 	"github.com/mitchellh/mapstructure"
 
 	"github.com/studtool/common/errs"
-	"github.com/studtool/common/types"
 
 	"github.com/studtool/auth-service/config"
 )
 
 //easyjson:json
 type JwtClaims struct {
-	UserId  string         `mapstructure:"userId"`
-	ExpTime types.DateTime `mapstructure:"expTime"`
+	UserId  string `mapstructure:"userId"`
+	ExpTime string `mapstructure:"expTime"`
 }
 
 type AuthTokenManager struct {
