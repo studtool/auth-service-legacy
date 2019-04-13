@@ -34,10 +34,9 @@ type Server struct {
 	sessionsRepository repositories.SessionsRepository
 }
 
-func NewServer(
-	pR repositories.ProfilesRepository,
-	sR repositories.SessionsRepository,
-) *Server {
+func NewServer(pR repositories.ProfilesRepository,
+	sR repositories.SessionsRepository) *Server {
+
 	srv := &Server{
 		server: rest.NewServer(
 			rest.ServerConfig{
