@@ -1,10 +1,13 @@
 package rest
 
 import (
+	"bufio"
 	"fmt"
-	"github.com/mailru/easyjson"
 	"io/ioutil"
+	"net"
 	"net/http"
+
+	"github.com/mailru/easyjson"
 
 	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
@@ -100,4 +103,26 @@ func (srv *Server) WriteErrBodyJSON(w http.ResponseWriter, status int, err *errs
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(err.JSON())
+}
+
+type LoggingResponseWriter struct {
+	status int
+	writer http.ResponseWriter
+}
+
+func (w *LoggingResponseWriter) Header() http.Header {
+	return w.writer.Header()
+}
+
+func (w *LoggingResponseWriter) Write(b []byte) (int, error) {
+	return w.writer.Write(b)
+}
+
+func (w *LoggingResponseWriter) WriteHeader(status int) {
+	w.status = status
+	w.writer.WriteHeader(status)
+}
+
+func (w *LoggingResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	return w.writer.(http.Hijacker).Hijack()
 }

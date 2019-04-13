@@ -8,8 +8,14 @@ import (
 func (srv *Server) WithLogs(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			srv.logger.Info(r.RequestURI)
-			h.ServeHTTP(w, r)
+			wr := &LoggingResponseWriter{
+				writer: w,
+			}
+			h.ServeHTTP(wr, r)
+
+			srv.logger.Info(
+				fmt.Sprintf("%s %s %d", r.Method, r.RequestURI, wr.status),
+			)
 		},
 	)
 }

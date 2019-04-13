@@ -9,6 +9,8 @@ import (
 var (
 	ServerPort = config.NewStringDefault("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
+	ShouldLogRequests = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUEST", true)
+
 	JwtKey     = config.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
 	JwtExpTime = config.NewTimeSecsDefault("STUDTOOL_JWT_EXP_TIME", 5*time.Minute)
 
