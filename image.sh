@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 command="$1"
-image="studtool/auth-service:$(head -n 1 version.txt)"
+image="$(head -n 1 ./service.txt):$(head -n 1 ./version.txt)"
 
 if [[ "$command" = "build" ]]; then
   docker build -t "$image" .
