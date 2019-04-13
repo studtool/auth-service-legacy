@@ -23,7 +23,13 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = srv.usersQueue.SendUserCreated(profile.UserId) //TODO handle error
+	if err := srv.usersQueue.SendUserCreated(profile.UserId); err != nil {
+		if err := srv.profilesRepository.DeleteProfileById(profile); err != nil {
+			//TODO find a good way to handle this
+			srv.server.WriteErrJSON(w, err)
+			return
+		}
+	}
 
 	srv.server.WriteOk(w)
 }
