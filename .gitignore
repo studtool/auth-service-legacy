@@ -4,3 +4,4 @@
 ### dev ###
 *.log
 .vagrant
+env.sh

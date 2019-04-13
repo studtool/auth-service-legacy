@@ -23,6 +23,8 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_ = srv.usersQueue.SendUserCreated(profile.UserId) //TODO handle error
+
 	srv.server.WriteOk(w)
 }
 

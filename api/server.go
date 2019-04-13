@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/studtool/auth-service/beans"
+	"github.com/studtool/auth-service/mq"
 	"net/http"
 
 	"github.com/studtool/common/consts"
@@ -32,10 +33,12 @@ type Server struct {
 
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
+
+	usersQueue *mq.MQ
 }
 
-func NewServer(pR repositories.ProfilesRepository,
-	sR repositories.SessionsRepository) *Server {
+func NewServer(pRepo repositories.ProfilesRepository,
+	sRepo repositories.SessionsRepository, uQueue *mq.MQ) *Server {
 
 	srv := &Server{
 		server: rest.NewServer(
@@ -52,8 +55,10 @@ func NewServer(pR repositories.ProfilesRepository,
 
 		noAuthTokenErr: errs.NewNotAuthorizedError("authorization token required"),
 
-		profilesRepository: pR,
-		sessionsRepository: sR,
+		profilesRepository: pRepo,
+		sessionsRepository: sRepo,
+
+		usersQueue: uQueue,
 	}
 
 	mx := mux.NewRouter()
