@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+func (srv *Server) WithLogs(h http.Handler) http.Handler {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			srv.logger.Info(r.RequestURI)
+			h.ServeHTTP(w, r)
+		},
+	)
+}
+
 func (srv *Server) WithRecover(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

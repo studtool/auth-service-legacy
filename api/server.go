@@ -82,7 +82,7 @@ func NewServer(pRepo repositories.ProfilesRepository,
 	})
 
 	srv.server.SetLogger(beans.Logger)
-	srv.server.SetHandler(srv.server.WithRecover(mx))
+	srv.server.SetHandler(srv.server.WithLogs(srv.server.WithRecover(mx)))
 
 	return srv
 }
