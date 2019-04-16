@@ -1,4 +1,4 @@
-module github.com/studtool/auth-service
+module github.com/studtool/auth-service // v.0.0.1
 
 go 1.12
 
