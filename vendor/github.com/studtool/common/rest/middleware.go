@@ -3,6 +3,8 @@ package rest
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
 func (srv *Server) WithLogs(h http.Handler) http.Handler {
@@ -42,6 +44,30 @@ func (srv *Server) WithAuth(h http.Handler) http.Handler {
 			if userId == "" {
 				w.WriteHeader(http.StatusUnauthorized)
 			}
+			h.ServeHTTP(w, r)
+		},
+	)
+}
+
+type CORS struct {
+	Origins     []string
+	Methods     []string
+	Headers     []string
+	Credentials bool
+}
+
+func (srv *Server) WithCORS(h http.Handler, cors CORS) http.Handler {
+	origins := strings.Join(cors.Origins, ",")
+	methods := strings.Join(cors.Methods, ",")
+	headers := strings.Join(cors.Headers, ",")
+	credentials := strconv.FormatBool(cors.Credentials)
+
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", origins)
+			w.Header().Set("Access-Control-Allow-Credentials", credentials)
+			w.Header().Set("Access-Control-Allow-Methods", methods)
+			w.Header().Set("Access-Control-Allow-Headers", headers)
 			h.ServeHTTP(w, r)
 		},
 	)

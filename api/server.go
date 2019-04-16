@@ -87,6 +87,22 @@ func NewServer(pRepo repositories.ProfilesRepository,
 	if config.ShouldLogRequests.Value() {
 		h = srv.server.WithLogs(h)
 	}
+	if config.ShouldAllowCORS.Value() {
+		h = srv.server.WithCORS(h, rest.CORS{
+			Origins: []string{"*"},
+			Methods: []string{
+				http.MethodGet, http.MethodHead,
+				http.MethodPost, http.MethodPatch,
+				http.MethodDelete, http.MethodOptions,
+			},
+			Headers: []string{
+				"User-Agent", "Authorization",
+				"Content-Type", "Content-Length",
+			},
+			Credentials: false,
+		})
+	}
+
 	srv.server.SetHandler(h)
 
 	return srv

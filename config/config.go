@@ -9,6 +9,7 @@ import (
 var (
 	ServerPort = config.NewStringDefault("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
+	ShouldAllowCORS   = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ALLOW_CORS", true)
 	ShouldLogRequests = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUEST", true)
 
 	JwtKey     = config.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
