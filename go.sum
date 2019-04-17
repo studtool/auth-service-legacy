@@ -97,8 +97,8 @@ github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/studtool/common v0.0.0-20190416124930-3acbe565f88f h1:8dLnMqKsV0ICYFUosU1e+OTW6dO+HmQySV+zTvj2GZA=
-github.com/studtool/common v0.0.0-20190416124930-3acbe565f88f/go.mod h1:ZHurKIugwp6Y61TPmCbTjvl+OjKdSzrNbv/wLN0Nh0E=
+github.com/studtool/common v0.0.0-20190417210427-897946a964b1 h1:5h7s5hBGfosk4QONGJr/MdNujD3+NC7GXBwZGPJjUN0=
+github.com/studtool/common v0.0.0-20190417210427-897946a964b1/go.mod h1:cIk9yp0pKKpgT8wg0Efvmt+KjpOYSEkG0Tupq24EJrE=
 go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3 h1:n9Hy12XGW9W1aQgR9ZJDQoWWL+V3sJmwDGOuT73H+qw=
 go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3/go.mod h1:z+dSd2TP9Usi48jL8M3v63iSBVkiwtVyMKxMZYYauPg=
 golang.org/x/crypto v0.0.0-20181029021203-45a5f77698d3 h1:KYQXGkl6vs02hK7pK4eIbw0NpNPedieTSTEiJ//bwGs=
@@ -122,8 +122,6 @@ golang.org/x/sys v0.0.0-20181026203630-95b1ffbd15a5/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e h1:nFYrTHrdrAOpShe27kaFHjsqYSEQ0KWqdWLu3xuZJts=
 golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20190412213103-97732733099d h1:+R4KGOnez64A81RvjARKc4UT5/tI9ujCIVX+P5KiHuI=
-golang.org/x/sys v0.0.0-20190412213103-97732733099d/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20190416152802-12500544f89f h1:1ZH9RnjNgLzh6YrsRp/c6ddZ8Lq0fq9xztNOoWJ2sz4=
 golang.org/x/sys v0.0.0-20190416152802-12500544f89f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
