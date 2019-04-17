@@ -51,5 +51,5 @@ github.com/studtool/common/utils
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect
 go.uber.org/dig/internal/dot
-# golang.org/x/sys v0.0.0-20190416124237-ebb4019f01c9
+# golang.org/x/sys v0.0.0-20190416152802-12500544f89f
 golang.org/x/sys/unix
