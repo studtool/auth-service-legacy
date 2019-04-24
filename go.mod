@@ -3,6 +3,7 @@ module github.com/studtool/auth-service // v0.0.1
 go 1.12
 
 require (
+	github.com/armon/go-metrics v0.0.0-20190423201044-2801d9688273 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/google/btree v1.0.0 // indirect
 	github.com/gorilla/handlers v1.4.0
@@ -21,12 +22,10 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.1.2
-	github.com/pascaldekloe/goe v0.1.0 // indirect
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
-	github.com/studtool/common v0.0.0-20190420232607-dfa86944cc31
+	github.com/studtool/common v0.0.0-20190424170642-28858c59f769
 	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
-	golang.org/x/crypto v0.0.0-20190418165655-df01cb2cc480 // indirect
-	golang.org/x/net v0.0.0-20190420063019-afa5a82059c6 // indirect
-	golang.org/x/sync v0.0.0-20190412183630-56d357773e84 // indirect
+	golang.org/x/crypto v0.0.0-20190422183909-d864b10871cd // indirect
+	golang.org/x/net v0.0.0-20190424112056-4829fb13d2c6 // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58 // indirect
 )

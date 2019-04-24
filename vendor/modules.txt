@@ -1,4 +1,4 @@
-# github.com/armon/go-metrics v0.0.0-20180917152333-f0300d1749da
+# github.com/armon/go-metrics v0.0.0-20190423201044-2801d9688273
 github.com/armon/go-metrics
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
@@ -39,7 +39,7 @@ github.com/mitchellh/mapstructure
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190420232607-dfa86944cc31
+# github.com/studtool/common v0.0.0-20190424170642-28858c59f769
 github.com/studtool/common/consts
 github.com/studtool/common/errs
 github.com/studtool/common/rest
@@ -51,5 +51,5 @@ github.com/studtool/common/utils
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect
 go.uber.org/dig/internal/dot
-# golang.org/x/sys v0.0.0-20190419153524-e8e3143a4f4a
+# golang.org/x/sys v0.0.0-20190424160641-4347357a82bc
 golang.org/x/sys/unix
