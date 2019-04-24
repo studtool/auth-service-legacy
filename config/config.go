@@ -1,10 +1,11 @@
 package config
 
 import (
-	"github.com/studtool/auth-service/beans"
 	"time"
 
 	"github.com/studtool/common/config"
+
+	"github.com/studtool/auth-service/beans"
 )
 
 var (
