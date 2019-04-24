@@ -33,6 +33,10 @@ func parseString(name string, defVal string, isRequired bool) *StringVar {
 		}
 	}
 
+	if logger != nil {
+		logger.Info(fmt.Sprintf("%s=%s", name, v))
+	}
+
 	return &StringVar{
 		value: v,
 	}

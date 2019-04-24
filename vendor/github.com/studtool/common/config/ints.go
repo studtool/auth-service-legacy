@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 
@@ -38,6 +39,10 @@ func parseInt(name string, defVal int, isRequired bool) *IntVar {
 		if t, err = strconv.Atoi(v); err != nil {
 			panicInvalidFormat(name, "[INTEGER]")
 		}
+	}
+
+	if logger != nil {
+		logger.Info(fmt.Sprintf("%s=%v", name, t))
 	}
 
 	return &IntVar{

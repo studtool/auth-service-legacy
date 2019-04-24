@@ -56,6 +56,10 @@ func parseFlag(name string, defVal bool, isRequired bool) *FlagVar {
 		}
 	}
 
+	if logger != nil {
+		logger.Info(fmt.Sprintf("%s=%v", name, f))
+	}
+
 	return &FlagVar{
 		value: f,
 	}

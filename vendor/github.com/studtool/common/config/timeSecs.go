@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -47,6 +48,10 @@ func parseTimeSecs(name string, defVal time.Duration, isRequired bool) *TimeSecs
 		} else {
 			panicInvalidFormat(name, "[INTEGER]s")
 		}
+	}
+
+	if logger != nil {
+		logger.Info(fmt.Sprintf("%s=%v", name, t))
 	}
 
 	return &TimeSecsVar{
