@@ -1,10 +1,10 @@
-FROM golang:1.12 as base
+FROM golang:1.12-alpine3.9 as base
 WORKDIR /tmp/auth-service
 COPY . .
 RUN go build -mod vendor -o /tmp/service .
 
-FROM ubuntu:18.04
+FROM alpine:3.9
 WORKDIR /tmp
 COPY --from=base /tmp/service ./service
-ENTRYPOINT ./service
+ENTRYPOINT ["./service"]
 EXPOSE 80

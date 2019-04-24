@@ -1,14 +1,14 @@
 package main
 
 import (
-	"go.uber.org/dig"
 	"os"
 	"os/signal"
+
+	"go.uber.org/dig"
 
 	"github.com/studtool/auth-service/api"
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/discovery"
 	"github.com/studtool/auth-service/mq"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/repositories/postgres"
@@ -27,7 +27,6 @@ func main() {
 		dig.As(new(repositories.SessionsRepository)),
 	))
 	panicOnErr(c.Provide(mq.NewQueue))
-	panicOnErr(c.Provide(discovery.NewClient))
 	panicOnErr(c.Provide(api.NewServer))
 
 	if config.RepositoriesEnabled.Value() {
@@ -88,25 +87,6 @@ func main() {
 			}
 		}))
 	}()
-
-	if config.DiscoveryClientEnabled.Value() {
-		panicOnErr(c.Invoke(func(cl *discovery.Client) {
-			if err := cl.Register(); err != nil {
-				beans.Logger.Fatal(err)
-			} else {
-				beans.Logger.Info("discovery client connection: open")
-			}
-		}))
-		defer func() {
-			panicOnErr(c.Invoke(func(cl *discovery.Client) {
-				if err := cl.Unregister(); err != nil {
-					beans.Logger.Fatal(err)
-				} else {
-					beans.Logger.Info("discovery client connection: closed")
-				}
-			}))
-		}()
-	}
 
 	<-ch
 }

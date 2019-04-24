@@ -84,10 +84,10 @@ func NewServer(pRepo repositories.ProfilesRepository,
 	srv.server.SetLogger(beans.Logger)
 
 	h := srv.server.WithRecover(mx)
-	if config.ShouldLogRequests.Value() {
+	if config.RequestsLogsEnabled.Value() {
 		h = srv.server.WithLogs(h)
 	}
-	if config.ShouldAllowCORS.Value() {
+	if config.CorsAllowed.Value() {
 		h = srv.server.WithCORS(h, rest.CORS{
 			Origins: []string{"*"},
 			Methods: []string{

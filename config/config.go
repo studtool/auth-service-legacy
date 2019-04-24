@@ -9,15 +9,14 @@ import (
 var (
 	ServerPort = config.NewStringDefault("STUDTOOL_AUTH_SERVICE_PORT", "80")
 
-	ShouldAllowCORS   = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ALLOW_CORS", true)
-	ShouldLogRequests = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUESTS", true)
+	CorsAllowed         = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ALLOW_CORS", true)
+	RequestsLogsEnabled = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUESTS", true)
 
 	JwtKey     = config.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
-	JwtExpTime = config.NewTimeSecsDefault("STUDTOOL_JWT_EXP_TIME", 5*time.Minute)
+	JwtExpTime = config.NewTimeSecsDefault("STUDTOOL_JWT_EXPIRE_TIME", 5*time.Minute)
 
-	RepositoriesEnabled    = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_REPOSITORIES_ENABLED", false)
-	DiscoveryClientEnabled = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_DISCOVERY_CLIENT_ENABLED", false)
-	QueuesEnabled          = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_QUEUES_ENABLED", false)
+	RepositoriesEnabled = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_REPOSITORIES", false)
+	QueuesEnabled       = config.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_QUEUES", false)
 
 	StorageHost     = config.NewStringDefault("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
 	StoragePort     = config.NewStringDefault("STUDTOOL_AUTH_STORAGE_PORT", "5432")
@@ -34,9 +33,6 @@ var (
 	UsersMqConnNumRet = config.NewIntDefault("STUDTOOL_USERS_MQ_CONNECTION_NUM_RETRIES", 10)
 	UsersMqConnRetItv = config.NewTimeSecsDefault("STUDTOOL_USERS_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 
-	CreatedUsersQueueName = config.NewStringDefault("STUDTOOL_CREATED_USERS_QUEUE_NAME", "created_users")
-	DeletedUsersQueueName = config.NewStringDefault("STUDTOOL_DELETED_USERS_QUEUE_NAME", "deleted_users")
-
-	DiscoveryServiceAddress = config.NewStringDefault("STUDTOOL_DISCOVERY_SERVICE_ADDRESS", "127.0.0.1:8500")
-	HealthCheckTimeout      = config.NewTimeSecsDefault("STUDTOOL_AUTH_SERVICE_HEALTH_CHECK_TIMEOUT", 10*time.Second)
+	CreatedUsersQueueName = config.NewStringDefault("STUDTOOL_CREATED_USERS_MQ_NAME", "created_users")
+	DeletedUsersQueueName = config.NewStringDefault("STUDTOOL_DELETED_USERS_MQ_NAME", "deleted_users")
 )
