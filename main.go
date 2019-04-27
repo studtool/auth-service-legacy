@@ -6,6 +6,8 @@ import (
 
 	"go.uber.org/dig"
 
+	"github.com/studtool/common/utils"
+
 	"github.com/studtool/auth-service/api"
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
@@ -17,20 +19,9 @@ import (
 func main() {
 	c := dig.New()
 
-	panicOnErr(c.Provide(postgres.NewConnection))
-	panicOnErr(c.Provide(
-		postgres.NewProfilesRepository,
-		dig.As(new(repositories.ProfilesRepository)),
-	))
-	panicOnErr(c.Provide(
-		postgres.NewSessionsRepository,
-		dig.As(new(repositories.SessionsRepository)),
-	))
-	panicOnErr(c.Provide(mq.NewQueue))
-	panicOnErr(c.Provide(api.NewServer))
-
 	if config.RepositoriesEnabled.Value() {
-		panicOnErr(c.Invoke(func(conn *postgres.Connection) {
+		utils.AssertOk(c.Provide(postgres.NewConnection))
+		utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger.Fatal(err)
 			} else {
@@ -38,7 +29,7 @@ func main() {
 			}
 		}))
 		defer func() {
-			panicOnErr(c.Invoke(func(conn *postgres.Connection) {
+			utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
 					beans.Logger.Fatal(err)
 				} else {
@@ -46,10 +37,31 @@ func main() {
 				}
 			}))
 		}()
+
+		utils.AssertOk(c.Provide(
+			postgres.NewProfilesRepository,
+			dig.As(new(repositories.ProfilesRepository)),
+		))
+		utils.AssertOk(c.Provide(
+			postgres.NewSessionsRepository,
+			dig.As(new(repositories.SessionsRepository)),
+		))
+	} else {
+		utils.AssertOk(c.Provide(
+			func(conn *postgres.Connection) repositories.ProfilesRepository {
+				return nil
+			},
+		))
+		utils.AssertOk(c.Provide(
+			func(conn *postgres.Connection) repositories.SessionsRepository {
+				return nil
+			},
+		))
 	}
 
 	if config.QueuesEnabled.Value() {
-		panicOnErr(c.Invoke(func(q *mq.MQ) {
+		utils.AssertOk(c.Provide(mq.NewQueue))
+		utils.AssertOk(c.Invoke(func(q *mq.MQ) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
 			} else {
@@ -57,7 +69,7 @@ func main() {
 			}
 		}))
 		defer func() {
-			panicOnErr(c.Invoke(func(q *mq.MQ) {
+			utils.AssertOk(c.Invoke(func(q *mq.MQ) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger.Fatal(err)
 				} else {
@@ -68,9 +80,11 @@ func main() {
 	}
 
 	ch := make(chan os.Signal)
+	signal.Notify(ch, os.Kill)
 	signal.Notify(ch, os.Interrupt)
 
-	panicOnErr(c.Invoke(func(srv *api.Server) {
+	utils.AssertOk(c.Provide(api.NewServer))
+	utils.AssertOk(c.Invoke(func(srv *api.Server) {
 		go func() {
 			if err := srv.Run(); err != nil {
 				beans.Logger.Fatal(err)
@@ -79,7 +93,7 @@ func main() {
 		}()
 	}))
 	defer func() {
-		panicOnErr(c.Invoke(func(srv *api.Server) {
+		utils.AssertOk(c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
 				beans.Logger.Fatal(err)
 			} else {
@@ -89,10 +103,4 @@ func main() {
 	}()
 
 	<-ch
-}
-
-func panicOnErr(err error) {
-	if err != nil {
-		panic(err)
-	}
 }
