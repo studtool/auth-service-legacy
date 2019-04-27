@@ -10,6 +10,9 @@ dep:
 build:
 	go build -mod vendor .
 
+image:
+	./image.sh build
+
 test:
 	go test -mod vendor ./...
 

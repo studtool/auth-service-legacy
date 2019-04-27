@@ -48,12 +48,12 @@ func main() {
 		))
 	} else {
 		utils.AssertOk(c.Provide(
-			func(conn *postgres.Connection) repositories.ProfilesRepository {
+			func() repositories.ProfilesRepository {
 				return nil
 			},
 		))
 		utils.AssertOk(c.Provide(
-			func(conn *postgres.Connection) repositories.SessionsRepository {
+			func() repositories.SessionsRepository {
 				return nil
 			},
 		))
@@ -77,6 +77,10 @@ func main() {
 				}
 			}))
 		}()
+	} else {
+		utils.AssertOk(c.Provide(func() *mq.MQ {
+			return nil
+		}))
 	}
 
 	ch := make(chan os.Signal)
