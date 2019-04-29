@@ -76,9 +76,11 @@ func NewServer(pRepo repositories.ProfilesRepository,
 		http.MethodDelete: http.HandlerFunc(srv.endAllSessions),
 	})
 	mx.Handle(`/api/auth/session`, handlers.MethodHandler{
-		http.MethodGet:    http.HandlerFunc(srv.parseSession),
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
 		http.MethodDelete: http.HandlerFunc(srv.endSession),
+	})
+	mx.Handle(`/api/private/auth/session`, handlers.MethodHandler{
+		http.MethodGet: http.HandlerFunc(srv.parseSession),
 	})
 
 	srv.server.SetLogger(beans.Logger)
