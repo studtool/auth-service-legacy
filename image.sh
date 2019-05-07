@@ -16,7 +16,7 @@ repository=$(cut "-d " "-f2" ./go.mod | head -n 1)
 
 app=$(echo ${repository} | cut "-d/" "-f2")
 service=$(echo ${repository} | cut "-d/" "-f3")
-version=$(cut "-d " "-f4" ./go.mod | head -n 1)
+version=$(sed '3q;d' ./go.mod | cut "-d " "-f2")
 
 image="${app}/${service}:${version}"
 
