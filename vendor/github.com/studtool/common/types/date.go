@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"time"
 )
 
@@ -10,24 +11,28 @@ const (
 
 type Date time.Time
 
-func (t Date) MarshalJSON() ([]byte, error) {
-	return []byte(t.String()), nil
+func (d Date) MarshalJSON() ([]byte, error) {
+	return json.Marshal(d.String())
 }
 
-func (t *Date) UnmarshalJSON(b []byte) error {
-	return t.Parse(string(b))
+func (d *Date) UnmarshalJSON(data []byte) error {
+	var str string
+	if err := json.Unmarshal(data, &str); err != nil {
+		return err
+	}
+	return d.Parse(str)
 }
 
-func (t Date) String() string {
-	return time.Time(t).Format(DateLayout)
+func (d Date) String() string {
+	return time.Time(d).Format(DateLayout)
 }
 
-func (t *Date) Parse(s string) error {
+func (d *Date) Parse(s string) error {
 	tm, err := time.Parse(DateLayout, s)
 	if err != nil {
 		return err
 	}
 
-	*((*time.Time)(t)) = tm
+	*((*time.Time)(d)) = tm
 	return nil
 }

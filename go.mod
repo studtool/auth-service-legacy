@@ -11,6 +11,6 @@ require (
 	github.com/mailru/easyjson v0.0.0-20190403194419-1ea4449da983
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
-	github.com/studtool/common v0.0.0-20190506200814-106f3227b4f2
+	github.com/studtool/common v0.0.0-20190507195319-d8fbd7bce61b
 	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 )

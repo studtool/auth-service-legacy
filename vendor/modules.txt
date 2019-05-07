@@ -23,7 +23,7 @@ github.com/mitchellh/mapstructure
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190506200814-106f3227b4f2
+# github.com/studtool/common v0.0.0-20190507195319-d8fbd7bce61b
 github.com/studtool/common/utils
 github.com/studtool/common/consts
 github.com/studtool/common/errs
@@ -35,5 +35,5 @@ github.com/studtool/common/config
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect
 go.uber.org/dig/internal/dot
-# golang.org/x/sys v0.0.0-20190506115046-ca7f33d4116e
+# golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b
 golang.org/x/sys/unix
