@@ -28,7 +28,7 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		Email: profile.Email,
 		Token: profile.UserID,
 	}
-	if err := srv.usersQueue.SendRegEmailMessage(regEmailData); err != nil {
+	if err := srv.messageQueue.SendRegEmailMessage(regEmailData); err != nil {
 		_ = srv.profilesRepository.DeleteProfileById(profile) //TODO handle error
 		srv.server.WriteErrJSON(w, err)
 		return

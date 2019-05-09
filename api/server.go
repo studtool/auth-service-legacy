@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/studtool/auth-service/validators"
 	"net/http"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"go.uber.org/dig"
 
 	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
@@ -16,6 +16,7 @@ import (
 	"github.com/studtool/auth-service/messages"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/utils"
+	"github.com/studtool/auth-service/validators"
 )
 
 type Server struct {
@@ -33,11 +34,19 @@ type Server struct {
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 
-	usersQueue *messages.Client
+	messageQueue *messages.Client
 }
 
-func NewServer(pRepo repositories.ProfilesRepository,
-	sRepo repositories.SessionsRepository, uQueue *messages.Client) *Server {
+type ServerParams struct {
+	dig.In
+
+	QueueClient *messages.Client
+
+	ProfilesRepository repositories.ProfilesRepository
+	SessionsRepository repositories.SessionsRepository
+}
+
+func NewServer(params ServerParams) *Server {
 
 	srv := &Server{
 		server: rest.NewServer(
@@ -56,10 +65,10 @@ func NewServer(pRepo repositories.ProfilesRepository,
 
 		noAuthTokenErr: errs.NewNotAuthorizedError("authorization token required"),
 
-		profilesRepository: pRepo,
-		sessionsRepository: sRepo,
+		profilesRepository: params.ProfilesRepository,
+		sessionsRepository: params.SessionsRepository,
 
-		usersQueue: uQueue,
+		messageQueue: params.QueueClient,
 	}
 
 	mx := mux.NewRouter()
