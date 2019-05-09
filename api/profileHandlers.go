@@ -8,12 +8,11 @@ import (
 
 func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 	profile := &models.Profile{}
-	if err := srv.server.ParseBodyJSON(profile, r); err != nil {
+	if err := srv.server.ParseBodyJSON(&profile.Credentials, r); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
-
-	if err := srv.profileValidator.ValidateOnCreate(profile); err != nil {
+	if err := srv.credentialsValidator.Validate(&profile.Credentials); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
@@ -23,15 +22,14 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := srv.usersQueue.SendUserCreated(profile.UserId); err != nil {
-		if err := srv.profilesRepository.DeleteProfileById(profile); err != nil {
-			//TODO find a good way to handle this
-			srv.server.WriteErrJSON(w, err)
-			return
-		}
+	if err := srv.usersQueue.SendUserCreated(profile.UserID); err != nil {
+		//TODO find a good way to handle this
+		_ = srv.profilesRepository.DeleteProfileById(profile)
+		srv.server.WriteErrJSON(w, err)
+		return
 	}
 
-	srv.server.WriteOk(w)
+	srv.server.WriteOkJSON(w, &profile.ProfileInfo)
 }
 
 func (srv *Server) updateCredentials(w http.ResponseWriter, r *http.Request) {

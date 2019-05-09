@@ -34,10 +34,10 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	if err != nil {
 		return errs.New(err)
 	}
-	p.UserId = id.String()
+	p.UserID = id.String()
 
 	_, err = r.conn.db.Exec(query,
-		p.UserId, p.Credentials.Email, p.Credentials.Password,
+		p.UserID, p.Credentials.Email, p.Credentials.Password,
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "profile_email_unique") {
@@ -71,7 +71,7 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs
 		return r.notFoundErr
 	}
 
-	if err := rows.Scan(&p.UserId); err != nil {
+	if err := rows.Scan(&p.UserID); err != nil {
 		return errs.New(err)
 	}
 

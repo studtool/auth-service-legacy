@@ -27,16 +27,16 @@ func (srv *Server) ParseBodyJSON(v easyjson.Unmarshaler, r *http.Request) *errs.
 }
 
 const (
-	UserIdHeader       = "X-User-Id"
+	UserIDHeader       = "X-User-Id"
 	RefreshTokenHeader = "X-Refresh-Token"
 )
 
-func (srv *Server) SetUserId(w http.ResponseWriter, userId string) {
-	w.Header().Set(UserIdHeader, userId)
+func (srv *Server) SetUserID(w http.ResponseWriter, userID string) {
+	w.Header().Set(UserIDHeader, userID)
 }
 
-func (srv *Server) ParseUserId(r *http.Request) string {
-	return r.Header.Get(UserIdHeader)
+func (srv *Server) ParseUserID(r *http.Request) string {
+	return r.Header.Get(UserIDHeader)
 }
 
 func (srv *Server) ParseAuthToken(r *http.Request) string {
@@ -60,6 +60,10 @@ func (srv *Server) WriteOk(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func (srv *Server) WriteOkJSON(w http.ResponseWriter, v easyjson.Marshaler) {
+	srv.writeBodyJSON(w, http.StatusOK, v)
+}
+
 func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 	if err.Type == errs.Internal {
 		srv.logger.Error(err.Message)
@@ -70,36 +74,36 @@ func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 
 	switch err.Type {
 	case errs.BadFormat:
-		srv.WriteErrBodyJSON(w, http.StatusBadRequest, err)
+		srv.writeErrBodyJSON(w, http.StatusBadRequest, err)
 
 	case errs.InvalidFormat:
-		srv.WriteErrBodyJSON(w, http.StatusUnprocessableEntity, err)
+		srv.writeErrBodyJSON(w, http.StatusUnprocessableEntity, err)
 
 	case errs.Conflict:
-		srv.WriteErrBodyJSON(w, http.StatusConflict, err)
+		srv.writeErrBodyJSON(w, http.StatusConflict, err)
 
 	case errs.NotFound:
-		srv.WriteErrBodyJSON(w, http.StatusNotFound, err)
+		srv.writeErrBodyJSON(w, http.StatusNotFound, err)
 
 	case errs.NotAuthorized:
-		srv.WriteErrBodyJSON(w, http.StatusUnauthorized, err)
+		srv.writeErrBodyJSON(w, http.StatusUnauthorized, err)
 
 	case errs.PermissionDenied:
-		srv.WriteErrBodyJSON(w, http.StatusForbidden, err)
+		srv.writeErrBodyJSON(w, http.StatusForbidden, err)
 
 	default:
 		panic(fmt.Sprintf("no status code for error. Type: %d, Message: %s", err.Type, err.Message))
 	}
 }
 
-func (srv *Server) WriteBodyJSON(w http.ResponseWriter, status int, v easyjson.Marshaler) {
+func (srv *Server) writeBodyJSON(w http.ResponseWriter, status int, v easyjson.Marshaler) {
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
 	data, _ := easyjson.Marshal(v)
 	_, _ = w.Write(data)
 }
 
-func (srv *Server) WriteErrBodyJSON(w http.ResponseWriter, status int, err *errs.Error) {
+func (srv *Server) writeErrBodyJSON(w http.ResponseWriter, status int, err *errs.Error) {
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(err.JSON())

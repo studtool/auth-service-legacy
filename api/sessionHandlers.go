@@ -14,7 +14,7 @@ import (
 
 func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 	profile := &models.Profile{}
-	if err := srv.server.ParseBodyJSON(profile, r); err != nil {
+	if err := srv.server.ParseBodyJSON(&profile.Credentials, r); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
@@ -25,7 +25,7 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	session := &models.Session{
-		UserId:     profile.UserId,
+		UserId:     profile.UserID,
 		ExpireTime: types.DateTime(time.Now().Add(config.JwtExpTime.Value())),
 	}
 
@@ -52,7 +52,7 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	srv.server.WriteBodyJSON(w, http.StatusOK, session)
+	srv.server.WriteOkJSON(w, session)
 }
 
 func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
@@ -68,7 +68,7 @@ func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	srv.server.SetUserId(w, claims.UserId)
+	srv.server.SetUserID(w, claims.UserId)
 	srv.server.WriteOk(w)
 }
 
@@ -92,7 +92,7 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 		session.AuthToken = t
 	}
 
-	srv.server.WriteBodyJSON(w, http.StatusOK, session)
+	srv.server.WriteOkJSON(w, session)
 }
 
 func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {

@@ -20,7 +20,9 @@ const (
 type Error struct {
 	Type    int    `json:"-"`
 	Message string `json:"message"`
-	json    []byte `json:"-"`
+
+	//nolint:govet
+	json []byte `json:"-"`
 }
 
 func NewError(t int, message string) *Error {

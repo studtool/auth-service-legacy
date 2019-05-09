@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/studtool/auth-service/validators"
 	"net/http"
 
 	"github.com/gorilla/handlers"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/models"
 	"github.com/studtool/auth-service/mq"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/utils"
@@ -21,7 +21,9 @@ import (
 type Server struct {
 	server *rest.Server
 
-	profileValidator *models.ProfileValidator
+	emailValidator       *validators.EmailValidator
+	passwordValidator    *validators.PasswordValidator
+	credentialsValidator *validators.CredentialsValidator
 
 	authTokenManager    *utils.AuthTokenManager
 	refreshTokenManager *utils.RefreshTokenManager
@@ -45,7 +47,9 @@ func NewServer(pRepo repositories.ProfilesRepository,
 			},
 		),
 
-		profileValidator: models.NewProfileValidator(),
+		emailValidator:       validators.NewEmailValidator(),
+		passwordValidator:    validators.NewPasswordValidator(),
+		credentialsValidator: validators.NewCredentialsValidator(),
 
 		authTokenManager:    utils.NewAuthTokenManager(),
 		refreshTokenManager: utils.NewRefreshTokenManager(),

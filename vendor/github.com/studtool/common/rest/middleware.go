@@ -40,8 +40,8 @@ func (srv *Server) WithRecover(h http.Handler) http.Handler {
 func (srv *Server) WithAuth(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			userId := srv.ParseUserId(r)
-			if userId == "" {
+			userID := srv.ParseUserID(r)
+			if userID == "" {
 				w.WriteHeader(http.StatusUnauthorized)
 			}
 			h.ServeHTTP(w, r)

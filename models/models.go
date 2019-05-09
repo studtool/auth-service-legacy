@@ -7,10 +7,14 @@ import (
 )
 
 type Profile struct {
-	UserId     string
-	IsVerified bool
-
 	Credentials
+	ProfileInfo
+}
+
+//easyjson:json
+type ProfileInfo struct {
+	UserID     string `json:"userId"`
+	IsVerified bool   `json:"isVerified"`
 }
 
 //easyjson:json
