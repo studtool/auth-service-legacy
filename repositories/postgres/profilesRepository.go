@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"github.com/hashicorp/go-uuid"
+	"github.com/google/uuid"
 	"strings"
 
 	"github.com/studtool/common/errs"
@@ -10,13 +10,17 @@ import (
 )
 
 type ProfilesRepository struct {
-	conn        *Connection
+	conn *Connection
+
+	emailDupErr *errs.Error
 	notFoundErr *errs.Error
 }
 
 func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 	return &ProfilesRepository{
-		conn:        conn,
+		conn: conn,
+
+		emailDupErr: errs.NewConflictError("email duplicate"),
 		notFoundErr: errs.NewNotFoundError("profile not found"),
 	}
 }
@@ -26,19 +30,20 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
         INSERT INTO profile(user_id,email,password) VALUES($1,$2,$3);
     `
 
-	p.UserId, _ = uuid.GenerateUUID()
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return errs.New(err)
+	}
+	p.UserId = id.String()
 
-	_, err := r.conn.db.Exec(query,
+	_, err = r.conn.db.Exec(query,
 		p.UserId, p.Credentials.Email, p.Credentials.Password,
 	)
 	if err != nil {
-		if strings.Contains(err.Error(), "profile_user_id_pk") {
-			return errs.NewInternalError(err.Error())
-		}
 		if strings.Contains(err.Error(), "profile_email_unique") {
-			return errs.NewConflictError("email duplicate")
+			return r.emailDupErr
 		}
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 
 	return nil
@@ -54,11 +59,11 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs
 		&p.Credentials.Email, &p.Credentials.Password,
 	)
 	if err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
-			e = errs.NewInternalError(err.Error())
+			e = errs.New(err)
 		}
 	}()
 
@@ -67,7 +72,7 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs
 	}
 
 	if err := rows.Scan(&p.UserId); err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 
 	return nil

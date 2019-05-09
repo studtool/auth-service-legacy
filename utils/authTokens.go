@@ -1,17 +1,15 @@
 package utils
 
-//go:generate easyjson
-
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/mitchellh/mapstructure"
 
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
 
 	"github.com/studtool/auth-service/config"
 )
 
-//easyjson:json
 type JwtClaims struct {
 	UserId  string `mapstructure:"userId"`
 	ExpTime string `mapstructure:"expTime"`
@@ -36,7 +34,7 @@ func (m *AuthTokenManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
 	})
 
 	if s, err := t.SignedString(m.key); err != nil {
-		return "", errs.NewInternalError(err.Error())
+		return consts.EmptyString, errs.New(err)
 	} else {
 		return s, nil
 	}
@@ -64,7 +62,7 @@ func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
 		Result: jwtClaims, TagName: "mapstructure",
 	})
 	if err != nil {
-		panic(err)
+		return nil, errs.New(err)
 	}
 
 	if err := decoder.Decode(claims); err != nil {

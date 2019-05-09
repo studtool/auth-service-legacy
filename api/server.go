@@ -1,24 +1,21 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/studtool/auth-service/beans"
-	"github.com/studtool/auth-service/mq"
-	"net/http"
 
 	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
 	"github.com/studtool/common/rest"
 
+	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/models"
+	"github.com/studtool/auth-service/mq"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/utils"
-)
-
-const (
-	idPattern = `\w{8}-\w{4}-\w{4}-\w{4}-\w{12}`
 )
 
 type Server struct {
@@ -34,11 +31,11 @@ type Server struct {
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 
-	usersQueue *mq.MQ
+	usersQueue *mq.Client
 }
 
 func NewServer(pRepo repositories.ProfilesRepository,
-	sRepo repositories.SessionsRepository, uQueue *mq.MQ) *Server {
+	sRepo repositories.SessionsRepository, uQueue *mq.Client) *Server {
 
 	srv := &Server{
 		server: rest.NewServer(
@@ -65,10 +62,10 @@ func NewServer(pRepo repositories.ProfilesRepository,
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}/credentials`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{profile_id}/credentials`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateCredentials)),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id:`+idPattern+`}`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{profile_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{

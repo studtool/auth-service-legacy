@@ -24,16 +24,12 @@ func main() {
 		utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger.Fatal(err)
-			} else {
-				beans.Logger.Info("storage connection: open")
 			}
 		}))
 		defer func() {
 			utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
 					beans.Logger.Fatal(err)
-				} else {
-					beans.Logger.Info("connection to storage: closed")
 				}
 			}))
 		}()
@@ -60,25 +56,21 @@ func main() {
 	}
 
 	if config.QueuesEnabled.Value() {
-		utils.AssertOk(c.Provide(mq.NewQueue))
-		utils.AssertOk(c.Invoke(func(q *mq.MQ) {
+		utils.AssertOk(c.Provide(mq.NewClient))
+		utils.AssertOk(c.Invoke(func(q *mq.Client) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
-			} else {
-				beans.Logger.Info("message queue connection: open")
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(q *mq.MQ) {
+			utils.AssertOk(c.Invoke(func(q *mq.Client) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger.Fatal(err)
-				} else {
-					beans.Logger.Info("message queue connection: closed")
 				}
 			}))
 		}()
 	} else {
-		utils.AssertOk(c.Provide(func() *mq.MQ {
+		utils.AssertOk(c.Provide(func() *mq.Client {
 			return nil
 		}))
 	}
@@ -100,8 +92,6 @@ func main() {
 		utils.AssertOk(c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
 				beans.Logger.Fatal(err)
-			} else {
-				beans.Logger.Info("server: down")
 			}
 		}))
 	}()

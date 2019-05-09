@@ -1,10 +1,12 @@
 package utils
 
 import (
-	"github.com/hashicorp/go-uuid"
+	"github.com/google/uuid"
 
 	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
+
+	"github.com/studtool/auth-service/beans"
 )
 
 const (
@@ -26,6 +28,9 @@ func (m *RefreshTokenManager) CreateToken() (string, *errs.Error) {
 }
 
 func (m *RefreshTokenManager) generateUUID() string {
-	v, _ := uuid.GenerateUUID()
-	return v
+	v, err := uuid.NewRandom()
+	if err != nil { //TODO handle error
+		beans.Logger.Error(err)
+	}
+	return v.String()
 }

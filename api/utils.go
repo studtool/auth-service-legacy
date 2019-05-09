@@ -1,8 +1,9 @@
 package api
 
 import (
-	"github.com/gorilla/mux"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func (srv *Server) parseProfileId(r *http.Request) string {

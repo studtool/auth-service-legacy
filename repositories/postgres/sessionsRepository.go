@@ -1,10 +1,14 @@
 package postgres
 
 import (
-	"github.com/hashicorp/go-uuid"
+	"database/sql"
+	"fmt"
+
+	"github.com/google/uuid"
 
 	"github.com/studtool/common/errs"
 
+	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/models"
 )
 
@@ -25,13 +29,17 @@ func (r *SessionsRepository) AddSession(session *models.Session) *errs.Error {
         INSERT INTO session(session_id, user_id, refresh_token) VALUES ($1,$2,$3);
     `
 
-	sessionId, _ := uuid.GenerateUUID()
+	id, err := uuid.NewRandom()
+	if err != nil {
+		return errs.New(err)
+	}
 
-	_, err := r.conn.db.Exec(query,
+	sessionId := id.String()
+	_, err = r.conn.db.Exec(query,
 		&sessionId, &session.UserId, &session.RefreshToken,
 	)
 	if err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 
 	return nil
@@ -47,20 +55,15 @@ func (r *SessionsRepository) FindUserIdByRefreshToken(session *models.Session) (
 		&session.RefreshToken,
 	)
 	if err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
-	defer func() {
-		if err := rows.Close(); err != nil {
-			e = errs.NewInternalError(err.Error())
-		}
-	}()
+	defer r.closeRowsWithCheck(rows)
 
 	if !rows.Next() {
 		return r.notAuthorizedErr
 	}
-
 	if err := rows.Scan(&session.UserId); err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 
 	return nil
@@ -71,8 +74,12 @@ func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Err
         DELETE FROM session WHERE refresh_token = $1;
     `
 
-	if _, err := r.conn.db.Exec(query, &token); err != nil {
-		return errs.NewInternalError(err.Error())
+	res, err := r.conn.db.Exec(query, &token)
+	if err != nil {
+		return errs.New(err)
+	}
+	if n, _ := res.RowsAffected(); n != 1 {
+		beans.Logger.Error(fmt.Sprintf("%d sessions deleted", n))
 	}
 
 	return nil
@@ -88,8 +95,14 @@ func (r *SessionsRepository) DeleteAllSessionsByRefreshToken(token string) *errs
 
 	_, err := r.conn.db.Exec(query, &token)
 	if err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
 
 	return nil
+}
+
+func (r *SessionsRepository) closeRowsWithCheck(rows *sql.Rows) {
+	if err := rows.Close(); err != nil {
+		beans.Logger.Error(err)
+	}
 }

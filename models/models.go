@@ -6,9 +6,9 @@ import (
 	"github.com/studtool/common/types"
 )
 
-//easyjson:json
 type Profile struct {
-	UserId string `json:"userId"`
+	UserId     string
+	IsVerified bool
 
 	Credentials
 }

@@ -2,6 +2,7 @@ package mq
 
 import (
 	"fmt"
+
 	"github.com/streadway/amqp"
 
 	"github.com/studtool/common/errs"
@@ -11,7 +12,7 @@ import (
 	"github.com/studtool/auth-service/config"
 )
 
-type MQ struct {
+type Client struct {
 	cq      amqp.Queue
 	dq      amqp.Queue
 	ch      *amqp.Channel
@@ -19,8 +20,8 @@ type MQ struct {
 	connStr string
 }
 
-func NewQueue() *MQ {
-	return &MQ{
+func NewClient() *Client {
+	return &Client{
 		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
 			config.UsersMqUser.Value(), config.UsersMqPassword.Value(),
 			config.UsersMqHost.Value(), config.UsersMqPort.Value(),
@@ -28,7 +29,7 @@ func NewQueue() *MQ {
 	}
 }
 
-func (mq *MQ) OpenConnection() error {
+func (mq *Client) OpenConnection() error {
 	var conn *amqp.Connection
 	err := utils.WithRetry(func(n int) (err error) {
 		if n > 0 {
@@ -76,22 +77,22 @@ func (mq *MQ) OpenConnection() error {
 	return nil
 }
 
-func (mq *MQ) CloseConnection() error {
+func (mq *Client) CloseConnection() error {
 	if err := mq.ch.Close(); err != nil {
 		return err
 	}
 	return mq.conn.Close()
 }
 
-func (mq *MQ) SendUserCreated(userId string) *errs.Error {
+func (mq *Client) SendUserCreated(userId string) *errs.Error {
 	return mq.sendUserId(mq.cq, userId)
 }
 
-func (mq *MQ) SendUserDeleted(userId string) *errs.Error {
+func (mq *Client) SendUserDeleted(userId string) *errs.Error {
 	return mq.sendUserId(mq.dq, userId)
 }
 
-func (mq *MQ) sendUserId(q amqp.Queue, userId string) *errs.Error {
+func (mq *Client) sendUserId(q amqp.Queue, userId string) *errs.Error {
 	err := mq.ch.Publish(
 		"",
 		q.Name,
