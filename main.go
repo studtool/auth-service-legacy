@@ -11,7 +11,7 @@ import (
 	"github.com/studtool/auth-service/api"
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/mq"
+	"github.com/studtool/auth-service/messages"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/repositories/postgres"
 )
@@ -56,21 +56,21 @@ func main() {
 	}
 
 	if config.QueuesEnabled.Value() {
-		utils.AssertOk(c.Provide(mq.NewClient))
-		utils.AssertOk(c.Invoke(func(q *mq.Client) {
+		utils.AssertOk(c.Provide(messages.NewClient))
+		utils.AssertOk(c.Invoke(func(q *messages.Client) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(q *mq.Client) {
+			utils.AssertOk(c.Invoke(func(q *messages.Client) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger.Fatal(err)
 				}
 			}))
 		}()
 	} else {
-		utils.AssertOk(c.Provide(func() *mq.Client {
+		utils.AssertOk(c.Provide(func() *messages.Client {
 			return nil
 		}))
 	}

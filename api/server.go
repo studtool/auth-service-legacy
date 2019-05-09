@@ -13,7 +13,7 @@ import (
 
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
-	"github.com/studtool/auth-service/mq"
+	"github.com/studtool/auth-service/messages"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/utils"
 )
@@ -33,11 +33,11 @@ type Server struct {
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 
-	usersQueue *mq.Client
+	usersQueue *messages.Client
 }
 
 func NewServer(pRepo repositories.ProfilesRepository,
-	sRepo repositories.SessionsRepository, uQueue *mq.Client) *Server {
+	sRepo repositories.SessionsRepository, uQueue *messages.Client) *Server {
 
 	srv := &Server{
 		server: rest.NewServer(
