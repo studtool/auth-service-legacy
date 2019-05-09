@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 
+	"github.com/studtool/common/queues"
+
 	"github.com/studtool/auth-service/models"
 )
 
@@ -22,9 +24,12 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := srv.usersQueue.SendUserCreated(profile.UserID); err != nil {
-		//TODO find a good way to handle this
-		_ = srv.profilesRepository.DeleteProfileById(profile)
+	regEmailData := &queues.RegistrationEmailData{
+		Email: profile.Email,
+		Token: profile.UserID,
+	}
+	if err := srv.usersQueue.SendRegEmailMessage(regEmailData); err != nil {
+		_ = srv.profilesRepository.DeleteProfileById(profile) //TODO handle error
 		srv.server.WriteErrJSON(w, err)
 		return
 	}

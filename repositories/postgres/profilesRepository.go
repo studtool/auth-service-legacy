@@ -27,7 +27,7 @@ func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 
 func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	const query = `
-        INSERT INTO profile(user_id,email,password) VALUES($1,$2,$3);
+        INSERT INTO profile(user_id,email,password,is_verified) VALUES($1,$2,$3,false);
     `
 
 	id, err := uuid.NewRandom()

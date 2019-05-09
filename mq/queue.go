@@ -3,9 +3,12 @@ package mq
 import (
 	"fmt"
 
+	"github.com/mailru/easyjson"
 	"github.com/streadway/amqp"
 
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
+	"github.com/studtool/common/queues"
 	"github.com/studtool/common/utils"
 
 	"github.com/studtool/auth-service/beans"
@@ -13,29 +16,30 @@ import (
 )
 
 type Client struct {
-	cq      amqp.Queue
-	dq      amqp.Queue
-	ch      *amqp.Channel
-	conn    *amqp.Connection
-	connStr string
+	connStr    string
+	connection *amqp.Connection
+
+	channel *amqp.Channel
+
+	regEmailsQueue amqp.Queue
 }
 
 func NewClient() *Client {
 	return &Client{
 		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
-			config.UsersMqUser.Value(), config.UsersMqPassword.Value(),
-			config.UsersMqHost.Value(), config.UsersMqPort.Value(),
+			config.MqUser.Value(), config.MqPassword.Value(),
+			config.MqHost.Value(), config.MqPort.Value(),
 		),
 	}
 }
 
-func (mq *Client) OpenConnection() error {
+func (c *Client) OpenConnection() error {
 	var conn *amqp.Connection
 	err := utils.WithRetry(func(n int) (err error) {
 		if n > 0 {
 			beans.Logger.Info(fmt.Sprintf("opening message queue connection. retry #%d", n))
 		}
-		conn, err = amqp.Dial(mq.connStr)
+		conn, err = amqp.Dial(c.connStr)
 		return err
 	}, config.UsersMqConnNumRet.Value(), config.UsersMqConnRetItv.Value())
 	if err != nil {
@@ -47,8 +51,8 @@ func (mq *Client) OpenConnection() error {
 		return err
 	}
 
-	mq.cq, err = ch.QueueDeclare(
-		config.CreatedUsersQueueName.Value(),
+	c.regEmailsQueue, err = ch.QueueDeclare(
+		queues.RegistrationEmailsQueueName,
 		false,
 		false,
 		false,
@@ -59,52 +63,35 @@ func (mq *Client) OpenConnection() error {
 		return err
 	}
 
-	mq.dq, err = ch.QueueDeclare(
-		config.DeletedUsersQueueName.Value(),
-		false,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		return err
-	}
-
-	mq.ch = ch
-	mq.conn = conn
+	c.channel = ch
+	c.connection = conn
 
 	return nil
 }
 
-func (mq *Client) CloseConnection() error {
-	if err := mq.ch.Close(); err != nil {
+func (c *Client) CloseConnection() error {
+	if err := c.channel.Close(); err != nil {
 		return err
 	}
-	return mq.conn.Close()
+	return c.connection.Close()
 }
 
-func (mq *Client) SendUserCreated(userId string) *errs.Error {
-	return mq.sendUserId(mq.cq, userId)
-}
+func (c *Client) SendRegEmailMessage(data *queues.RegistrationEmailData) *errs.Error {
+	body, _ := easyjson.Marshal(data)
 
-func (mq *Client) SendUserDeleted(userId string) *errs.Error {
-	return mq.sendUserId(mq.dq, userId)
-}
-
-func (mq *Client) sendUserId(q amqp.Queue, userId string) *errs.Error {
-	err := mq.ch.Publish(
-		"",
-		q.Name,
+	err := c.channel.Publish(
+		consts.EmptyString,
+		c.regEmailsQueue.Name,
 		false,
 		false,
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(userId),
+			Body:        body,
+			ContentType: "application/json",
 		},
 	)
 	if err != nil {
-		return errs.NewInternalError(err.Error())
+		return errs.New(err)
 	}
+
 	return nil
 }
