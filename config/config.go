@@ -40,6 +40,6 @@ var (
 	MqUser     = cconfig.NewStringDefault("STUDTOOL_MQ_USER", "user")
 	MqPassword = cconfig.NewStringDefault("STUDTOOL_MQ_PASSWORD", "password")
 
-	UsersMqConnNumRet = cconfig.NewIntDefault("STUDTOOL_USERS_MQ_CONNECTION_NUM_RETRIES", 10)
-	UsersMqConnRetItv = cconfig.NewTimeSecsDefault("STUDTOOL_USERS_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
+	MqConnNumRet = cconfig.NewIntDefault("STUDTOOL_MQ_CONNECTION_NUM_RETRIES", 10)
+	MqConnRetItv = cconfig.NewTimeSecsDefault("STUDTOOL_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 )

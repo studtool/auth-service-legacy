@@ -41,7 +41,7 @@ func (c *Client) OpenConnection() error {
 		}
 		conn, err = amqp.Dial(c.connStr)
 		return err
-	}, config.UsersMqConnNumRet.Value(), config.UsersMqConnRetItv.Value())
+	}, config.MqConnNumRet.Value(), config.MqConnRetItv.Value())
 	if err != nil {
 		return err
 	}
