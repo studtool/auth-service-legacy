@@ -34,13 +34,13 @@ type Server struct {
 	profilesRepository repositories.ProfilesRepository
 	sessionsRepository repositories.SessionsRepository
 
-	messageQueue *messages.Client
+	mqClient *messages.QueueClient
 }
 
 type ServerParams struct {
 	dig.In
 
-	QueueClient *messages.Client
+	MqClient *messages.QueueClient
 
 	ProfilesRepository repositories.ProfilesRepository
 	SessionsRepository repositories.SessionsRepository
@@ -68,7 +68,7 @@ func NewServer(params ServerParams) *Server {
 		profilesRepository: params.ProfilesRepository,
 		sessionsRepository: params.SessionsRepository,
 
-		messageQueue: params.QueueClient,
+		mqClient: params.MqClient,
 	}
 
 	mx := mux.NewRouter()

@@ -15,7 +15,7 @@ import (
 	"github.com/studtool/auth-service/config"
 )
 
-type Client struct {
+type QueueClient struct {
 	connStr    string
 	connection *amqp.Connection
 
@@ -24,8 +24,8 @@ type Client struct {
 	regEmailsQueue amqp.Queue
 }
 
-func NewClient() *Client {
-	return &Client{
+func NewQueueClient() *QueueClient {
+	return &QueueClient{
 		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
 			config.MqUser.Value(), config.MqPassword.Value(),
 			config.MqHost.Value(), config.MqPort.Value(),
@@ -33,7 +33,7 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) OpenConnection() error {
+func (c *QueueClient) OpenConnection() error {
 	var conn *amqp.Connection
 	err := utils.WithRetry(func(n int) (err error) {
 		if n > 0 {
@@ -69,14 +69,14 @@ func (c *Client) OpenConnection() error {
 	return nil
 }
 
-func (c *Client) CloseConnection() error {
+func (c *QueueClient) CloseConnection() error {
 	if err := c.channel.Close(); err != nil {
 		return err
 	}
 	return c.connection.Close()
 }
 
-func (c *Client) SendRegEmailMessage(data *queues.RegistrationEmailData) *errs.Error {
+func (c *QueueClient) SendRegEmailMessage(data *queues.RegistrationEmailData) *errs.Error {
 	body, _ := easyjson.Marshal(data)
 
 	err := c.channel.Publish(

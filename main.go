@@ -56,21 +56,21 @@ func main() {
 	}
 
 	if config.QueuesEnabled.Value() {
-		utils.AssertOk(c.Provide(messages.NewClient))
-		utils.AssertOk(c.Invoke(func(q *messages.Client) {
+		utils.AssertOk(c.Provide(messages.NewQueueClient))
+		utils.AssertOk(c.Invoke(func(q *messages.QueueClient) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger.Fatal(err)
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(q *messages.Client) {
+			utils.AssertOk(c.Invoke(func(q *messages.QueueClient) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger.Fatal(err)
 				}
 			}))
 		}()
 	} else {
-		utils.AssertOk(c.Provide(func() *messages.Client {
+		utils.AssertOk(c.Provide(func() *messages.QueueClient {
 			return nil
 		}))
 	}
