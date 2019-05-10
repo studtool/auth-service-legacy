@@ -30,3 +30,9 @@ type Session struct {
 	RefreshToken string         `json:"refreshToken"`
 	ExpireTime   types.DateTime `json:"expireTime"`
 }
+
+//easyjson:json
+type Token struct {
+	UserID string `json:"-"`
+	Token  string `json:"token"`
+}
