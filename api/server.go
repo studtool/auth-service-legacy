@@ -47,7 +47,6 @@ type ServerParams struct {
 }
 
 func NewServer(params ServerParams) *Server {
-
 	srv := &Server{
 		server: rest.NewServer(
 			rest.ServerConfig{
@@ -75,8 +74,14 @@ func NewServer(params ServerParams) *Server {
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id}/credentials`, handlers.MethodHandler{
-		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateCredentials)),
+	mx.Handle(`/api/auth/profiles/{profile_id}`, handlers.MethodHandler{
+		http.MethodPatch: http.HandlerFunc(srv.verifyProfile),
+	})
+	mx.Handle(`/api/auth/profiles/{profile_id}/email`, handlers.MethodHandler{
+		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateEmail)),
+	})
+	mx.Handle(`/api/auth/profiles/{profile_id}/password`, handlers.MethodHandler{
+		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updatePassword)),
 	})
 	mx.Handle(`/api/auth/profiles/{profile_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
@@ -85,7 +90,7 @@ func NewServer(params ServerParams) *Server {
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
 		http.MethodDelete: http.HandlerFunc(srv.endAllSessions),
 	})
-	mx.Handle(`/api/auth/session`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/sessions/{session_id}`, handlers.MethodHandler{
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
 		http.MethodDelete: http.HandlerFunc(srv.endSession),
 	})

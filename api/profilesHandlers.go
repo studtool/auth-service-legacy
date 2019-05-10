@@ -37,7 +37,15 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 	srv.server.WriteOkJSON(w, &profile.ProfileInfo)
 }
 
-func (srv *Server) updateCredentials(w http.ResponseWriter, r *http.Request) {
+func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}
+
+func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
+	//TODO
+}
+
+func (srv *Server) updatePassword(w http.ResponseWriter, r *http.Request) {
 	//TODO
 }
 
