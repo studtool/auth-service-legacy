@@ -56,11 +56,15 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info := &models.ProfileInfo{
-		UserID:     token.UserID,
-		IsVerified: true,
-	} //TODO
-	srv.server.WriteOkJSON(w, info)
+	p := &models.ProfileInfo{
+		UserID: token.UserID,
+	}
+	if err := srv.profilesRepository.SetProfileVerified(p); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	srv.server.WriteOkJSON(w, p)
 }
 
 func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {

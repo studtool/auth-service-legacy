@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"strings"
 
@@ -49,12 +50,32 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	return nil
 }
 
+func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Error {
+	const query = `
+		UPDATE profile
+			SET is_verified = TRUE
+			WHERE user_id = $1;
+    `
+
+	res, err := r.conn.db.Exec(query, &p.UserID)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	if n, _ := res.RowsAffected(); n != 1 {
+		return errs.New(errors.New("no profiles verified"))
+	}
+
+	return nil
+}
+
 func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs.Error) {
 	const query = `
         SELECT p.user_id FROM profile p
         WHERE p.email = $1 AND p.password = $2;
     `
 
+	p.IsVerified = true
 	rows, err := r.conn.db.Query(query,
 		&p.Credentials.Email, &p.Credentials.Password,
 	)
