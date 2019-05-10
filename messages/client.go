@@ -26,7 +26,7 @@ type QueueClient struct {
 
 func NewQueueClient() *QueueClient {
 	return &QueueClient{
-		connStr: fmt.Sprintf("amqp://%s:%s@%s:%s/",
+		connStr: fmt.Sprintf("amqp://%s:%s@%s:%d/",
 			config.MqUser.Value(), config.MqPassword.Value(),
 			config.MqHost.Value(), config.MqPort.Value(),
 		),
