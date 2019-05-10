@@ -23,7 +23,7 @@ var (
 	RequestsLogsEnabled = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUESTS", true)
 
 	JwtKey     = cconfig.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
-	JwtExpTime = cconfig.NewTimeSecsDefault("STUDTOOL_JWT_EXPIRE_TIME", 5*time.Minute)
+	JwtExpTime = cconfig.NewTimeDefault("STUDTOOL_JWT_EXPIRE_TIME", 5*time.Minute)
 
 	RepositoriesEnabled = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_REPOSITORIES", false)
 	QueuesEnabled       = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_QUEUES", false)
@@ -41,5 +41,5 @@ var (
 	MqPassword = cconfig.NewStringDefault("STUDTOOL_MQ_PASSWORD", "password")
 
 	MqConnNumRet = cconfig.NewIntDefault("STUDTOOL_MQ_CONNECTION_NUM_RETRIES", 10)
-	MqConnRetItv = cconfig.NewTimeSecsDefault("STUDTOOL_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
+	MqConnRetItv = cconfig.NewTimeDefault("STUDTOOL_MQ_CONNECTION_RETRY_INTERVAL", 2*time.Second)
 )

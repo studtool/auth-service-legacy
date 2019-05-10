@@ -30,8 +30,8 @@ github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/studtool/common v0.0.0-20190509160854-602fdc361fdd h1:9R+jqdim+m7qDZwsy5YonCwVkiXyUWybAZ9PuRYVYKE=
-github.com/studtool/common v0.0.0-20190509160854-602fdc361fdd/go.mod h1:Lu3IEGzKeRoDwhoH50o5GCwAdct+M9Vm8g2zf3FUzDg=
+github.com/studtool/common v0.0.0-20190510074817-3170136d20b3 h1:/N2OAdEuGCxrniQcZIN0PSjWjrdh3ZEoDOMX/Truq+4=
+github.com/studtool/common v0.0.0-20190510074817-3170136d20b3/go.mod h1:Lu3IEGzKeRoDwhoH50o5GCwAdct+M9Vm8g2zf3FUzDg=
 go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3 h1:n9Hy12XGW9W1aQgR9ZJDQoWWL+V3sJmwDGOuT73H+qw=
 go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3/go.mod h1:z+dSd2TP9Usi48jL8M3v63iSBVkiwtVyMKxMZYYauPg=
 golang.org/x/sys v0.0.0-20180905080454-ebe1bf3edb33/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
