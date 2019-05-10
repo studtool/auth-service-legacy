@@ -28,15 +28,18 @@ var (
 	RepositoriesEnabled = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_REPOSITORIES", false)
 	QueuesEnabled       = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_QUEUES", false)
 
-	StorageHost     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
-	StoragePort     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_PORT", "5432")
-	StorageDB       = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_NAME", "auth")
-	StorageUser     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_USER", "user")
-	StoragePassword = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
-	StorageSSL      = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
+	AuthStorageHost     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_HOST", "127.0.0.1")
+	AuthStoragePort     = cconfig.NewIntDefault("STUDTOOL_AUTH_STORAGE_PORT", 5432)
+	AuthStorageName     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_NAME", "auth")
+	AuthStorageUser     = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_USER", "user")
+	AuthStoragePassword = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_PASSWORD", "password")
+	AuthStorageSSL      = cconfig.NewStringDefault("STUDTOOL_AUTH_STORAGE_SSL_MODE", "disable")
+
+	TokensStorageHost = cconfig.NewStringDefault("STUDTOOL_TOKENS_STORAGE_HOST", "127.0.0.1")
+	TokensStoragePort = cconfig.NewIntDefault("STUDTOOL_TOKENS_STORAGE_PORT", 6379)
 
 	MqHost     = cconfig.NewStringDefault("STUDTOOL_MQ_HOST", "127.0.0.1")
-	MqPort     = cconfig.NewStringDefault("STUDTOOL_MQ_PORT", "5672")
+	MqPort     = cconfig.NewIntDefault("STUDTOOL_MQ_PORT", 5672)
 	MqUser     = cconfig.NewStringDefault("STUDTOOL_MQ_USER", "user")
 	MqPassword = cconfig.NewStringDefault("STUDTOOL_MQ_PASSWORD", "password")
 

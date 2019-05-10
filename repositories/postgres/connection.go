@@ -17,10 +17,10 @@ type Connection struct {
 func NewConnection() *Connection {
 	return &Connection{
 		connStr: fmt.Sprintf(
-			"postgres://%s:%s@%s:%s/%s?sslmode=%s",
-			config.StorageUser.Value(), config.StoragePassword.Value(),
-			config.StorageHost.Value(), config.StoragePort.Value(),
-			config.StorageDB.Value(), config.StorageSSL.Value(),
+			"postgres://%s:%s@%s:%d/%s?sslmode=%s",
+			config.AuthStorageUser.Value(), config.AuthStoragePassword.Value(),
+			config.AuthStorageHost.Value(), config.AuthStoragePort.Value(),
+			config.AuthStorageName.Value(), config.AuthStorageSSL.Value(),
 		),
 	}
 }
