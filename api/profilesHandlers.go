@@ -45,7 +45,22 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	token := &models.Token{}
+	if err := srv.server.ParseBodyJSON(token, r); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	if err := srv.tokensRepository.GetToken(token); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	info := &models.ProfileInfo{
+		UserID:     token.UserID,
+		IsVerified: true,
+	} //TODO
+	srv.server.WriteOkJSON(w, info)
 }
 
 func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
