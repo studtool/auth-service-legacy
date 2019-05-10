@@ -32,6 +32,7 @@ type Server struct {
 	noAuthTokenErr *errs.Error
 
 	profilesRepository repositories.ProfilesRepository
+	tokensRepository   repositories.TokensRepository
 	sessionsRepository repositories.SessionsRepository
 
 	mqClient *messages.QueueClient
@@ -66,6 +67,7 @@ func NewServer(params ServerParams) *Server {
 		noAuthTokenErr: errs.NewNotAuthorizedError("authorization token required"),
 
 		profilesRepository: params.ProfilesRepository,
+		tokensRepository:   params.TokensRepository,
 		sessionsRepository: params.SessionsRepository,
 
 		mqClient: params.MqClient,

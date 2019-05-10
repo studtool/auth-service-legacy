@@ -24,13 +24,20 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	token := &models.Token{
+		UserID: profile.UserID,
+	}
+	if err := srv.tokensRepository.SetToken(token); err != nil {
+		srv.server.WriteErrJSON(w, err) //TODO handle
+		return
+	}
+
 	regEmailData := &queues.RegistrationEmailData{
 		Email: profile.Email,
-		Token: profile.UserID,
+		Token: token.Token,
 	}
 	if err := srv.mqClient.SendRegEmailMessage(regEmailData); err != nil {
-		_ = srv.profilesRepository.DeleteProfileById(profile) //TODO handle error
-		srv.server.WriteErrJSON(w, err)
+		srv.server.WriteErrJSON(w, err) //TODO handle
 		return
 	}
 
