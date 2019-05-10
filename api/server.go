@@ -43,6 +43,7 @@ type ServerParams struct {
 	MqClient *messages.QueueClient
 
 	ProfilesRepository repositories.ProfilesRepository
+	TokensRepository   repositories.TokensRepository
 	SessionsRepository repositories.SessionsRepository
 }
 

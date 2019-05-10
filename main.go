@@ -14,6 +14,7 @@ import (
 	"github.com/studtool/auth-service/messages"
 	"github.com/studtool/auth-service/repositories"
 	"github.com/studtool/auth-service/repositories/postgres"
+	"github.com/studtool/auth-service/repositories/redis"
 )
 
 func main() {
@@ -42,6 +43,25 @@ func main() {
 			postgres.NewSessionsRepository,
 			dig.As(new(repositories.SessionsRepository)),
 		))
+
+		utils.AssertOk(c.Provide(redis.NewConnection))
+		utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
+			if err := conn.Open(); err != nil {
+				beans.Logger.Fatal(err)
+			}
+		}))
+		defer func() {
+			utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
+				if err := conn.Close(); err != nil {
+					beans.Logger.Fatal(err)
+				}
+			}))
+		}()
+
+		utils.AssertOk(c.Provide(
+			redis.NewTokensRepository,
+			dig.As(new(repositories.TokensRepository)),
+		))
 	} else {
 		utils.AssertOk(c.Provide(
 			func() repositories.ProfilesRepository {
@@ -50,6 +70,11 @@ func main() {
 		))
 		utils.AssertOk(c.Provide(
 			func() repositories.SessionsRepository {
+				return nil
+			},
+		))
+		utils.AssertOk(c.Provide(
+			func() repositories.TokensRepository {
 				return nil
 			},
 		))
