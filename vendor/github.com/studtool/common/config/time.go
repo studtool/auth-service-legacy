@@ -49,7 +49,7 @@ func parseTimeSecs(name string, defVal time.Duration, isRequired bool) *TimeVar 
 			panicInvalidFormat(name, "[INTEGER]s")
 		}
 
-		tVal, err := strconv.Atoi(v)
+		tVal, err := strconv.Atoi(v[:len(v)-1])
 		if err != nil {
 			panic(err)
 		}
