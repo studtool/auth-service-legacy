@@ -99,7 +99,26 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs
 	return nil
 }
 
-func (r *ProfilesRepository) UpdateCredentials(c *models.Credentials) *errs.Error {
+func (r *ProfilesRepository) UpdateEmail(userId, email string) *errs.Error {
+	const query = `
+		UPDATE profile SET
+			email = $2, is_verified = FALSE
+		WHERE user_id = $1;
+	`
+
+	res, err := r.conn.db.Exec(query, &userId, &email)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	if n, _ := res.RowsAffected(); n != 1 {
+		return r.notFoundErr
+	}
+
+	return nil
+}
+
+func (r *ProfilesRepository) UpdatePassword(userId, password string) *errs.Error {
 	panic("implement me") //TODO
 }
 
