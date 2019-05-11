@@ -19,7 +19,7 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := srv.profilesRepository.FindUserIdByCredentials(profile); err != nil {
+	if _, err := srv.profilesRepository.FindUserIdByCredentials(&profile.Credentials); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
