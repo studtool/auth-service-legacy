@@ -76,7 +76,24 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	userId := srv.parseUserId(r)
+	if srv.server.ParseUserID(r) != userId {
+		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
+		return
+	}
+
+	emailUpdate := &models.EmailUpdate{}
+	if err := srv.server.ParseBodyJSON(emailUpdate, r); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	if err := srv.profilesRepository.UpdateEmail(userId, emailUpdate.Email); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	srv.server.WriteOk(w)
 }
 
 func (srv *Server) updatePassword(w http.ResponseWriter, r *http.Request) {

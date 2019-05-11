@@ -29,7 +29,7 @@ type Server struct {
 	authTokenManager    *utils.AuthTokenManager
 	refreshTokenManager *utils.RefreshTokenManager
 
-	noAuthTokenErr *errs.Error
+	notAuthorizedErr *errs.Error
 
 	profilesRepository repositories.ProfilesRepository
 	tokensRepository   repositories.TokensRepository
@@ -64,7 +64,7 @@ func NewServer(params ServerParams) *Server {
 		authTokenManager:    utils.NewAuthTokenManager(),
 		refreshTokenManager: utils.NewRefreshTokenManager(),
 
-		noAuthTokenErr: errs.NewNotAuthorizedError("authorization token required"),
+		notAuthorizedErr: errs.NewNotAuthorizedError("not authorized"),
 
 		profilesRepository: params.ProfilesRepository,
 		tokensRepository:   params.TokensRepository,

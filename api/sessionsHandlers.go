@@ -58,13 +58,13 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
 	token := srv.server.ParseAuthToken(r)
 	if token == consts.EmptyString {
-		srv.server.WriteErrJSON(w, srv.noAuthTokenErr)
+		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
 		return
 	}
 
 	claims, err := srv.authTokenManager.ParseToken(token)
 	if err != nil {
-		srv.server.WriteErrJSON(w, srv.noAuthTokenErr)
+		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
 		return
 	}
 

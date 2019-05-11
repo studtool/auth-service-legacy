@@ -24,6 +24,18 @@ type Credentials struct {
 }
 
 //easyjson:json
+type EmailUpdate struct {
+	UserID string `json:"-"`
+	Email  string `json:"email"`
+}
+
+//easyjson:json
+type PasswordUpdate struct {
+	UserID   string `json:"-"`
+	Password string `json:"password"`
+}
+
+//easyjson:json
 type Session struct {
 	UserId       string         `json:"userId"`
 	AuthToken    string         `json:"authToken"`
