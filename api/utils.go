@@ -6,6 +6,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func (srv *Server) parseProfileId(r *http.Request) string {
-	return mux.Vars(r)["profile_id"]
+func (srv *Server) parseUserId(r *http.Request) string {
+	return mux.Vars(r)["user_id"]
 }

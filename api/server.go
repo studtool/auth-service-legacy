@@ -77,16 +77,16 @@ func NewServer(params ServerParams) *Server {
 	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id}`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
 		http.MethodPatch: http.HandlerFunc(srv.verifyProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id}/email`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{user_id}/email`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateEmail)),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id}/password`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{user_id}/password`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updatePassword)),
 	})
-	mx.Handle(`/api/auth/profiles/{profile_id}`, handlers.MethodHandler{
+	mx.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
