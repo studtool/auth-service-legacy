@@ -64,6 +64,14 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	createdUserData := &queues.CreatedUserData{
+		UserID: p.UserID,
+	}
+	if err := srv.mqClient.SendUserCreatedMessage(createdUserData); err != nil {
+		srv.server.WriteErrJSON(w, err) //TODO handle
+		return
+	}
+
 	srv.server.WriteOkJSON(w, p)
 }
 
