@@ -2,11 +2,15 @@ package postgres
 
 import (
 	"errors"
-	"github.com/google/uuid"
 	"strings"
 
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
+
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
 
+	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/models"
 )
 
@@ -28,8 +32,8 @@ func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 
 func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	const query = `
-        INSERT INTO profile(user_id,email,password,is_verified) VALUES($1,$2,$3,false);
-    `
+		INSERT INTO profile(user_id,email,password,is_verified) VALUES($1,$2,$3,false);
+	`
 
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -69,41 +73,45 @@ func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Err
 	return nil
 }
 
-func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) (e *errs.Error) {
+func (r *ProfilesRepository) FindUserIdByCredentials(cr *models.Credentials) (string, *errs.Error) {
 	const query = `
-        SELECT p.user_id FROM profile p
-        WHERE p.email = $1 AND p.password = $2;
+		SELECT
+			p.user_id,
+			p.password
+		FROM profile p
+        WHERE p.email = $1 AND is_verified;
     `
 
-	p.IsVerified = true
-	rows, err := r.conn.db.Query(query,
-		&p.Credentials.Email, &p.Credentials.Password,
-	)
+	rows, err := r.conn.db.Query(query, &cr.Email)
 	if err != nil {
-		return errs.New(err)
+		return consts.EmptyString, errs.New(err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
-			e = errs.New(err)
+			beans.Logger.Error(errs.New(err)) //TODO format
 		}
 	}()
 
 	if !rows.Next() {
-		return r.notFoundErr
+		return consts.EmptyString, r.notFoundErr
 	}
 
-	if err := rows.Scan(&p.UserID); err != nil {
-		return errs.New(err)
+	var userId, password string
+	if err := rows.Scan(&userId, &password); err != nil {
+		return consts.EmptyString, errs.New(err)
+	}
+	if err := r.checkPassword(cr.Password, password); err != nil {
+		return consts.EmptyString, r.notFoundErr
 	}
 
-	return nil
+	return userId, nil
 }
 
 func (r *ProfilesRepository) UpdateEmail(userId, email string) *errs.Error {
 	const query = `
 		UPDATE profile SET
 			email = $2, is_verified = FALSE
-		WHERE user_id = $1;
+		WHERE user_id = $1 AND is_verified;
 	`
 
 	res, err := r.conn.db.Exec(query, &userId, &email)
@@ -119,9 +127,50 @@ func (r *ProfilesRepository) UpdateEmail(userId, email string) *errs.Error {
 }
 
 func (r *ProfilesRepository) UpdatePassword(userId, password string) *errs.Error {
-	panic("implement me") //TODO
+	const query = `
+		UPDATE profile SET
+			password = $2, is_verified = FALSE
+		WHERE user_id = $1 AND is_verified;
+	`
+
+	res, err := r.conn.db.Exec(query, &userId, &password)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	if n, _ := res.RowsAffected(); n != 1 {
+		return r.notFoundErr
+	}
+
+	return nil
 }
 
-func (r *ProfilesRepository) DeleteProfileById(p *models.Profile) *errs.Error {
-	panic("implement me") //TODO
+func (r *ProfilesRepository) DeleteProfileById(userId string) *errs.Error {
+	const query = `
+		DELETE FROM profile
+		WHERE user_id = $1 AND is_verified;
+	`
+
+	res, err := r.conn.db.Exec(query, &userId)
+	if err != nil {
+		return errs.New(err)
+	}
+
+	if n, _ := res.RowsAffected(); n != 1 {
+		return r.notFoundErr
+	}
+
+	return nil
+}
+
+func (r *ProfilesRepository) getPasswordHash(password string) (string, *errs.Error) {
+	h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) //TODO optimize
+	if err != nil {
+		return consts.EmptyString, errs.New(err)
+	}
+	return string(h), nil //TODO optimize
+}
+
+func (r *ProfilesRepository) checkPassword(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }
