@@ -41,8 +41,13 @@ func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	}
 	p.UserID = id.String()
 
+	hash, err := r.getPasswordHash(p.Password)
+	if err != nil {
+		return errs.New(err)
+	}
+
 	_, err = r.conn.db.Exec(query,
-		p.UserID, p.Credentials.Email, p.Credentials.Password,
+		p.UserID, p.Email, hash,
 	)
 	if err != nil {
 		if strings.Contains(err.Error(), "profile_email_unique") {
@@ -163,7 +168,7 @@ func (r *ProfilesRepository) DeleteProfileById(userId string) *errs.Error {
 	return nil
 }
 
-func (r *ProfilesRepository) getPasswordHash(password string) (string, *errs.Error) {
+func (r *ProfilesRepository) getPasswordHash(password string) (string, error) {
 	h, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost) //TODO optimize
 	if err != nil {
 		return consts.EmptyString, errs.New(err)
