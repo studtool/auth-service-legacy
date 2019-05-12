@@ -32,7 +32,7 @@ func NewProfilesRepository(conn *Connection) *ProfilesRepository {
 
 func (r *ProfilesRepository) AddProfile(p *models.Profile) *errs.Error {
 	const query = `
-		INSERT INTO profile(user_id,email,password,is_verified) VALUES($1,$2,$3,false);
+		INSERT INTO profile(user_id,email,password,is_verified) VALUES($1,$2,$3,FALSE);
 	`
 
 	id, err := uuid.NewRandom()
@@ -63,7 +63,7 @@ func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Err
 	const query = `
 		UPDATE profile
 			SET is_verified = TRUE
-			WHERE user_id = $1;
+		WHERE user_id = $1;
     `
 
 	res, err := r.conn.db.Exec(query, &p.UserID)
@@ -85,7 +85,9 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) *errs.Er
 			p.user_id,
 			p.password
 		FROM profile p
-        WHERE p.email = $1 AND is_verified;
+        WHERE
+			p.email = $1 AND
+			p.is_verified;
     `
 
 	rows, err := r.conn.db.Query(query, &p.Email)
