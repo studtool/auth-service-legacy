@@ -6,11 +6,17 @@ import (
 
 	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
+	"github.com/studtool/common/types"
 
 	"github.com/studtool/auth-service/config"
 )
 
-type JwtClaims struct {
+type AuthTokenAttributes struct {
+	UserId  string
+	ExpTime types.DateTime
+}
+
+type jwtClaims struct {
 	UserId  string `mapstructure:"userId"`
 	ExpTime string `mapstructure:"expTime"`
 }
@@ -27,10 +33,15 @@ func NewAuthTokenManager() *AuthTokenManager {
 	}
 }
 
-func (m *AuthTokenManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
+func (m *AuthTokenManager) CreateToken(attr *AuthTokenAttributes) (string, *errs.Error) {
+	jwtClaims := jwtClaims{
+		UserId:  attr.UserId,
+		ExpTime: attr.ExpTime.String(),
+	}
+
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userId":  c.UserId,
-		"expTime": c.ExpTime,
+		"userId":  jwtClaims.UserId,
+		"expTime": jwtClaims.ExpTime,
 	})
 
 	if s, err := t.SignedString(m.key); err != nil {
@@ -40,7 +51,7 @@ func (m *AuthTokenManager) CreateToken(c *JwtClaims) (string, *errs.Error) {
 	}
 }
 
-func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
+func (m *AuthTokenManager) ParseToken(token string) (*AuthTokenAttributes, *errs.Error) {
 	t, err := jwt.Parse(token, func(tk *jwt.Token) (interface{}, error) {
 		if _, ok := tk.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, m.err
@@ -57,7 +68,7 @@ func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
 		return nil, m.err
 	}
 
-	jwtClaims := &JwtClaims{}
+	jwtClaims := &jwtClaims{}
 	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		Result: jwtClaims, TagName: "mapstructure",
 	})
@@ -69,5 +80,12 @@ func (m *AuthTokenManager) ParseToken(token string) (*JwtClaims, *errs.Error) {
 		return nil, m.err
 	}
 
-	return jwtClaims, nil
+	attr := &AuthTokenAttributes{
+		UserId: jwtClaims.UserId,
+	}
+	if err := attr.ExpTime.Parse(jwtClaims.ExpTime); err != nil {
+		return nil, errs.New(err)
+	}
+
+	return attr, nil
 }

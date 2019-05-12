@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/models"
 	"github.com/studtool/auth-service/utils"
 	"github.com/studtool/common/consts"
@@ -24,9 +25,9 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		ExpireTime: srv.tokenExpTimeCalc.Calculate(),
 	}
 
-	jwtClaims := &utils.JwtClaims{
+	jwtClaims := &utils.AuthTokenAttributes{
 		UserId:  session.UserID,
-		ExpTime: session.ExpireTime.String(),
+		ExpTime: session.ExpireTime,
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
 		srv.server.WriteErrJSON(w, err)
@@ -57,13 +58,18 @@ func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	claims, err := srv.authTokenManager.ParseToken(token)
+	attr, err := srv.authTokenManager.ParseToken(token)
 	if err != nil {
+		beans.Logger().Error(err) //TODO format error
+		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
+		return
+	}
+	if err := srv.tokenExpTimeCalc.Check(attr.ExpTime); err != nil {
 		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
 		return
 	}
 
-	srv.server.SetUserID(w, claims.UserId)
+	srv.server.SetUserID(w, attr.UserId)
 	srv.server.WriteOk(w)
 }
 
@@ -76,9 +82,9 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jwtClaims := &utils.JwtClaims{
+	jwtClaims := &utils.AuthTokenAttributes{
 		UserId:  session.UserID,
-		ExpTime: session.ExpireTime.String(),
+		ExpTime: session.ExpireTime,
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
 		srv.server.WriteErrJSON(w, err)
