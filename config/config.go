@@ -12,7 +12,7 @@ var (
 	_ = func() *cconfig.FlagVar {
 		f := cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_ENV_VARS", false)
 		if f.Value() {
-			cconfig.SetLogger(beans.Logger)
+			cconfig.SetLogger(beans.Logger())
 		}
 		return f
 	}()

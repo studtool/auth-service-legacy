@@ -102,7 +102,7 @@ func NewServer(params ServerParams) *Server {
 		http.MethodGet: http.HandlerFunc(srv.parseSession),
 	})
 
-	srv.server.SetLogger(beans.Logger)
+	srv.server.SetLogger(beans.Logger())
 
 	h := srv.server.WithRecover(mx)
 	if config.RequestsLogsEnabled.Value() {

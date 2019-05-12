@@ -24,13 +24,13 @@ func main() {
 		utils.AssertOk(c.Provide(postgres.NewConnection))
 		utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
-				beans.Logger.Fatal(err)
+				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
 			utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
-					beans.Logger.Fatal(err)
+					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
@@ -47,13 +47,13 @@ func main() {
 		utils.AssertOk(c.Provide(redis.NewConnection))
 		utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
 			if err := conn.Open(); err != nil {
-				beans.Logger.Fatal(err)
+				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
 			utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
 				if err := conn.Close(); err != nil {
-					beans.Logger.Fatal(err)
+					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
@@ -84,13 +84,13 @@ func main() {
 		utils.AssertOk(c.Provide(messages.NewQueueClient))
 		utils.AssertOk(c.Invoke(func(q *messages.QueueClient) {
 			if err := q.OpenConnection(); err != nil {
-				beans.Logger.Fatal(err)
+				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
 			utils.AssertOk(c.Invoke(func(q *messages.QueueClient) {
 				if err := q.CloseConnection(); err != nil {
-					beans.Logger.Fatal(err)
+					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
@@ -108,7 +108,7 @@ func main() {
 	utils.AssertOk(c.Invoke(func(srv *api.Server) {
 		go func() {
 			if err := srv.Run(); err != nil {
-				beans.Logger.Fatal(err)
+				beans.Logger().Fatal(err)
 				ch <- os.Interrupt
 			}
 		}()
@@ -116,7 +116,7 @@ func main() {
 	defer func() {
 		utils.AssertOk(c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
-				beans.Logger.Fatal(err)
+				beans.Logger().Fatal(err)
 			}
 		}))
 	}()

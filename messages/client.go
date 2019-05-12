@@ -39,7 +39,7 @@ func (c *QueueClient) OpenConnection() error {
 	var conn *amqp.Connection
 	err := utils.WithRetry(func(n int) (err error) {
 		if n > 0 {
-			beans.Logger.Info(fmt.Sprintf("opening message queue connection. retry #%d", n))
+			beans.Logger().Info(fmt.Sprintf("opening message queue connection. retry #%d", n))
 		}
 		conn, err = amqp.Dial(c.connStr)
 		return err

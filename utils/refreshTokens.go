@@ -30,7 +30,7 @@ func (m *RefreshTokenManager) CreateToken() (string, *errs.Error) {
 func (m *RefreshTokenManager) generateUUID() string {
 	v, err := uuid.NewRandom()
 	if err != nil { //TODO handle error
-		beans.Logger.Error(err)
+		beans.Logger().Error(err)
 	}
 	return v.String()
 }

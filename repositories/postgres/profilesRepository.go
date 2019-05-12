@@ -93,7 +93,7 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) *errs.Er
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
-			beans.Logger.Error(errs.New(err)) //TODO format
+			beans.Logger().Error(errs.New(err)) //TODO format
 		}
 	}()
 

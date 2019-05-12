@@ -79,7 +79,7 @@ func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Err
 		return errs.New(err)
 	}
 	if n, _ := res.RowsAffected(); n != 1 {
-		beans.Logger.Error(fmt.Sprintf("%d sessions deleted", n))
+		beans.Logger().Error(fmt.Sprintf("%d sessions deleted", n))
 	}
 
 	return nil
@@ -103,6 +103,6 @@ func (r *SessionsRepository) DeleteAllSessionsByRefreshToken(token string) *errs
 
 func (r *SessionsRepository) closeRowsWithCheck(rows *sql.Rows) {
 	if err := rows.Close(); err != nil {
-		beans.Logger.Error(err)
+		beans.Logger().Error(err)
 	}
 }

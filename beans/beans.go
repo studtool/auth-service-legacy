@@ -5,5 +5,9 @@ import (
 )
 
 var (
-	Logger = logs.NewLogger()
+	logger = logs.NewLogger()
 )
+
+func Logger() *logs.Logger {
+	return logger
+}
