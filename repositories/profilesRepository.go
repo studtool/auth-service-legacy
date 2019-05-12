@@ -10,7 +10,7 @@ type ProfilesRepository interface {
 	AddProfile(p *models.Profile) *errs.Error
 	SetProfileVerified(p *models.ProfileInfo) *errs.Error
 	FindUserIdByCredentials(cr *models.Credentials) (string, *errs.Error)
-	UpdateEmail(userId, email string) *errs.Error
-	UpdatePassword(userId, password string) *errs.Error
+	UpdateEmail(u *models.EmailUpdate) *errs.Error
+	UpdatePassword(u *models.PasswordUpdate) *errs.Error
 	DeleteProfileById(userId string) *errs.Error
 }

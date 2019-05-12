@@ -107,14 +107,14 @@ func (r *ProfilesRepository) FindUserIdByCredentials(cr *models.Credentials) (st
 	return userId, nil
 }
 
-func (r *ProfilesRepository) UpdateEmail(userId, email string) *errs.Error {
+func (r *ProfilesRepository) UpdateEmail(u *models.EmailUpdate) *errs.Error {
 	const query = `
 		UPDATE profile SET
 			email = $2, is_verified = FALSE
 		WHERE user_id = $1 AND is_verified;
 	`
 
-	res, err := r.conn.db.Exec(query, &userId, &email)
+	res, err := r.conn.db.Exec(query, &u.UserID, &u.Email)
 	if err != nil {
 		return errs.New(err)
 	}
@@ -126,14 +126,14 @@ func (r *ProfilesRepository) UpdateEmail(userId, email string) *errs.Error {
 	return nil
 }
 
-func (r *ProfilesRepository) UpdatePassword(userId, password string) *errs.Error {
+func (r *ProfilesRepository) UpdatePassword(u *models.PasswordUpdate) *errs.Error {
 	const query = `
 		UPDATE profile SET
 			password = $2, is_verified = FALSE
 		WHERE user_id = $1 AND is_verified;
 	`
 
-	res, err := r.conn.db.Exec(query, &userId, &password)
+	res, err := r.conn.db.Exec(query, &u.UserID, &u.Password)
 	if err != nil {
 		return errs.New(err)
 	}
