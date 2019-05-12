@@ -98,7 +98,25 @@ func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) updatePassword(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	passwordUpdate := &models.PasswordUpdate{
+		UserID: srv.parseUserId(r),
+	}
+	if srv.server.ParseUserID(r) != passwordUpdate.UserID {
+		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
+		return
+	}
+
+	if err := srv.server.ParseBodyJSON(passwordUpdate, r); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	if err := srv.profilesRepository.UpdatePassword(passwordUpdate); err != nil {
+		srv.server.WriteErrJSON(w, err)
+		return
+	}
+
+	srv.server.WriteOk(w)
 }
 
 func (srv *Server) deleteProfile(w http.ResponseWriter, r *http.Request) {
