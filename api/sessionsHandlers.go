@@ -103,11 +103,11 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
-	//TODO check session_id
-
-	token := srv.server.ParseRefreshToken(r)
-
-	if err := srv.sessionsRepository.DeleteSessionByRefreshToken(token); err != nil {
+	session := &models.Session{
+		SessionID: srv.parseSessionID(r),
+		UserID:    srv.server.ParseUserID(r),
+	}
+	if err := srv.sessionsRepository.DeleteSessionBySessionID(session); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
@@ -116,12 +116,5 @@ func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) endAllSessions(w http.ResponseWriter, r *http.Request) {
-	token := srv.server.ParseRefreshToken(r)
-
-	if err := srv.sessionsRepository.DeleteAllSessionsByRefreshToken(token); err != nil {
-		srv.server.WriteErrJSON(w, err)
-		return
-	}
-
-	srv.server.WriteOk(w)
+	srv.server.WriteNotImplemented(w)
 }

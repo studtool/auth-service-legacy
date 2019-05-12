@@ -2,7 +2,6 @@ package postgres
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/google/uuid"
 	"github.com/studtool/common/consts"
 	"golang.org/x/crypto/bcrypt"
@@ -84,17 +83,20 @@ func (r *SessionsRepository) FindSession(session *models.Session) (e *errs.Error
 	return nil
 }
 
-func (r *SessionsRepository) DeleteSessionByRefreshToken(token string) *errs.Error {
+func (r *SessionsRepository) DeleteSessionBySessionID(session *models.Session) *errs.Error {
 	const query = `
-		DELETE FROM session WHERE refresh_token = $1;
+		DELETE FROM session
+		WHERE session_id = $1 AND user_id = $2;
 	`
 
-	res, err := r.conn.db.Exec(query, &token)
+	res, err := r.conn.db.Exec(query,
+		&session.SessionID, &session.UserID,
+	)
 	if err != nil {
 		return errs.New(err)
 	}
 	if n, _ := res.RowsAffected(); n != 1 {
-		beans.Logger().Error(fmt.Sprintf("%d sessions deleted", n)) //TODO format error
+		return r.notFoundErr
 	}
 
 	return nil

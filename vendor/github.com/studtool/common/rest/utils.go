@@ -96,6 +96,10 @@ func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 	}
 }
 
+func (srv *Server) WriteUnauthorized(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusUnauthorized)
+}
+
 func (srv *Server) WriteNotImplemented(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNotImplemented)
 }

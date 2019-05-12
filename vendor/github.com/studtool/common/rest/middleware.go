@@ -2,6 +2,7 @@ package rest
 
 import (
 	"fmt"
+	"github.com/studtool/common/consts"
 	"net/http"
 	"strconv"
 	"strings"
@@ -40,9 +41,9 @@ func (srv *Server) WithRecover(h http.Handler) http.Handler {
 func (srv *Server) WithAuth(h http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			userID := srv.ParseUserID(r)
-			if userID == "" {
-				w.WriteHeader(http.StatusUnauthorized)
+			if srv.ParseUserID(r) == consts.EmptyString {
+				srv.WriteUnauthorized(w)
+				return
 			}
 			h.ServeHTTP(w, r)
 		},

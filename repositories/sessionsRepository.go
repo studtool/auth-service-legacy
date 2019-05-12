@@ -9,6 +9,6 @@ import (
 type SessionsRepository interface {
 	AddSession(session *models.Session) *errs.Error
 	FindSession(session *models.Session) *errs.Error
-	DeleteSessionByRefreshToken(token string) *errs.Error
+	DeleteSessionBySessionID(session *models.Session) *errs.Error
 	DeleteAllSessionsByRefreshToken(token string) *errs.Error
 }

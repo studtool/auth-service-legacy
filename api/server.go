@@ -93,11 +93,11 @@ func NewServer(params ServerParams) *Server {
 	})
 	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
-		http.MethodDelete: http.HandlerFunc(srv.endAllSessions),
+		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endAllSessions)),
 	})
 	mx.Handle(`/api/auth/sessions/{session_id}`, handlers.MethodHandler{
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
-		http.MethodDelete: http.HandlerFunc(srv.endSession),
+		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endSession)),
 	})
 	mx.Handle(`/api/private/auth/session`, handlers.MethodHandler{
 		http.MethodGet: http.HandlerFunc(srv.parseSession),
