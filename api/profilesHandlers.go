@@ -120,5 +120,5 @@ func (srv *Server) updatePassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) deleteProfile(w http.ResponseWriter, r *http.Request) {
-	//TODO
+	srv.server.WriteNotImplemented(w) //TODO
 }
