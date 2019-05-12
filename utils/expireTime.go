@@ -14,10 +14,10 @@ type ExpireTimeCalculator struct {
 	validPeriod time.Duration
 }
 
-func NewExpireTimeCalculator(err *errs.Error) *ExpireTimeCalculator {
+func NewExpireTimeCalculator() *ExpireTimeCalculator {
 	return &ExpireTimeCalculator{
-		expiredErr:  err,
 		validPeriod: config.JwtValidPeriod.Value(),
+		expiredErr:  errs.NewConflictError("expired"),
 	}
 }
 

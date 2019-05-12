@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/studtool/auth-service/beans"
 	"net/http"
 
 	"github.com/studtool/common/queues"
@@ -54,6 +55,9 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 	if err := srv.tokensRepository.GetToken(token); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
+	}
+	if err := srv.tokensRepository.DeleteToken(token); err != nil {
+		beans.Logger().Error(err) //TODO format error
 	}
 
 	p := &models.ProfileInfo{

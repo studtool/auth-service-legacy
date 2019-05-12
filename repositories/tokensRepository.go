@@ -9,4 +9,5 @@ import (
 type TokensRepository interface {
 	SetToken(token *models.Token) *errs.Error
 	GetToken(token *models.Token) *errs.Error
+	DeleteToken(token *models.Token) *errs.Error
 }
