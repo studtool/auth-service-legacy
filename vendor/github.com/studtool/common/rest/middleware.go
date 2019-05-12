@@ -2,10 +2,11 @@ package rest
 
 import (
 	"fmt"
-	"github.com/studtool/common/consts"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/studtool/common/consts"
 )
 
 func (srv *Server) WithLogs(h http.Handler) http.Handler {
