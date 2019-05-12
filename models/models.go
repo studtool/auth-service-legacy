@@ -37,7 +37,8 @@ type PasswordUpdate struct {
 
 //easyjson:json
 type Session struct {
-	UserId       string         `json:"userId"`
+	SessionID    string         `json:"sessionId"`
+	UserID       string         `json:"userId"`
 	AuthToken    string         `json:"authToken"`
 	RefreshToken string         `json:"refreshToken"`
 	ExpireTime   types.DateTime `json:"expireTime"`

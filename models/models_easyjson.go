@@ -107,8 +107,10 @@ func easyjsonD2b7633eDecodeGithubComStudtoolAuthServiceModels1(in *jlexer.Lexer,
 			continue
 		}
 		switch key {
+		case "sessionId":
+			out.SessionID = string(in.String())
 		case "userId":
-			out.UserId = string(in.String())
+			out.UserID = string(in.String())
 		case "authToken":
 			out.AuthToken = string(in.String())
 		case "refreshToken":
@@ -132,6 +134,16 @@ func easyjsonD2b7633eEncodeGithubComStudtoolAuthServiceModels1(out *jwriter.Writ
 	first := true
 	_ = first
 	{
+		const prefix string = ",\"sessionId\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.SessionID))
+	}
+	{
 		const prefix string = ",\"userId\":"
 		if first {
 			first = false
@@ -139,7 +151,7 @@ func easyjsonD2b7633eEncodeGithubComStudtoolAuthServiceModels1(out *jwriter.Writ
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.UserId))
+		out.String(string(in.UserID))
 	}
 	{
 		const prefix string = ",\"authToken\":"

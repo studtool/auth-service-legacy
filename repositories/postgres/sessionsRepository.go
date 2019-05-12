@@ -34,9 +34,9 @@ func (r *SessionsRepository) AddSession(session *models.Session) *errs.Error {
 		return errs.New(err)
 	}
 
-	sessionId := id.String()
+	session.SessionID = id.String()
 	_, err = r.conn.db.Exec(query,
-		&sessionId, &session.UserId, &session.RefreshToken,
+		&session.SessionID, &session.UserID, &session.RefreshToken,
 	)
 	if err != nil {
 		return errs.New(err)
@@ -62,7 +62,7 @@ func (r *SessionsRepository) FindUserIdByRefreshToken(session *models.Session) (
 	if !rows.Next() {
 		return r.notAuthorizedErr
 	}
-	if err := rows.Scan(&session.UserId); err != nil {
+	if err := rows.Scan(&session.UserID); err != nil {
 		return errs.New(err)
 	}
 

@@ -37,9 +37,9 @@ github.com/studtool/common/consts
 github.com/studtool/common/errs
 github.com/studtool/common/queues
 github.com/studtool/common/rest
-github.com/studtool/common/types
 github.com/studtool/common/logs
 github.com/studtool/common/config
+github.com/studtool/common/types
 # go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 go.uber.org/dig
 go.uber.org/dig/internal/digreflect

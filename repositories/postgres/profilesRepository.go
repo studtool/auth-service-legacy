@@ -78,7 +78,7 @@ func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Err
 	return nil
 }
 
-func (r *ProfilesRepository) FindUserIdByCredentials(cr *models.Credentials) (string, *errs.Error) {
+func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) *errs.Error {
 	const query = `
 		SELECT
 			p.user_id,
@@ -87,9 +87,9 @@ func (r *ProfilesRepository) FindUserIdByCredentials(cr *models.Credentials) (st
         WHERE p.email = $1 AND is_verified;
     `
 
-	rows, err := r.conn.db.Query(query, &cr.Email)
+	rows, err := r.conn.db.Query(query, &p.Email)
 	if err != nil {
-		return consts.EmptyString, errs.New(err)
+		return errs.New(err)
 	}
 	defer func() {
 		if err := rows.Close(); err != nil {
@@ -98,18 +98,18 @@ func (r *ProfilesRepository) FindUserIdByCredentials(cr *models.Credentials) (st
 	}()
 
 	if !rows.Next() {
-		return consts.EmptyString, r.notFoundErr
+		return r.notFoundErr
 	}
 
-	var userId, password string
-	if err := rows.Scan(&userId, &password); err != nil {
-		return consts.EmptyString, errs.New(err)
+	var password string
+	if err := rows.Scan(&p.UserID, &password); err != nil {
+		return errs.New(err)
 	}
-	if err := r.checkPassword(cr.Password, password); err != nil {
-		return consts.EmptyString, r.notFoundErr
+	if err := r.checkPassword(p.Password, password); err != nil {
+		return r.notFoundErr
 	}
 
-	return userId, nil
+	return nil
 }
 
 func (r *ProfilesRepository) UpdateEmail(u *models.EmailUpdate) *errs.Error {

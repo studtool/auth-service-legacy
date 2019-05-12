@@ -22,8 +22,8 @@ var (
 	CorsAllowed         = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ALLOW_CORS", false)
 	RequestsLogsEnabled = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_LOG_REQUESTS", true)
 
-	JwtKey     = cconfig.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
-	JwtExpTime = cconfig.NewTimeDefault("STUDTOOL_JWT_EXPIRE_TIME", 5*time.Minute)
+	JwtKey         = cconfig.NewStringDefault("STUDTOOL_JWT_KEY", "secret")
+	JwtValidPeriod = cconfig.NewTimeDefault("STUDTOOL_JWT_VALID_PERIOD", 5*time.Minute)
 
 	RepositoriesEnabled = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_REPOSITORIES", false)
 	QueuesEnabled       = cconfig.NewFlagDefault("STUDTOOL_AUTH_SERVICE_SHOULD_ENABLE_QUEUES", false)

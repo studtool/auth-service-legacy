@@ -30,6 +30,7 @@ type Server struct {
 	refreshTokenManager *utils.RefreshTokenManager
 
 	notAuthorizedErr *errs.Error
+	tokenExpTimeCalc *utils.ExpireTimeCalculator
 
 	profilesRepository repositories.ProfilesRepository
 	tokensRepository   repositories.TokensRepository

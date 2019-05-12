@@ -1,15 +1,10 @@
 package api
 
 import (
-	"net/http"
-	"time"
-
-	"github.com/studtool/common/consts"
-	"github.com/studtool/common/types"
-
-	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/models"
 	"github.com/studtool/auth-service/utils"
+	"github.com/studtool/common/consts"
+	"net/http"
 )
 
 func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
@@ -19,18 +14,18 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if _, err := srv.profilesRepository.FindUserIdByCredentials(&profile.Credentials); err != nil {
+	if err := srv.profilesRepository.FindUserIdByCredentials(profile); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
 
 	session := &models.Session{
-		UserId:     profile.UserID,
-		ExpireTime: types.DateTime(time.Now().Add(config.JwtExpTime.Value())),
+		UserID:     profile.UserID,
+		ExpireTime: srv.tokenExpTimeCalc.Calculate(),
 	}
 
 	jwtClaims := &utils.JwtClaims{
-		UserId:  session.UserId,
+		UserId:  session.UserID,
 		ExpTime: session.ExpireTime.String(),
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
@@ -82,7 +77,7 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 	}
 
 	jwtClaims := &utils.JwtClaims{
-		UserId:  session.UserId,
+		UserId:  session.UserID,
 		ExpTime: session.ExpireTime.String(),
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
