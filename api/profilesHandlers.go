@@ -81,7 +81,7 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 
 func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
 	emailUpdate := &models.EmailUpdate{
-		UserID: srv.parseUserId(r),
+		UserID: srv.parseUserID(r),
 	}
 	if srv.server.ParseUserID(r) != emailUpdate.UserID {
 		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
@@ -103,7 +103,7 @@ func (srv *Server) updateEmail(w http.ResponseWriter, r *http.Request) {
 
 func (srv *Server) updatePassword(w http.ResponseWriter, r *http.Request) {
 	passwordUpdate := &models.PasswordUpdate{
-		UserID: srv.parseUserId(r),
+		UserID: srv.parseUserID(r),
 	}
 	if srv.server.ParseUserID(r) != passwordUpdate.UserID {
 		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)

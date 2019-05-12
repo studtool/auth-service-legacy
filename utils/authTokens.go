@@ -12,7 +12,7 @@ import (
 )
 
 type AuthTokenAttributes struct {
-	UserId  string
+	UserID  string
 	ExpTime types.DateTime
 }
 
@@ -35,7 +35,7 @@ func NewAuthTokenManager() *AuthTokenManager {
 
 func (m *AuthTokenManager) CreateToken(attr *AuthTokenAttributes) (string, *errs.Error) {
 	jwtClaims := jwtClaims{
-		UserId:  attr.UserId,
+		UserId:  attr.UserID,
 		ExpTime: attr.ExpTime.String(),
 	}
 
@@ -81,7 +81,7 @@ func (m *AuthTokenManager) ParseToken(token string) (*AuthTokenAttributes, *errs
 	}
 
 	attr := &AuthTokenAttributes{
-		UserId: jwtClaims.UserId,
+		UserID: jwtClaims.UserId,
 	}
 	if err := attr.ExpTime.Parse(jwtClaims.ExpTime); err != nil {
 		return nil, errs.New(err)

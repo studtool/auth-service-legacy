@@ -1,11 +1,13 @@
 package api
 
 import (
+	"net/http"
+
+	"github.com/studtool/common/consts"
+
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/models"
 	"github.com/studtool/auth-service/utils"
-	"github.com/studtool/common/consts"
-	"net/http"
 )
 
 func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
@@ -25,18 +27,21 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		ExpireTime: srv.tokenExpTimeCalc.Calculate(),
 	}
 
-	jwtClaims := &utils.AuthTokenAttributes{
-		UserId:  session.UserID,
+	authAttr := &utils.AuthTokenAttributes{
+		UserID:  session.UserID,
 		ExpTime: session.ExpireTime,
 	}
-	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
+	if t, err := srv.authTokenManager.CreateToken(authAttr); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	} else {
 		session.AuthToken = t
 	}
 
-	if t, err := srv.refreshTokenManager.CreateToken(); err != nil {
+	refreshAttr := &utils.RefreshTokenAttributes{
+		UserID: session.UserID,
+	}
+	if t, err := srv.refreshTokenManager.CreateToken(refreshAttr); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	} else {
@@ -69,22 +74,23 @@ func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	srv.server.SetUserID(w, attr.UserId)
+	srv.server.SetUserID(w, attr.UserID)
 	srv.server.WriteOk(w)
 }
 
 func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 	session := &models.Session{
+		SessionID:    srv.parseSessionID(r),
 		RefreshToken: srv.server.ParseRefreshToken(r),
 	}
-	if err := srv.sessionsRepository.FindUserIdByRefreshToken(session); err != nil {
+	if err := srv.sessionsRepository.FindSession(session); err != nil {
 		srv.server.WriteErrJSON(w, err)
 		return
 	}
 
 	jwtClaims := &utils.AuthTokenAttributes{
-		UserId:  session.UserID,
-		ExpTime: session.ExpireTime,
+		UserID:  session.UserID,
+		ExpTime: srv.tokenExpTimeCalc.Calculate(),
 	}
 	if t, err := srv.authTokenManager.CreateToken(jwtClaims); err != nil {
 		srv.server.WriteErrJSON(w, err)
@@ -97,6 +103,8 @@ func (srv *Server) refreshSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) endSession(w http.ResponseWriter, r *http.Request) {
+	//TODO check session_id
+
 	token := srv.server.ParseRefreshToken(r)
 
 	if err := srv.sessionsRepository.DeleteSessionByRefreshToken(token); err != nil {
