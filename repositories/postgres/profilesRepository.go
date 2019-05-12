@@ -75,6 +75,7 @@ func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Err
 		return errs.New(errors.New("no profiles verified"))
 	}
 
+	p.IsVerified = true
 	return nil
 }
 
