@@ -96,6 +96,10 @@ func (srv *Server) WriteErrJSON(w http.ResponseWriter, err *errs.Error) {
 	}
 }
 
+func (srv *Server) WriteNotImplemented(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
 func (srv *Server) writeBodyJSON(w http.ResponseWriter, status int, v easyjson.Marshaler) {
 	w.WriteHeader(status)
 	w.Header().Set("Content-Type", "application/json")

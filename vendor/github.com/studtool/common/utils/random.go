@@ -5,11 +5,13 @@ import (
 	"time"
 )
 
+//nolint:gochecknoinits
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
 var (
+	//nolint:gochecknoglobals
 	letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*()-_+=")
 )
 
