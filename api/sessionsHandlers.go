@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/studtool/auth-service/config"
 	"net/http"
 
 	"github.com/studtool/common/consts"
@@ -17,9 +18,16 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := srv.profilesRepository.FindUserIdByCredentials(profile); err != nil {
-		srv.server.WriteErrJSON(w, err)
-		return
+	if config.VerificationRequired.Value() {
+		if err := srv.profilesRepository.FindVerifiedProfile(profile); err != nil {
+			srv.server.WriteErrJSON(w, err)
+			return
+		}
+	} else {
+		if err := srv.profilesRepository.FindProfile(profile); err != nil {
+			srv.server.WriteErrJSON(w, err)
+			return
+		}
 	}
 
 	session := &models.Session{

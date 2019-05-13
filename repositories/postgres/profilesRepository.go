@@ -79,7 +79,19 @@ func (r *ProfilesRepository) SetProfileVerified(p *models.ProfileInfo) *errs.Err
 	return nil
 }
 
-func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) *errs.Error {
+func (r *ProfilesRepository) FindProfile(p *models.Profile) *errs.Error {
+	const query = `
+		SELECT
+			p.user_id,
+			p.password
+		FROM profile p
+        WHERE
+			p.email = $1;
+    `
+	return r.findProfile(query, p)
+}
+
+func (r *ProfilesRepository) FindVerifiedProfile(p *models.Profile) *errs.Error {
 	const query = `
 		SELECT
 			p.user_id,
@@ -89,30 +101,7 @@ func (r *ProfilesRepository) FindUserIdByCredentials(p *models.Profile) *errs.Er
 			p.email = $1 AND
 			p.is_verified;
     `
-
-	rows, err := r.conn.db.Query(query, &p.Email)
-	if err != nil {
-		return errs.New(err)
-	}
-	defer func() {
-		if err := rows.Close(); err != nil {
-			beans.Logger().Error(errs.New(err)) //TODO format
-		}
-	}()
-
-	if !rows.Next() {
-		return r.notFoundErr
-	}
-
-	var password string
-	if err := rows.Scan(&p.UserID, &password); err != nil {
-		return errs.New(err)
-	}
-	if err := r.checkPassword(p.Password, password); err != nil {
-		return r.notFoundErr
-	}
-
-	return nil
+	return r.findProfile(query, p)
 }
 
 func (r *ProfilesRepository) UpdateEmail(u *models.EmailUpdate) *errs.Error {
@@ -165,6 +154,32 @@ func (r *ProfilesRepository) DeleteProfileById(userId string) *errs.Error {
 	}
 
 	if n, _ := res.RowsAffected(); n != 1 {
+		return r.notFoundErr
+	}
+
+	return nil
+}
+
+func (r *ProfilesRepository) findProfile(query string, p *models.Profile) *errs.Error {
+	rows, err := r.conn.db.Query(query, &p.Email)
+	if err != nil {
+		return errs.New(err)
+	}
+	defer func() {
+		if err := rows.Close(); err != nil {
+			beans.Logger().Error(errs.New(err)) //TODO format
+		}
+	}()
+
+	if !rows.Next() {
+		return r.notFoundErr
+	}
+
+	var password string
+	if err := rows.Scan(&p.UserID, &password); err != nil {
+		return errs.New(err)
+	}
+	if err := r.checkPassword(p.Password, password); err != nil {
 		return r.notFoundErr
 	}
 
