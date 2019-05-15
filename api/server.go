@@ -99,9 +99,7 @@ func NewServer(params ServerParams) *Server {
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endSession)),
 	})
-	mx.Handle(`/api/private/auth/session`, handlers.MethodHandler{
-		http.MethodGet: http.HandlerFunc(srv.parseSession),
-	})
+	mx.Handle(`/api/private/auth/session`, http.HandlerFunc(srv.parseSession))
 
 	srv.server.SetLogger(beans.Logger())
 
