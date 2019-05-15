@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"go.uber.org/dig"
 
 	"github.com/studtool/common/consts"
@@ -75,35 +75,35 @@ func NewServer(params ServerParams) *Server {
 		mqClient: params.MqClient,
 	}
 
-	mx := mux.NewRouter()
-	mx.Handle(`/api/auth/profiles`, handlers.MethodHandler{
+	r := chi.NewRouter()
+	r.Handle(`/api/auth/profiles`, handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
+	r.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
 		http.MethodPatch: http.HandlerFunc(srv.verifyProfile),
 	})
-	mx.Handle(`/api/auth/profiles/{user_id}/email`, handlers.MethodHandler{
+	r.Handle(`/api/auth/profiles/{user_id}/email`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateEmail)),
 	})
-	mx.Handle(`/api/auth/profiles/{user_id}/password`, handlers.MethodHandler{
+	r.Handle(`/api/auth/profiles/{user_id}/password`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updatePassword)),
 	})
-	mx.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
+	r.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
-	mx.Handle(`/api/auth/sessions`, handlers.MethodHandler{
+	r.Handle(`/api/auth/sessions`, handlers.MethodHandler{
 		http.MethodPost:   http.HandlerFunc(srv.startSession),
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endAllSessions)),
 	})
-	mx.Handle(`/api/auth/sessions/{session_id}`, handlers.MethodHandler{
+	r.Handle(`/api/auth/sessions/{session_id}`, handlers.MethodHandler{
 		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endSession)),
 	})
-	mx.Handle(`/api/private/auth/session`, http.HandlerFunc(srv.parseSession))
+	r.Handle(`/api/private/auth/session/*`, http.HandlerFunc(srv.parseSession))
 
 	srv.server.SetLogger(beans.Logger())
 
-	h := srv.server.WithRecover(mx)
+	h := srv.server.WithRecover(r)
 	if config.RequestsLogsEnabled.Value() {
 		h = srv.server.WithLogs(h)
 	}
