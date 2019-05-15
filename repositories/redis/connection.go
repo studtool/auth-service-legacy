@@ -2,10 +2,12 @@ package redis
 
 import (
 	"fmt"
+
 	"github.com/go-redis/redis"
-	"github.com/studtool/auth-service/config"
 
 	"github.com/studtool/common/consts"
+
+	"github.com/studtool/auth-service/config"
 )
 
 type Connection struct {

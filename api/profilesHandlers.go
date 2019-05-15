@@ -1,11 +1,11 @@
 package api
 
 import (
-	"github.com/studtool/auth-service/beans"
 	"net/http"
 
 	"github.com/studtool/common/queues"
 
+	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/models"
 )
 

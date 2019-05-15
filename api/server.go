@@ -65,8 +65,8 @@ func NewServer(params ServerParams) *Server {
 		authTokenManager:    utils.NewAuthTokenManager(),
 		refreshTokenManager: utils.NewRefreshTokenManager(),
 
-		notAuthorizedErr: errs.NewNotAuthorizedError("not authorized"),
 		tokenExpTimeCalc: utils.NewExpireTimeCalculator(),
+		notAuthorizedErr: errs.NewNotAuthorizedError("not authorized"),
 
 		profilesRepository: params.ProfilesRepository,
 		tokensRepository:   params.TokensRepository,

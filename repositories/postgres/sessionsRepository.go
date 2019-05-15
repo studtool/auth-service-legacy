@@ -2,10 +2,11 @@ package postgres
 
 import (
 	"database/sql"
+
 	"github.com/google/uuid"
-	"github.com/studtool/common/consts"
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/studtool/common/consts"
 	"github.com/studtool/common/errs"
 
 	"github.com/studtool/auth-service/beans"
