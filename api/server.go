@@ -76,29 +76,28 @@ func NewServer(params ServerParams) *Server {
 	}
 
 	r := chi.NewRouter()
-	r.Handle(`/api/auth/profiles`, handlers.MethodHandler{
-		http.MethodPost: http.HandlerFunc(srv.createProfile),
-	})
-	r.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
-		http.MethodPatch: http.HandlerFunc(srv.verifyProfile),
-	})
-	r.Handle(`/api/auth/profiles/{user_id}/email`, handlers.MethodHandler{
+
+	r.Post(`/api/public/auth/profiles`, http.HandlerFunc(srv.createProfile))
+	r.Post(`/api/public/auth/sessions`, http.HandlerFunc(srv.startSession))
+	r.Patch(`/api/public/auth/sessions/{session_id}`, http.HandlerFunc(srv.refreshSession))
+	r.Patch(`/api/public/auth/profiles/{user_id}`, http.HandlerFunc(srv.verifyProfile))
+
+	r.Handle(`/api/protected/auth/profiles/{user_id}/email`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updateEmail)),
 	})
-	r.Handle(`/api/auth/profiles/{user_id}/password`, handlers.MethodHandler{
+	r.Handle(`/api/protected/auth/profiles/{user_id}/password`, handlers.MethodHandler{
 		http.MethodPatch: srv.server.WithAuth(http.HandlerFunc(srv.updatePassword)),
 	})
-	r.Handle(`/api/auth/profiles/{user_id}`, handlers.MethodHandler{
+	r.Handle(`/api/protected/auth/profiles/{user_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
-	r.Handle(`/api/auth/sessions`, handlers.MethodHandler{
-		http.MethodPost:   http.HandlerFunc(srv.startSession),
-		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endAllSessions)),
-	})
-	r.Handle(`/api/auth/sessions/{session_id}`, handlers.MethodHandler{
-		http.MethodPatch:  http.HandlerFunc(srv.refreshSession),
+	r.Handle(`/api/protected/auth/sessions/{session_id}`, handlers.MethodHandler{
 		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endSession)),
 	})
+	r.Handle(`/api/protected/auth/sessions`, handlers.MethodHandler{
+		http.MethodDelete: srv.server.WithAuth(http.HandlerFunc(srv.endAllSessions)),
+	})
+
 	r.Handle(`/api/private/auth/session/*`, http.HandlerFunc(srv.parseSession))
 
 	srv.server.SetLogger(beans.Logger())
