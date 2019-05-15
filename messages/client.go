@@ -105,6 +105,8 @@ func (c *QueueClient) SendRegEmailMessage(data *queues.RegistrationEmailData) *e
 	)
 	if err != nil {
 		return errs.New(err)
+	} else {
+		beans.Logger().Info(fmt.Sprintf("queue: %s <- %v", c.regEmailsQueue.Name, *data))
 	}
 
 	return nil
