@@ -77,6 +77,18 @@ func (c *QueueClient) OpenConnection() error {
 		return err
 	}
 
+	c.createdUsersQueue, err = ch.QueueDeclare(
+		queues.DeletedUsersQueueName,
+		false,
+		false,
+		false,
+		false,
+		nil,
+	)
+	if err != nil {
+		return err
+	}
+
 	c.channel = ch
 	c.connection = conn
 
@@ -106,7 +118,7 @@ func (c *QueueClient) SendRegEmailMessage(data *queues.RegistrationEmailData) *e
 	if err != nil {
 		return errs.New(err)
 	} else {
-		beans.Logger().Info(fmt.Sprintf("queue: %s <- %v", c.regEmailsQueue.Name, *data))
+		c.writeEnqueueLog(c.regEmailsQueue.Name, *data)
 	}
 
 	return nil
@@ -128,8 +140,34 @@ func (c *QueueClient) SendUserCreatedMessage(data *queues.CreatedUserData) *errs
 	if err != nil {
 		return errs.New(err)
 	} else {
-		beans.Logger().Info(fmt.Sprintf("queue: %s <- %v", c.createdUsersQueue.Name, *data))
+		c.writeEnqueueLog(c.createdUsersQueue.Name, *data)
 	}
 
 	return nil
+}
+
+func (c *QueueClient) SendUserDeletedMessage(data *queues.DeletedUserData) *errs.Error {
+	body, _ := easyjson.Marshal(data)
+
+	err := c.channel.Publish(
+		consts.EmptyString,
+		c.deletedUsersQueue.Name,
+		false,
+		false,
+		amqp.Publishing{
+			Body:        body,
+			ContentType: "application/json",
+		},
+	)
+	if err != nil {
+		return errs.New(err)
+	} else {
+		c.writeEnqueueLog(c.deletedUsersQueue.Name, *data)
+	}
+
+	return nil
+}
+
+func (c *QueueClient) writeEnqueueLog(queue string, data interface{}) {
+	beans.Logger().Info(fmt.Sprintf("queue: %s <- %v", queue, data))
 }
