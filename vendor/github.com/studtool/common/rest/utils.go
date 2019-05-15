@@ -31,10 +31,6 @@ const (
 	RefreshTokenHeader = "X-Refresh-Token"
 )
 
-const (
-	UnauthorizedUserID = consts.EmptyString
-)
-
 func (srv *Server) SetUserID(w http.ResponseWriter, userID string) {
 	w.Header().Set(UserIDHeader, userID)
 }
