@@ -25,6 +25,14 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	createdUserData := &queues.CreatedUserData{
+		UserID: profile.UserID,
+	}
+	if err := srv.mqClient.SendUserCreatedMessage(createdUserData); err != nil {
+		srv.server.WriteErrJSON(w, err) //TODO handle
+		return
+	}
+
 	token := &models.Token{
 		UserID: profile.UserID,
 	}
