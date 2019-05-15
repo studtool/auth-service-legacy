@@ -125,6 +125,8 @@ func (c *QueueClient) SendUserCreatedMessage(data *queues.CreatedUserData) *errs
 	)
 	if err != nil {
 		return errs.New(err)
+	} else {
+		beans.Logger().Info(fmt.Sprintf("queue: %s <- %v", c.createdUsersQueue.Name, *data))
 	}
 
 	return nil
