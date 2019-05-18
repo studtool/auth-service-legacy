@@ -2,6 +2,7 @@ package logs
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 
 	"github.com/sirupsen/logrus"
@@ -45,6 +46,11 @@ const (
 	callerStackDepth = 3
 )
 
+var (
+	host = getHostname()
+	pid  = int64(os.Getpid())
+)
+
 func (log *Logger) callerInfo() logrus.Fields {
 	fpcs := make([]uintptr, 1)
 
@@ -62,7 +68,17 @@ func (log *Logger) callerInfo() logrus.Fields {
 	file, line := caller.FileLine(fpcs[0] - 1)
 
 	return logrus.Fields{
+		"host": host,
+		"pid":  pid,
 		"func": name,
 		"file": fmt.Sprintf("%s:%d", file, line),
 	}
+}
+
+func getHostname() string {
+	h, err := os.Hostname()
+	if err != nil {
+		panic(err)
+	}
+	return h
 }
