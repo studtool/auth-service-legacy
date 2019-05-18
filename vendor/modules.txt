@@ -27,11 +27,11 @@ github.com/mailru/easyjson/jwriter
 github.com/mailru/easyjson/buffer
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
-# github.com/sirupsen/logrus v1.4.1
+# github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190515103956-841b404fd5a7
+# github.com/studtool/common v0.0.0-20190518195043-e1b27f5c60c5
 github.com/studtool/common/utils
 github.com/studtool/common/consts
 github.com/studtool/common/errs

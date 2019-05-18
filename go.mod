@@ -18,11 +18,10 @@ require (
 	github.com/onsi/ginkgo v1.8.0 // indirect
 	github.com/onsi/gomega v1.5.0 // indirect
 	github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
-	github.com/studtool/common v0.0.0-20190515103956-841b404fd5a7
+	github.com/studtool/common v0.0.0-20190518195043-e1b27f5c60c5
 	go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3
 	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f
 	golang.org/x/net v0.0.0-20190514140710-3ec191127204 // indirect
-	golang.org/x/sys v0.0.0-20190516110030-61b9204099cb // indirect
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 	gopkg.in/yaml.v2 v2.2.2 // indirect

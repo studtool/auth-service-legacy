@@ -21,9 +21,9 @@ type QueueClient struct {
 
 	channel *amqp.Channel
 
-	regEmailsQueue    amqp.Queue
-	createdUsersQueue amqp.Queue
-	deletedUsersQueue amqp.Queue
+	registrationEmailsQueue amqp.Queue
+	createdUsersQueue       amqp.Queue
+	deletedUsersQueue       amqp.Queue
 }
 
 func NewQueueClient() *QueueClient {
@@ -53,7 +53,7 @@ func (c *QueueClient) OpenConnection() error {
 		return err
 	}
 
-	c.regEmailsQueue, err = ch.QueueDeclare(
+	c.registrationEmailsQueue, err = ch.QueueDeclare(
 		queues.RegistrationEmailsQueueName,
 		false,
 		false,
@@ -77,7 +77,7 @@ func (c *QueueClient) OpenConnection() error {
 		return err
 	}
 
-	c.createdUsersQueue, err = ch.QueueDeclare(
+	c.deletedUsersQueue, err = ch.QueueDeclare(
 		queues.DeletedUsersQueueName,
 		false,
 		false,
@@ -107,7 +107,7 @@ func (c *QueueClient) SendRegEmailMessage(data *queues.RegistrationEmailData) *e
 
 	err := c.channel.Publish(
 		consts.EmptyString,
-		c.regEmailsQueue.Name,
+		c.registrationEmailsQueue.Name,
 		false,
 		false,
 		amqp.Publishing{
@@ -118,7 +118,7 @@ func (c *QueueClient) SendRegEmailMessage(data *queues.RegistrationEmailData) *e
 	if err != nil {
 		return errs.New(err)
 	} else {
-		c.writeEnqueueLog(c.regEmailsQueue.Name, *data)
+		c.writeEnqueueLog(c.registrationEmailsQueue.Name, *data)
 	}
 
 	return nil
