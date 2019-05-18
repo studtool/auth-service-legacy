@@ -36,13 +36,13 @@ type Server struct {
 	tokensRepository   repositories.TokensRepository
 	sessionsRepository repositories.SessionsRepository
 
-	mqClient *messages.QueueClient
+	mqClient *messages.MqClient
 }
 
 type ServerParams struct {
 	dig.In
 
-	MqClient *messages.QueueClient
+	MqClient *messages.MqClient
 
 	ProfilesRepository repositories.ProfilesRepository
 	TokensRepository   repositories.TokensRepository

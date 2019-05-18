@@ -28,7 +28,7 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 	createdUserData := &queues.CreatedUserData{
 		UserID: profile.UserID,
 	}
-	if err := srv.mqClient.SendUserCreatedMessage(createdUserData); err != nil {
+	if err := srv.mqClient.PublishUserCreatedMessage(createdUserData); err != nil {
 		srv.server.WriteErrJSON(w, err) //TODO handle
 		return
 	}
@@ -45,7 +45,7 @@ func (srv *Server) createProfile(w http.ResponseWriter, r *http.Request) {
 		Email: profile.Email,
 		Token: token.Token,
 	}
-	if err := srv.mqClient.SendRegEmailMessage(regEmailData); err != nil {
+	if err := srv.mqClient.PublishRegistrationEmailMessage(regEmailData); err != nil {
 		srv.server.WriteErrJSON(w, err) //TODO handle
 		return
 	}
@@ -79,7 +79,7 @@ func (srv *Server) verifyProfile(w http.ResponseWriter, r *http.Request) {
 	createdUserData := &queues.CreatedUserData{
 		UserID: p.UserID,
 	}
-	if err := srv.mqClient.SendUserCreatedMessage(createdUserData); err != nil {
+	if err := srv.mqClient.PublishUserCreatedMessage(createdUserData); err != nil {
 		srv.server.WriteErrJSON(w, err) //TODO handle
 		return
 	}
