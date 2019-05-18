@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+
 	"github.com/studtool/common/logs"
 )
 
@@ -27,7 +29,12 @@ func NewServer(c ServerConfig) *Server {
 }
 
 func (srv *Server) SetHandler(h http.Handler) {
-	srv.server.Handler = h
+	mx := http.NewServeMux()
+
+	mx.Handle("/metrics", promhttp.Handler())
+	mx.Handle("/", h)
+
+	srv.server.Handler = mx
 }
 
 func (srv *Server) SetLogger(log *logs.Logger) {

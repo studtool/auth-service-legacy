@@ -1,3 +1,5 @@
+# github.com/beorn7/perks v1.0.0
+github.com/beorn7/perks/quantile
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
 github.com/dgrijalva/jwt-go
 # github.com/go-chi/chi v4.0.2+incompatible
@@ -10,6 +12,8 @@ github.com/go-redis/redis/internal/hashtag
 github.com/go-redis/redis/internal/pool
 github.com/go-redis/redis/internal/proto
 github.com/go-redis/redis/internal/util
+# github.com/golang/protobuf v1.3.1
+github.com/golang/protobuf/proto
 # github.com/google/uuid v1.1.1
 github.com/google/uuid
 # github.com/gorilla/handlers v1.4.0
@@ -25,13 +29,28 @@ github.com/mailru/easyjson
 github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
 github.com/mailru/easyjson/buffer
+# github.com/matttproud/golang_protobuf_extensions v1.0.1
+github.com/matttproud/golang_protobuf_extensions/pbutil
 # github.com/mitchellh/mapstructure v1.1.2
 github.com/mitchellh/mapstructure
+# github.com/prometheus/client_golang v0.9.3
+github.com/prometheus/client_golang/prometheus/promhttp
+github.com/prometheus/client_golang/prometheus
+github.com/prometheus/client_golang/prometheus/internal
+# github.com/prometheus/client_model v0.0.0-20190129233127-fd36f4220a90
+github.com/prometheus/client_model/go
+# github.com/prometheus/common v0.4.0
+github.com/prometheus/common/expfmt
+github.com/prometheus/common/model
+github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
+# github.com/prometheus/procfs v0.0.0-20190517135640-51af30a78b0e
+github.com/prometheus/procfs
+github.com/prometheus/procfs/internal/fs
 # github.com/sirupsen/logrus v1.4.2
 github.com/sirupsen/logrus
 # github.com/streadway/amqp v0.0.0-20190404075320-75d898a42a94
 github.com/streadway/amqp
-# github.com/studtool/common v0.0.0-20190518220330-3a0ba4eb3aa3
+# github.com/studtool/common v0.0.0-20190518222009-129f2c7af237
 github.com/studtool/common/utils
 github.com/studtool/common/consts
 github.com/studtool/common/errs
