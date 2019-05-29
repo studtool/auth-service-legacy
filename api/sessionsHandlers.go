@@ -3,11 +3,12 @@ package api
 import (
 	"net/http"
 
+	"github.com/studtool/common/consts"
+
 	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/models"
 	"github.com/studtool/auth-service/utils"
-	"github.com/studtool/common/consts"
 )
 
 func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
@@ -64,6 +65,10 @@ func (srv *Server) startSession(w http.ResponseWriter, r *http.Request) {
 }
 
 func (srv *Server) parseSession(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodOptions {
+		srv.server.WriteOk(w)
+	}
+
 	token := srv.server.ParseAuthToken(r)
 	if token == consts.EmptyString {
 		srv.server.WriteErrJSON(w, srv.notAuthorizedErr)
