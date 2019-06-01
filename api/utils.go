@@ -2,9 +2,11 @@ package api
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi"
 
+	"github.com/studtool/common/rest"
 	"github.com/studtool/common/types"
 )
 
@@ -26,4 +28,21 @@ func (srv *Server) parsePathUserID(r *http.Request) string {
 
 func (srv *Server) parsePathSessionID(r *http.Request) string {
 	return chi.URLParam(r, "session_id")
+}
+
+type PathAPIClassifier struct {
+	commonClassifier *rest.PathAPIClassifier
+}
+
+func NewPathAPIClassifier() *PathAPIClassifier {
+	return &PathAPIClassifier{
+		commonClassifier: rest.NewPathAPIClassifier(),
+	}
+}
+
+func (c *PathAPIClassifier) GetType(r *http.Request) string {
+	if strings.HasPrefix(r.RequestURI, "/api/internal/auth/session/") {
+		return rest.APITypeInternal
+	}
+	return c.commonClassifier.GetType(r)
 }

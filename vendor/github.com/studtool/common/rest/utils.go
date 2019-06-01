@@ -242,7 +242,7 @@ func (c *PathAPIClassifier) GetType(r *http.Request) string {
 	path := r.RequestURI[len("/api/v"):]
 
 	idx := 0
-	for ; idx < len(r.RequestURI); idx++ {
+	for ; idx < len(path); idx++ {
 		if path[idx] == '/' {
 			break
 		}

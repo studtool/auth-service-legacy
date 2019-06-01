@@ -94,8 +94,8 @@ github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/studtool/common v0.0.0-20190601155918-f251751aed3c h1:QmOCw8sLFmiqZa2dX+GR7y9lXwvvEcwUr/MMOrsUAts=
-github.com/studtool/common v0.0.0-20190601155918-f251751aed3c/go.mod h1:GN7YAPsIBJmqLUfUOVFGIum02UMHTgs2WWOqlctQQjA=
+github.com/studtool/common v0.0.0-20190601170242-9c19daa0f4de h1:fei9FI0MXutYB8XuBBbG5oHK2X5uJOK5LCxM1RrYWTc=
+github.com/studtool/common v0.0.0-20190601170242-9c19daa0f4de/go.mod h1:GN7YAPsIBJmqLUfUOVFGIum02UMHTgs2WWOqlctQQjA=
 github.com/tinylib/msgp v1.1.0 h1:9fQd+ICuRIu/ue4vxJZu6/LzxN0HwMds2nq/0cFvxHU=
 github.com/tinylib/msgp v1.1.0/go.mod h1:+d+yLhGm8mzTaHzB+wgMYrodPfmZrzkirds8fDWklFE=
 go.uber.org/dig v1.7.1-0.20190327003609-4cc9f8898fe3 h1:n9Hy12XGW9W1aQgR9ZJDQoWWL+V3sJmwDGOuT73H+qw=
