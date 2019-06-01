@@ -3,10 +3,11 @@ package main
 import (
 	"os"
 	"os/signal"
+	"syscall"
 
 	"go.uber.org/dig"
 
-	"github.com/studtool/common/utils"
+	"github.com/studtool/common/utils/assertions"
 
 	"github.com/studtool/auth-service/api"
 	"github.com/studtool/auth-service/beans"
@@ -21,59 +22,59 @@ func main() {
 	c := dig.New()
 
 	if config.RepositoriesEnabled.Value() {
-		utils.AssertOk(c.Provide(postgres.NewConnection))
-		utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
+		assertions.AssertOk(c.Provide(postgres.NewConnection))
+		assertions.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(conn *postgres.Connection) {
+			assertions.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
 					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
 
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			postgres.NewProfilesRepository,
 			dig.As(new(repositories.ProfilesRepository)),
 		))
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			postgres.NewSessionsRepository,
 			dig.As(new(repositories.SessionsRepository)),
 		))
 
-		utils.AssertOk(c.Provide(redis.NewConnection))
-		utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
+		assertions.AssertOk(c.Provide(redis.NewConnection))
+		assertions.AssertOk(c.Invoke(func(conn *redis.Connection) {
 			if err := conn.Open(); err != nil {
 				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(conn *redis.Connection) {
+			assertions.AssertOk(c.Invoke(func(conn *redis.Connection) {
 				if err := conn.Close(); err != nil {
 					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
 
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			redis.NewTokensRepository,
 			dig.As(new(repositories.TokensRepository)),
 		))
 	} else {
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			func() repositories.ProfilesRepository {
 				return nil
 			},
 		))
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			func() repositories.SessionsRepository {
 				return nil
 			},
 		))
-		utils.AssertOk(c.Provide(
+		assertions.AssertOk(c.Provide(
 			func() repositories.TokensRepository {
 				return nil
 			},
@@ -81,31 +82,31 @@ func main() {
 	}
 
 	if config.QueuesEnabled.Value() {
-		utils.AssertOk(c.Provide(messages.NewMqClient))
-		utils.AssertOk(c.Invoke(func(q *messages.MqClient) {
+		assertions.AssertOk(c.Provide(messages.NewMqClient))
+		assertions.AssertOk(c.Invoke(func(q *messages.MqClient) {
 			if err := q.OpenConnection(); err != nil {
 				beans.Logger().Fatal(err)
 			}
 		}))
 		defer func() {
-			utils.AssertOk(c.Invoke(func(q *messages.MqClient) {
+			assertions.AssertOk(c.Invoke(func(q *messages.MqClient) {
 				if err := q.CloseConnection(); err != nil {
 					beans.Logger().Fatal(err)
 				}
 			}))
 		}()
 	} else {
-		utils.AssertOk(c.Provide(func() *messages.MqClient {
+		assertions.AssertOk(c.Provide(func() *messages.MqClient {
 			return nil
 		}))
 	}
 
-	ch := make(chan os.Signal)
-	signal.Notify(ch, os.Kill)
-	signal.Notify(ch, os.Interrupt)
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGINT)
+	signal.Notify(ch, syscall.SIGTERM)
 
-	utils.AssertOk(c.Provide(api.NewServer))
-	utils.AssertOk(c.Invoke(func(srv *api.Server) {
+	assertions.AssertOk(c.Provide(api.NewServer))
+	assertions.AssertOk(c.Invoke(func(srv *api.Server) {
 		go func() {
 			if err := srv.Run(); err != nil {
 				beans.Logger().Fatal(err)
@@ -114,7 +115,7 @@ func main() {
 		}()
 	}))
 	defer func() {
-		utils.AssertOk(c.Invoke(func(srv *api.Server) {
+		assertions.AssertOk(c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
 				beans.Logger().Fatal(err)
 			}

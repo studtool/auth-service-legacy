@@ -1,5 +1,7 @@
 package types
 
+//go:generate easyjson
+
 import (
 	"encoding/json"
 	"time"

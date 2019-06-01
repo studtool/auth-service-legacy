@@ -1,4 +1,4 @@
-package utils
+package srvutils
 
 import (
 	"github.com/dgrijalva/jwt-go"

@@ -5,9 +5,9 @@ import (
 )
 
 var (
-	logger = logs.NewLogger()
+	logger = logs.NewRawLogger()
 )
 
-func Logger() *logs.Logger {
+func Logger() logs.Logger {
 	return logger
 }

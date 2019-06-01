@@ -13,6 +13,12 @@ type DeletedUserData struct {
 }
 
 //easyjson:json
+type RegistrationEmailData struct {
+	Email string `json:"email"`
+	Token string `json:"token"`
+}
+
+//easyjson:json
 type ProfileToCreateData struct {
 	UserID string `json:"userId"`
 }
@@ -40,10 +46,4 @@ type DocumentUserToCreateData struct {
 //easyjson:json
 type DocumentUserToDeleteData struct {
 	UserID string `json:"userId"`
-}
-
-//easyjson:json
-type RegistrationEmailData struct {
-	Email string `json:"email"`
-	Token string `json:"token"`
 }

@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/studtool/common/errs"
-	"github.com/studtool/common/utils"
+	"github.com/studtool/common/utils/random"
 
 	"github.com/studtool/auth-service/models"
 )
@@ -27,7 +27,7 @@ func NewTokensRepository(conn *Connection) *TokensRepository {
 }
 
 func (r *TokensRepository) SetToken(token *models.Token) *errs.Error {
-	token.Token = utils.RandString(TokenLen)
+	token.Token = random.RandString(TokenLen)
 
 	err := r.conn.client.Set(token.Token, token.UserID, TokenExp).Err()
 	if err != nil {

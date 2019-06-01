@@ -1,4 +1,4 @@
-package utils
+package assertions
 
 func AssertOk(err error) {
 	if err != nil {

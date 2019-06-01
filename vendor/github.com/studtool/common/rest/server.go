@@ -2,53 +2,58 @@ package rest
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/studtool/common/logs"
 )
 
-type ServerConfig struct {
-	Host string
-	Port string
-}
-
 type Server struct {
 	server *http.Server
-	logger *logs.Logger
+
+	structLogger  logs.Logger
+	reflectLogger logs.Logger
+	requestLogger logs.Logger
+
+	apiClassifier APIClassifier
 }
 
-func NewServer(c ServerConfig) *Server {
+type ServerParams struct {
+	Address string
+	Handler http.Handler
+
+	StructLogger  logs.Logger
+	ReflectLogger logs.Logger
+	RequestLogger logs.Logger
+
+	APIClassifier APIClassifier
+}
+
+func NewServer(params ServerParams) *Server {
 	return &Server{
 		server: &http.Server{
-			Addr: fmt.Sprintf("%s:%s", c.Host, c.Port),
+			Addr:    params.Address,
+			Handler: params.Handler,
 		},
+
+		structLogger:  params.StructLogger,
+		reflectLogger: params.ReflectLogger,
+		requestLogger: params.RequestLogger,
+
+		apiClassifier: params.APIClassifier,
 	}
 }
 
-func (srv *Server) SetHandler(h http.Handler) {
-	mx := http.NewServeMux()
-
-	mx.Handle("/metrics", promhttp.Handler())
-	mx.Handle("/", h)
-
-	srv.server.Handler = mx
-}
-
-func (srv *Server) SetLogger(log *logs.Logger) {
-	srv.logger = log
-}
-
 func (srv *Server) Run() error {
-	srv.logger.Info(fmt.Sprintf("started [%s]", srv.server.Addr))
-
-	return srv.server.ListenAndServe()
+	srv.structLogger.Infof("started on %s", srv.server.Addr)
+	go func() {
+		if err := srv.server.ListenAndServe(); err != nil {
+			srv.structLogger.Fatal(err)
+		}
+	}()
+	return nil
 }
 
 func (srv *Server) Shutdown() error {
-	srv.logger.Info("shutdown")
-
+	srv.structLogger.Infof("stopped")
 	return srv.server.Shutdown(context.TODO())
 }

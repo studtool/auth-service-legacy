@@ -1,10 +1,10 @@
-package utils
+package srvutils
 
 import (
 	"fmt"
 
 	"github.com/studtool/common/errs"
-	"github.com/studtool/common/utils"
+	"github.com/studtool/common/utils/random"
 )
 
 const (
@@ -23,7 +23,7 @@ func NewRefreshTokenManager() *RefreshTokenManager {
 
 func (m *RefreshTokenManager) CreateToken(attr *RefreshTokenAttributes) (string, *errs.Error) {
 	t := fmt.Sprintf("%s%s",
-		attr.UserID, utils.RandString(refreshTokenRandLen),
+		attr.UserID, random.RandString(refreshTokenRandLen),
 	)
 	return t, nil
 }

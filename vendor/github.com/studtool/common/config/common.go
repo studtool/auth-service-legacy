@@ -1,4 +1,4 @@
-package cconfig
+package config
 
 import (
 	"fmt"
@@ -8,10 +8,10 @@ import (
 
 var (
 	//nolint:gochecknoglobals
-	logger *logs.Logger
+	logger logs.Logger
 )
 
-func SetLogger(log *logs.Logger) {
+func SetLogger(log logs.Logger) {
 	logger = log
 }
 
