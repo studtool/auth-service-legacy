@@ -276,7 +276,7 @@ func (c *PathAPIClassifier) GetType(r *http.Request) string {
 			break
 		}
 	}
-	if idx == len(r.RequestURI) {
+	if idx == len(path) {
 		return APITypeNone
 	}
 
