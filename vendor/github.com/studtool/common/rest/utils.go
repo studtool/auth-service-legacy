@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/pprof"
+	"strconv"
 	"strings"
 
 	"github.com/go-http-utils/headers"
@@ -37,6 +38,34 @@ func GetProfilerHandler() http.Handler {
 	router.Handle("/block", pprof.Handler("block"))
 
 	return router
+}
+
+const (
+	wrongVersionMessage = "wrong version format. expected vX.X.X"
+)
+
+func ParseAPIVersion(version string) int {
+	//TODO check version with regexp
+
+	if !strings.HasPrefix(version, "v") {
+		panic(wrongVersionMessage)
+	}
+
+	idx := strings.Index(version, ".")
+	if idx == -1 {
+		panic(wrongVersionMessage)
+	}
+
+	v, err := strconv.Atoi(version[1:idx])
+	if err != nil {
+		panic(err)
+	}
+
+	return v
+}
+
+func MakeAPIPath(version int, apiType, path string) string {
+	return fmt.Sprintf(`/api/v%d/%s%s`, version, apiType, path)
 }
 
 func (srv *Server) GetRawBody(r *http.Request) ([]byte, *errs.Error) {

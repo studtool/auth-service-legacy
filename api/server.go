@@ -74,35 +74,40 @@ func NewServer(params ServerParams) *Server {
 		mqClient: params.MqClient,
 	}
 
+	v := rest.ParseAPIVersion(config.ComponentVersion)
+	srvPublicPath := rest.MakeAPIPath(v, rest.APITypePublic, "/auth")
+	srvProtectedPath := rest.MakeAPIPath(v, rest.APITypeProtected, "/auth")
+	srvInternalPath := rest.MakeAPIPath(v, rest.APITypeInternal, "/auth")
+
 	r := chi.NewRouter()
 
-	r.Handle(`/api/public/auth/profiles`, handlers.MethodHandler{
+	r.Handle(srvPublicPath+"/profiles", handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.createProfile),
 	})
-	r.Handle(`/api/public/auth/sessions`, handlers.MethodHandler{
+	r.Handle(srvPublicPath+"/sessions", handlers.MethodHandler{
 		http.MethodPost: http.HandlerFunc(srv.startSession),
 	})
-	r.Handle(`/api/public/auth/sessions/{session_id}`, handlers.MethodHandler{
+	r.Handle(srvPublicPath+"/sessions/{session_id}", handlers.MethodHandler{
 		http.MethodPatch: http.HandlerFunc(srv.refreshSession),
 	})
 
-	r.Handle(`/api/protected/auth/profiles/{user_id}/email`, handlers.MethodHandler{
+	r.Handle(srvProtectedPath+"/profiles/{user_id}/email", handlers.MethodHandler{
 		http.MethodPatch: srv.WithAuth(http.HandlerFunc(srv.updateEmail)),
 	})
-	r.Handle(`/api/protected/auth/profiles/{user_id}/password`, handlers.MethodHandler{
+	r.Handle(srvProtectedPath+"/profiles/{user_id}/password", handlers.MethodHandler{
 		http.MethodPatch: srv.WithAuth(http.HandlerFunc(srv.updatePassword)),
 	})
-	r.Handle(`/api/protected/auth/profiles/{user_id}`, handlers.MethodHandler{
+	r.Handle(srvProtectedPath+"/profiles/{user_id}", handlers.MethodHandler{
 		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.deleteProfile)),
 	})
-	r.Handle(`/api/protected/auth/sessions/{session_id}`, handlers.MethodHandler{
+	r.Handle(srvProtectedPath+"/sessions/{session_id}", handlers.MethodHandler{
 		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.endSession)),
 	})
-	r.Handle(`/api/protected/auth/sessions`, handlers.MethodHandler{
+	r.Handle(srvProtectedPath+"/sessions", handlers.MethodHandler{
 		http.MethodDelete: srv.WithAuth(http.HandlerFunc(srv.endAllSessions)),
 	})
 
-	r.Handle(`/api/internal/auth/session/*`, http.HandlerFunc(srv.parseSession))
+	r.Handle(srvInternalPath+"/session/*", http.HandlerFunc(srv.parseSession))
 
 	r.Handle(`/pprof`, rest.GetProfilerHandler())
 	r.Handle(`/metrics`, rest.GetMetricsHandler())
