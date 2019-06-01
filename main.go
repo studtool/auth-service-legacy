@@ -7,10 +7,10 @@ import (
 
 	"go.uber.org/dig"
 
+	"github.com/studtool/common/logs"
 	"github.com/studtool/common/utils/assertions"
 
 	"github.com/studtool/auth-service/api"
-	"github.com/studtool/auth-service/beans"
 	"github.com/studtool/auth-service/config"
 	"github.com/studtool/auth-service/messages"
 	"github.com/studtool/auth-service/repositories"
@@ -20,18 +20,19 @@ import (
 
 func main() {
 	c := dig.New()
+	logger := logs.NewReflectLogger()
 
 	if config.RepositoriesEnabled.Value() {
 		assertions.AssertOk(c.Provide(postgres.NewConnection))
 		assertions.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 			if err := conn.Open(); err != nil {
-				beans.Logger().Fatal(err)
+				logger.Fatal(err)
 			}
 		}))
 		defer func() {
 			assertions.AssertOk(c.Invoke(func(conn *postgres.Connection) {
 				if err := conn.Close(); err != nil {
-					beans.Logger().Fatal(err)
+					logger.Fatal(err)
 				}
 			}))
 		}()
@@ -48,13 +49,13 @@ func main() {
 		assertions.AssertOk(c.Provide(redis.NewConnection))
 		assertions.AssertOk(c.Invoke(func(conn *redis.Connection) {
 			if err := conn.Open(); err != nil {
-				beans.Logger().Fatal(err)
+				logger.Fatal(err)
 			}
 		}))
 		defer func() {
 			assertions.AssertOk(c.Invoke(func(conn *redis.Connection) {
 				if err := conn.Close(); err != nil {
-					beans.Logger().Fatal(err)
+					logger.Fatal(err)
 				}
 			}))
 		}()
@@ -85,13 +86,13 @@ func main() {
 		assertions.AssertOk(c.Provide(messages.NewMqClient))
 		assertions.AssertOk(c.Invoke(func(q *messages.MqClient) {
 			if err := q.OpenConnection(); err != nil {
-				beans.Logger().Fatal(err)
+				logger.Fatal(err)
 			}
 		}))
 		defer func() {
 			assertions.AssertOk(c.Invoke(func(q *messages.MqClient) {
 				if err := q.CloseConnection(); err != nil {
-					beans.Logger().Fatal(err)
+					logger.Fatal(err)
 				}
 			}))
 		}()
@@ -109,7 +110,7 @@ func main() {
 	assertions.AssertOk(c.Invoke(func(srv *api.Server) {
 		go func() {
 			if err := srv.Run(); err != nil {
-				beans.Logger().Fatal(err)
+				logger.Fatal(err)
 				ch <- os.Interrupt
 			}
 		}()
@@ -117,7 +118,7 @@ func main() {
 	defer func() {
 		assertions.AssertOk(c.Invoke(func(srv *api.Server) {
 			if err := srv.Shutdown(); err != nil {
-				beans.Logger().Fatal(err)
+				logger.Fatal(err)
 			}
 		}))
 	}()
